@@ -1,9 +1,12 @@
 #include "../include/FileSys.h"
+#include <cstddef>
+#include <vector>
 
 namespace fs = std::filesystem;
 
 namespace Mlib::FileSys {
-    auto fileContentToStr(const string& filename) -> string
+    string
+    fileContentToStr(const string& filename)
     {
         if (!fs::exists(filename))
         {
@@ -19,7 +22,8 @@ namespace Mlib::FileSys {
         return buffer.str();
     }
 
-    auto fileContentToFile(const string& sourcePath, const string& destinationPath) -> void
+    void
+    fileContentToFile(const string& sourcePath, const string& destinationPath)
     {
         if (!fs::exists(sourcePath))
         {
@@ -43,7 +47,8 @@ namespace Mlib::FileSys {
         destinationFile.close();
     }
 
-    auto dirContentToStrVec(const string& path) -> vector<string>
+    vector<string>
+    dirContentToStrVec(const string& path)
     {
         vector<string> files;
         for (const auto& entry : fs::directory_iterator(path))
@@ -53,15 +58,21 @@ namespace Mlib::FileSys {
         return files;
     }
 
-    auto currentWorkingDir() -> string
+    string
+    currentWorkingDir()
     {
         return fs::current_path().string();
     }
 
-    auto makeDir(const string& path) -> void
+    void
+    mkdir(const string& path)
     {
         if (fs::exists(path))
         {
+            if (!fs::is_directory(path))
+            {
+                throw runtime_error("Path exists but is not a directory: " + path);
+            }
             throw runtime_error("Directory already exists: " + path);
         }
         if (!fs::create_directories(path))
@@ -70,7 +81,8 @@ namespace Mlib::FileSys {
         }
     }
 
-    auto removeDir(const string& path) -> void
+    void
+    rmdir(const string& path)
     {
         if (!fs::exists(path))
         {
@@ -82,7 +94,8 @@ namespace Mlib::FileSys {
         }
     }
 
-    auto removeFile(const string& path) -> void
+    void
+    rmFile(const string& path)
     {
         if (!fs::exists(path))
         {
@@ -94,7 +107,8 @@ namespace Mlib::FileSys {
         }
     }
 
-    auto makeFile(const string& path) -> void
+    void
+    touch(const string& path)
     {
         if (fs::exists(path))
         {
@@ -107,33 +121,39 @@ namespace Mlib::FileSys {
         }
     }
 
-    auto fileExists(const string& path) -> bool
+    bool
+    exists(const string& path)
     {
         return fs::exists(path);
     }
 
-    auto isDir(const string& path) -> bool
+    bool
+    isDir(const string& path)
     {
         return fs::is_directory(path);
     }
 
-    auto isFile(const string& path) -> bool
+    bool
+    isFile(const string& path)
     {
         return fs::is_regular_file(path);
     }
 
-    auto fileLastWriteTime(const string& path) -> time_t
+    time_t
+    fileLastWriteTime(const string& path)
     {
         return fs::last_write_time(path).time_since_epoch().count();
     }
 
-    auto fileLastWriteTimeStr(const string& path) -> string
+    string
+    fileLastWriteTimeStr(const string& path)
     {
         time_t time = fileLastWriteTime(path);
         return ctime(&time);
     }
 
-    auto fileLastWriteTimeStr(const string& path, const string& format) -> string
+    string
+    fileLastWriteTimeStr(const string& path, const string& format)
     {
         time_t       time       = fileLastWriteTime(path);
         tm*          timeStruct = localtime(&time);
@@ -142,7 +162,8 @@ namespace Mlib::FileSys {
         return buffer.str();
     }
 
-    auto fileSize(const string& path) -> size_t
+    size_t
+    fileSize(const string& path)
     {
         return fs::exists(path) ? fs::file_size(path) : 0;
     }

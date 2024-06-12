@@ -23,7 +23,11 @@ namespace Mlib::FileSys {
     auto fileContentToStr(const string& filename) -> string;
     auto fileContentToFile(const string& sourcePath, const string& destinationPath) -> void;
     auto currentWorkingDir() -> string;
-    auto fileExists(const string& path) -> bool;
+    void mkdir(const string& path);
+    auto rmdir(const string& path) -> void;
+    auto rmFile(const string& path) -> void;
+    auto touch(const string& path) -> void;
+    auto exists(const string& path) -> bool;
     auto isDir(const string& path) -> bool;
     auto isFile(const string& path) -> bool;
     auto fileLastWriteTime(const string& path) -> std::time_t;

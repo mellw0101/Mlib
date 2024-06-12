@@ -7,5 +7,5 @@
 #include "def.h"
 
 namespace Mlib::Math {
-    FORCE_INLINE UNUSED auto between(double a, double b, double x) -> double;
+    auto between(f64 a, f64 b, f64 x) -> f64;
 }

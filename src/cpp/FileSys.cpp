@@ -3,7 +3,7 @@
 namespace fs = std::filesystem;
 
 namespace Mlib::FileSys {
-    string fileContentToStr(const string& filename)
+    auto fileContentToStr(const string& filename) -> string
     {
         if (!fs::exists(filename))
         {
@@ -19,7 +19,7 @@ namespace Mlib::FileSys {
         return buffer.str();
     }
 
-    FORCE_INLINE UNUSED auto fileContentToFile(const string& sourcePath, const string& destinationPath) -> void
+    auto fileContentToFile(const string& sourcePath, const string& destinationPath) -> void
     {
         if (!fs::exists(sourcePath))
         {
@@ -43,7 +43,7 @@ namespace Mlib::FileSys {
         destinationFile.close();
     }
 
-    FORCE_INLINE UNUSED auto dirContentToStrVec(const string& path) -> vector<string>
+    auto dirContentToStrVec(const string& path) -> vector<string>
     {
         vector<string> files;
         for (const auto& entry : fs::directory_iterator(path))
@@ -53,12 +53,12 @@ namespace Mlib::FileSys {
         return files;
     }
 
-    FORCE_INLINE UNUSED auto currentWorkingDir() -> string
+    auto currentWorkingDir() -> string
     {
         return fs::current_path().string();
     }
 
-    FORCE_INLINE UNUSED auto makeDir(const string& path) -> void
+    auto makeDir(const string& path) -> void
     {
         if (fs::exists(path))
         {
@@ -70,7 +70,7 @@ namespace Mlib::FileSys {
         }
     }
 
-    FORCE_INLINE UNUSED auto removeDir(const string& path) -> void
+    auto removeDir(const string& path) -> void
     {
         if (!fs::exists(path))
         {
@@ -82,7 +82,7 @@ namespace Mlib::FileSys {
         }
     }
 
-    FORCE_INLINE UNUSED auto removeFile(const string& path) -> void
+    auto removeFile(const string& path) -> void
     {
         if (!fs::exists(path))
         {
@@ -94,7 +94,7 @@ namespace Mlib::FileSys {
         }
     }
 
-    FORCE_INLINE UNUSED auto makeFile(const string& path) -> void
+    auto makeFile(const string& path) -> void
     {
         if (fs::exists(path))
         {
@@ -107,44 +107,43 @@ namespace Mlib::FileSys {
         }
     }
 
-    FORCE_INLINE UNUSED auto fileExists(const string& path) -> bool
+    auto fileExists(const string& path) -> bool
     {
         return fs::exists(path);
     }
 
-    FORCE_INLINE UNUSED auto isDir(const string& path) -> bool
+    auto isDir(const string& path) -> bool
     {
         return fs::is_directory(path);
     }
 
-    FORCE_INLINE UNUSED auto isFile(const string& path) -> bool
+    auto isFile(const string& path) -> bool
     {
         return fs::is_regular_file(path);
     }
 
-    FORCE_INLINE UNUSED auto fileLastWriteTime(const string& path) -> time_t
+    auto fileLastWriteTime(const string& path) -> time_t
     {
         return fs::last_write_time(path).time_since_epoch().count();
     }
 
-    FORCE_INLINE UNUSED auto fileLastWriteTimeStr(const string& path) -> string
+    auto fileLastWriteTimeStr(const string& path) -> string
     {
-        auto const time  = fs::last_write_time(path);
-        auto const ctime = decltype(time)::clock::to_time_t(time);
-        return std::ctime(&ctime);
+        time_t time = fileLastWriteTime(path);
+        return ctime(&time);
     }
 
-    FORCE_INLINE UNUSED auto fileLastWriteTimeStr(const string& path, const string& format) -> string
+    auto fileLastWriteTimeStr(const string& path, const string& format) -> string
     {
-        auto              time  = fs::last_write_time(path);
-        auto              ctime = decltype(time)::clock::to_time_t(time);
-        std::stringstream ss;
-        ss << std::put_time(std::localtime(&ctime), format.c_str());
-        return ss.str();
+        time_t       time       = fileLastWriteTime(path);
+        tm*          timeStruct = localtime(&time);
+        stringstream buffer;
+        buffer << put_time(timeStruct, format.c_str());
+        return buffer.str();
     }
 
-    FORCE_INLINE UNUSED auto fileSize(const string& path) -> size_t
+    auto fileSize(const string& path) -> size_t
     {
-        return fs::file_size(path);
+        return fs::exists(path) ? fs::file_size(path) : 0;
     }
 } // namespace Mlib::FileSys

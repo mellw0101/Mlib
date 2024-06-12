@@ -1,7 +1,7 @@
 #include "../include/Args.h"
 
 namespace Mlib::Args {
-    FORCE_INLINE UNUSED auto argvToVec(int argc, char** argv) -> vector<string>
+    auto argvToStrVec(int argc, char** argv) -> vector<string>
     {
         vector<string> args;
         for (int i = 0; i < argc; ++i)
@@ -11,7 +11,7 @@ namespace Mlib::Args {
         return args;
     }
 
-    FORCE_INLINE UNUSED auto argvToCmd(int argc, char** argv) -> string
+    auto argvToCmd(int argc, char** argv) -> string
     {
         string cmd;
         for (int i = 0; i < argc; ++i)
@@ -25,7 +25,7 @@ namespace Mlib::Args {
         return cmd;
     }
 
-    FORCE_INLINE UNUSED auto flagValue(const string& flag, int argC, char** argV) -> string
+    auto flagValue(const string& flag, int argC, char** argV) -> string
     {
         for (int i = 0; i < argC; ++i)
         {
@@ -44,7 +44,7 @@ namespace Mlib::Args {
         throw runtime_error("Flag '" + flag + "' not found.");
     }
 
-    FORCE_INLINE UNUSED auto flagExists(const string& flag, int argC, char** argV) -> bool
+    auto flagExists(const string& flag, int argC, char** argV) -> bool
     {
         for (int i = 0; i < argC; ++i)
         {
@@ -56,7 +56,7 @@ namespace Mlib::Args {
         return false;
     }
 
-    FORCE_INLINE UNUSED auto flagValuesToStrVec(vector<string>& flagVec, int argC, char** argV) -> vector<string>
+    auto flagValuesToStrVec(vector<string>& flagVec, int argC, char** argV) -> vector<string>
     {
         for (int i = 0; i < argC; ++i)
         {
@@ -78,7 +78,7 @@ namespace Mlib::Args {
         return flagVec;
     }
 
-    FORCE_INLINE UNUSED auto makeStrVecFromStr(const string& str, char delim) -> vector<string>
+    auto strVecFromStr(const string& str, char delim) -> vector<string>
     {
         vector<string> args;
         for (size_t i = 0, start = 0; i < str.size(); ++i)

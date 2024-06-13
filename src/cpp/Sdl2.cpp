@@ -4,30 +4,26 @@
 #include "../include/Sdl2.h"
 
 namespace Mlib::Sdl2 {
-    /// Define static variables
-    /// @note These variables are defined in the header file.
-
     inline int SCREEN_WIDTH;
     inline int SCREEN_HEIGHT;
 
     KeyObject* KeyObject::KeyObjectInstance = nullptr;
     Core*      Core::CoreInstance           = nullptr;
 
-    /// @class Object2D
-    /// @brief This class is used to handle 2D objects.
-
-    /// @brief Initialize the object with the given data.
-    /// @param data The data to initialize the object with.
-    /// @note This function is rarely used.
+    /// @struct @c Object2D Function Definitions
+    /// - @c Object2D::init
+    /// - @c Object2D::move
+    /// - @c Object2D::draw
+    /// - @c Object2D::isStatic
+    /// - @c Object2D::rect
+    /// - @c Object2D::frect
+    /// - @c Object2D::state
     void
     Object2D::init(ObjectData2D const& data)
     {
         this->data = data;
     }
 
-    /// @brief Move Object By The Given Velocity Vector
-    /// @param vel The velocity vector to move the object by.
-    /// @returns void
     void
     Object2D::move(Vec2D vel)
     {
@@ -73,10 +69,25 @@ namespace Mlib::Sdl2 {
         return data.state;
     }
 
-    /// @class KeyObject
-    /// @brief This class is used to handle key events.
-    /// @note This class is a singleton.
-
+    /// @class Core
+    /// - Functions:
+    /// - @c Core::createObject
+    /// - @c Core::init
+    /// - @c Core::initSDL
+    /// - @c Core::createWindow
+    /// - @c Core::createRenderer
+    /// - @c Core::setupKeys
+    /// - @c Core::run
+    /// - @c Core::cleanup
+    /// - @c Core::logic
+    /// - @c Core::applyPhysics
+    /// - @c Core::clear
+    /// - @c Core::draw
+    /// - @c Core::update
+    /// - @c Core::pollForEvents
+    /// - @c Core::stop
+    /// - @c Core::getObjects
+    /// - @c Core::Core
     void
     Core::createObject(const Object2D& object)
     {
@@ -310,7 +321,21 @@ namespace Mlib::Sdl2 {
         return objects;
     }
 
-    Core::Core(const string& window_title, int const& window_width, int const& window_height)
+    Core*
+    Core::Instance(const string& window_title, int const window_width, int const window_height)
+    {
+        if (CoreInstance == nullptr)
+        {
+            lock_guard<mutex> lock(mutex);
+            if (CoreInstance == nullptr)
+            {
+                CoreInstance = new Core {window_title, window_width, window_height};
+            }
+        }
+        return CoreInstance;
+    }
+
+    Core::Core(const string& window_title, int const window_width, int const window_height)
         : window_title(window_title)
     {
         SCREEN_WIDTH  = window_width;

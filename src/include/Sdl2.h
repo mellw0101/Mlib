@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_rect.h>
 #include <functional>
 #include <map>
 #include <mutex>
@@ -26,6 +27,9 @@ namespace Mlib::Sdl2 {
         };
     };
 
+    /// @class State
+    /// @brief This class represents the state of an object.
+    /// - The state is a bit field.
     class State
     {
     public:
@@ -37,38 +41,58 @@ namespace Mlib::Sdl2 {
         };
     };
 
+    /// @class Vec2D
+    /// @brief This class represents a 2D vector ( x ( float ), y ( float ) ).
     class Vec2D
     {
     public:
         f32 x, y;
 
-        // Constructors
+        /// @brief Default Constructor
+        /// @note Initializes the vector to ( 0, 0 )
         Vec2D()
             : x(0)
             , y(0)
         {}
 
+        /// @brief Constructor
+        /// @param x ( float ) The x component of the vector
+        /// @param y ( float ) The y component of the vector
+        /// @note Initializes the vector to ( x, y )
         Vec2D(f32 x, f32 y)
             : x(x)
             , y(y)
         {}
 
+        /// @brief Constructor
+        /// @param x The x component of the vector (integer)
+        /// @param y The y component of the vector (integer)
+        /// @note Initializes the vector to (x, y)
         Vec2D(s32 x, s32 y)
             : x(static_cast<f32>(x))
             , y(static_cast<f32>(y))
         {}
 
-        Vec2D(pair<f32, f32> xY) // Initialize the vector with a pair of floats
+        /// @brief Constructor
+        /// @param xY is a pair<float, float> (x, y)
+        /// @note Initializes the vector to (x, y)
+        Vec2D(pair<f32, f32> xY)
             : x(xY.first)
             , y(xY.second)
         {}
 
-        Vec2D(pair<s32, s32> xY) // Initialize the vector with a pair of integers
+        /// @brief Constructor
+        /// @param xY is a pair<int, int> (x, y)
+        /// @note Initializes the vector to (x, y)
+        Vec2D(pair<s32, s32> xY)
             : x(static_cast<f32>(xY.first))
             , y(static_cast<f32>(xY.second))
         {}
 
-        // Add another vector to this one
+        /// @brief Add two vectors together
+        /// @param other The other vector to add to this vector
+        /// @returns Vec2D&
+        /// - reference to this vector after adding the other vector
         Vec2D&
         operator+=(const Vec2D& other)
         {
@@ -77,7 +101,6 @@ namespace Mlib::Sdl2 {
             return *this;
         }
 
-        // Multiply this vector by a scalar
         Vec2D&
         operator*=(f32 scalar)
         {
@@ -112,51 +135,78 @@ namespace Mlib::Sdl2 {
         }
     };
 
-    /**
-        @struct ObjectData
-        @brief This struct holds the data of the object Data For 2D.
-        */
+    /// @struct ObjectData
+    /// @brief This struct holds the data of Object2D.
     typedef struct ObjectData2D
     {
-        Vec2D position; // position,  Coordinate Of The Object
-        s32   w;
-        s32   h;
-        f32   speed;
+        /// @brief Position of the object (x, y) in the 2D plane
+        /// @note The position is a vector of floats
+        Vec2D position;
 
-        /**
-            @brief The state of the engine (running, paused, etc.) Using Only Bitwise Operations
-            @note if (state & (1 << 0)) != 0, then the engine is running
-            */
+        s32 w;
+        s32 h;
+        f32 speed;
+
+        /// @brief State of the object
+        /// @note This is a bit field
         u32 state;
     } ObjectData2D;
 
-    /**
-        @struct Object
-        @brief This struct holds the object.
-        */
+    /// @struct Object2D
+    /// @brief This struct represents a 2D object.
     typedef struct Object2D
     {
+        /// @brief The data of the object.
+        /// - Holds all data about the object
         ObjectData2D data;
 
-        auto init(const ObjectData2D& data) -> void;
-        auto move(s32 Direction, f32 speed_override = 0.0) -> void;
-        auto move(Vec2D vel) -> void;
-        auto draw(SDL_Renderer* renderer) const -> void;
-        auto isStatic() const -> bool;
-        auto rect() const -> SDL_Rect;
-        auto frect() const -> SDL_FRect;
-        auto state() const -> u32;
+        /// @brief Initialize the object with the given data.
+        /// @param data The data to initialize the object with.
+        /// @note This function is rarely used.
+        void init(const ObjectData2D& data);
+
+        /// @brief Move Object By The Given Velocity Vector
+        /// @param vel The velocity vector to move the object by.
+        /// @returns void
+        void move(Vec2D vel);
+
+        /// @brief Draw the object on the screen.
+        /// @param renderer The renderer to draw the object on.
+        /// @returns void
+        void draw(SDL_Renderer* renderer) const;
+
+        /// @brief Check if the object is static.
+        /// @returns bool
+        /// - true  (object is static).
+        /// - false (object is not static).
+        bool isStatic() const;
+
+        /// @brief Get the rect of the object.
+        /// @returns SDL_Rect (x, y, w, h) (integer)
+        SDL_Rect rect() const;
+
+        /// @brief Get the frect of the object.
+        /// @returns SDL_FRect (x, y, w, h) (float)
+        SDL_FRect frect() const;
+
+        /// @brief Get the state of the object.
+        /// @returns u32 (state of the object as a bit field)
+        u32 state() const;
     } Object2D;
 
-    /**
-        @brief This map holds the keys and vector of functions.
-        */
-    typedef unordered_map<u8, vector<function<void()>>> KeyMap;
+    using KeyMap = unordered_map<u8, vector<function<void()>>>;
 
-    /**
-        @struct KeyObject
-        @brief This struct holds the keymap.
-        */
+    /// @class KeyObject
+    /// @brief This Class Represents The Keyboard Object
+    /// - This Class Is Used To Handle Keyboard Events
+    /// - It Is The Interface Between The Keyboard And
+    /// - The Engine
+    /// @note This Class Is A Singleton Class,
+    /// - And Can Only Be Accessed Through The 'Instance'
+    /// - Function
+    /// - This Class Is Used To Add Actions For Keys
+    /// - It Runs Every Frame And Executes All Lambda
+    /// - Functions Added Using The 'addActionForKey' Function
     class KeyObject
     {
     private:
@@ -226,11 +276,12 @@ namespace Mlib::Sdl2 {
         }
     };
 
-    /**
-       @class @b 'Core'
-       @return @c
-       @brief Base class To Control The Engine
-       */
+    /// @class Core
+    /// @brief Core Class Of The Engine.
+    /// @note This Is The Main Class Of The Engine.
+    /// - It Handles The Creation Of Objects.
+    /// - This Class Is A Singleton Class And Can
+    /// - Only Be Accessed Through The 'Inst' Function.
     class Core
     {
     private:
@@ -250,36 +301,46 @@ namespace Mlib::Sdl2 {
         static Core*     CoreInstance;
 
     public:
-        auto run() -> int;
-        auto createObject(const Object2D& object) -> void;
-        static Core*
-        Inst(const string& window_title, const int& window_width, const int& window_height)
-        {
-            if (CoreInstance == nullptr)
-            {
-                lock_guard<mutex> lock(mutex);
-                if (CoreInstance == nullptr)
-                {
-                    CoreInstance = new Core {window_title, window_width, window_height};
-                }
-            }
-            return CoreInstance;
-        }
-        void shutdown();
-        auto cleanup() -> void;
-        auto applyPhysics() -> void;
-        auto logic() -> void;
-        auto clear() -> void;
-        auto draw() -> void;
-        auto update() -> void;
-        auto pollForEvents() -> void;
-        auto initSDL() -> int;
-        auto createWindow() -> int;
-        auto createRenderer() -> int;
-        auto setupKeys() -> void;
-        auto stop() -> void;
-        auto getObjects() -> vector<Object2D>&;
+        /// @brief Main Loop Of The Engine
+        /// @returns int
+        /// - 0 (success)
+        /// - 1 (failure)
+        int run();
 
-        Core(const string& window_title, const int& window_width, const int& window_height);
+        /// @brief Create An Object
+        /// @param object The object to create
+        /// @returns void
+        void createObject(const Object2D& object);
+
+        /// @brief Return The Instance Of The Core Class
+        /// - If The Instance Does Not Exist,
+        /// - It Creates One
+        /// - This Function Is The Only Way To Get
+        /// - The Instance Of The Core Class
+        /// @param window_title The title of the window
+        /// @param window_width The width of the window
+        /// @param window_height The height of the window
+        /// @returns Core*
+        static Core* Instance(const string& window_title, int window_width, int window_height);
+
+        /// @brief Cleanup used to clean up on exit
+        /// @returns void
+        void cleanup();
+
+        void applyPhysics();
+        void logic();
+        void clear();
+        void draw();
+        void update();
+        void pollForEvents();
+        int  initSDL();
+        int  createWindow();
+        int  createRenderer();
+        void setupKeys();
+        void stop();
+
+        vector<Object2D>& getObjects();
+
+        Core(const string& window_title, int window_width, int window_height);
     };
 } // namespace Mlib::Sdl2

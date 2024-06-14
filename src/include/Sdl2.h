@@ -156,41 +156,61 @@ namespace Mlib::Sdl2 {
     /// @brief This struct represents a 2D object.
     typedef struct Object2D
     {
+        /// @name data
         /// @brief The data of the object.
         /// - Holds all data about the object
         ObjectData2D data;
 
+        /// @name init
         /// @brief Initialize the object with the given data.
         /// @param data The data to initialize the object with.
         /// @note This function is rarely used.
         void init(const ObjectData2D& data);
 
+        /// @name move
         /// @brief Move Object By The Given Velocity Vector
         /// @param vel The velocity vector to move the object by.
         /// @returns void
         void move(Vec2D vel);
 
+        /// @name draw
         /// @brief Draw the object on the screen.
         /// @param renderer The renderer to draw the object on.
         /// @returns void
         void draw(SDL_Renderer* renderer) const;
 
+        /// @name isStatic
         /// @brief Check if the object is static.
         /// @returns bool
         /// - true  (object is static).
         /// - false (object is not static).
         bool isStatic() const;
 
+        /// @name isColiding
+        /// @brief Check if the object is colliding.
+        /// - with the given object.
+        /// @returns bool
+        /// - true  (object is on the ground).
+        /// - false (object is not on the ground).
+        bool isColiding(const Object2D& object) const;
+
+        /// @name rect
         /// @brief Get the rect of the object.
         /// @returns SDL_Rect (x, y, w, h) (integer)
         SDL_Rect rect() const;
 
+        /// @name frect
         /// @brief Get the frect of the object.
         /// @returns SDL_FRect (x, y, w, h) (float)
         SDL_FRect frect() const;
 
+        /// @name state
         /// @brief Get the state of the object.
         /// @returns u32 (state of the object as a bit field)
+        /// @note
+        /// - This func is marked as const because it
+        /// - does not modify the object and is only
+        /// - a trivial accessor for the state.
         u32 state() const;
     } Object2D;
 
@@ -214,14 +234,11 @@ namespace Mlib::Sdl2 {
         static KeyObject* KeyObjectInstance;
 
     public:
-        /**
-            @b Function: @c 'Instance'
-            @return @c KeyObject*
-            @brief:
-                @note This function returns the instance of the KeyObject.
-                @note If the instance Does Not Yet Exist, It Creates One.
-                @note This Function Is The Only Way To Get The Instance Of The KeyObject.
-            */
+        /// @brief Instance
+        /// - This function returns the instance of the KeyObject.
+        /// - If the instance Does Not Yet Exist, It Creates One.
+        /// - This Function Is The Only Way To Get The Instance Of The KeyObject.
+        /// @returns KeyObject*
         static KeyObject*
         Instance()
         {
@@ -232,13 +249,10 @@ namespace Mlib::Sdl2 {
             return KeyObjectInstance;
         }
 
-        /**
-            @b Function: @c 'addActionForKey'
-                @return void
-                @brief:
-                    @note This function adds an action for a key.
-                    @note The function is called when the key is pressed.
-            */
+        /// @brief addActionForKey
+        /// @return void
+        /// @note This function adds an action for a key,
+        /// - using perfect forwarding.
         template <typename F, typename... Args>
         void
         addActionForKey(u8 key, F&& func, Args&&... args)
@@ -287,18 +301,20 @@ namespace Mlib::Sdl2 {
     private:
         string window_title;
         u32    frames;
-        /**
-            @brief The state of the engine (running, paused, etc.) Using Only Bitwise Operations
-            @note if (state & (1 << 0)) != 0, then the engine is running
-            */
-        u32              state;
+
+        /// @brief The state of the engine (running, paused, etc.) Using Only Bitwise Operations
+        /// @note if (state & (1 << 0)) != 0, then the engine is running
+        u32 state;
+
         SDL_Window*      window   = nullptr;
         SDL_Renderer*    renderer = nullptr;
         SDL_Event        event;
-        auto             init() -> int;
         vector<Object2D> objects;
         bool             running = true;
         static Core*     CoreInstance;
+        function<void()> mainLoop = nullptr;
+
+        auto init() -> int;
 
     public:
         /// @brief Main Loop Of The Engine
@@ -326,6 +342,13 @@ namespace Mlib::Sdl2 {
         /// @brief Cleanup used to clean up on exit
         /// @returns void
         void cleanup();
+
+        template <typename CallBack>
+        void
+        setMainLoop(CallBack&& callBack)
+        {
+            mainLoop = std::forward<CallBack>(callBack);
+        }
 
         void applyPhysics();
         void logic();

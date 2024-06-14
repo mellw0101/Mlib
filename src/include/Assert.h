@@ -1,8 +1,7 @@
-#pragma once
-
 /// @file Assert.h
 /// @brief Contains the definition of the Assert class.
 /// @note This file is included in the Assert.cpp file.
+#pragma once
 
 #include <iostream>
 #include <stdexcept>
@@ -10,7 +9,7 @@
 
 #include "def.h"
 
-#define ASSERT_STATEMENT(x) x ? void(0) : throw std::runtime_error("Assertion failed: " #x)
+#define ASSERT_STATEMENT(x) x ? void(0) : throw std::invalid_argument("Assertion failed: " #x)
 
 namespace Mlib::Assert {
     /// @brief Asserts that the given condition is true.

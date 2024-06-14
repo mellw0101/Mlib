@@ -1,7 +1,9 @@
 #include "../include/Args.h"
+#include <vector>
 
 namespace Mlib::Args {
-    auto argvToStrVec(int argc, char** argv) -> vector<string>
+    vector<string>
+    argvToStrVec(int argc, char** argv)
     {
         vector<string> args;
         for (int i = 0; i < argc; ++i)
@@ -11,7 +13,8 @@ namespace Mlib::Args {
         return args;
     }
 
-    auto argvToCmd(int argc, char** argv) -> string
+    string
+    argvToCmd(int argc, char** argv)
     {
         string cmd;
         for (int i = 0; i < argc; ++i)
@@ -25,7 +28,8 @@ namespace Mlib::Args {
         return cmd;
     }
 
-    auto flagValue(const string& flag, int argC, char** argV) -> string
+    string
+    flagValue(const string& flag, int argC, char** argV)
     {
         for (int i = 0; i < argC; ++i)
         {
@@ -44,7 +48,8 @@ namespace Mlib::Args {
         throw runtime_error("Flag '" + flag + "' not found.");
     }
 
-    auto flagExists(const string& flag, int argC, char** argV) -> bool
+    bool
+    flagExists(const string& flag, int argC, char** argV)
     {
         for (int i = 0; i < argC; ++i)
         {
@@ -56,7 +61,8 @@ namespace Mlib::Args {
         return false;
     }
 
-    auto flagValuesToStrVec(vector<string>& flagVec, int argC, char** argV) -> vector<string>
+    vector<string>
+    flagValuesToStrVec(vector<string>& flagVec, int argC, char** argV)
     {
         for (int i = 0; i < argC; ++i)
         {
@@ -78,7 +84,8 @@ namespace Mlib::Args {
         return flagVec;
     }
 
-    auto strVecFromStr(const string& str, char delim) -> vector<string>
+    vector<string>
+    strVecFromStr(const string& str, char delim)
     {
         vector<string> args;
         for (size_t i = 0, start = 0; i < str.size(); ++i)
@@ -96,5 +103,20 @@ namespace Mlib::Args {
             }
         }
         return args;
+    }
+
+    string
+    strFromStrVec(const vector<string>& strVec)
+    {
+        string str;
+        for (size_t i = 0; i < strVec.size(); ++i)
+        {
+            str += strVec[i] + " ";
+        }
+        if (!str.empty())
+        {
+            str.pop_back();
+        }
+        return str;
     }
 } // namespace Mlib::Args

@@ -19,9 +19,16 @@
 #include "def.h"
 
 namespace Mlib::FileSys {
-    auto dirContentToStrVec(const string& path) -> vector<string>;
     auto fileContentToStr(const string& filename) -> string;
     auto fileContentToFile(const string& sourcePath, const string& destinationPath) -> void;
+
+    /// @name dirContentToStrVec
+    /// @brief Retrieve the content of a directory as a vector of strings.
+    /// @param path The path to the directory.
+    /// @returns vector<string>
+    /// - The content of the directory as a vector of strings.
+    vector<string> dirContentToStrVec(const string& path);
+
     auto currentWorkingDir() -> string;
     void mkdir(const string& path);
     auto rmdir(const string& path) -> void;

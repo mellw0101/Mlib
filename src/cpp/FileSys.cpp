@@ -1,5 +1,6 @@
 #include "../include/FileSys.h"
 #include <cstddef>
+#include <filesystem>
 #include <vector>
 
 namespace fs = std::filesystem;

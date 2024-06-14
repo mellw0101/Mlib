@@ -29,10 +29,8 @@ namespace Mlib::Sdl2 {
     {
         vel.x = (data.position.x + data.w + vel.x >= SCREEN_WIDTH) ? SCREEN_WIDTH - data.position.x - data.w : vel.x;
         vel.y = (data.position.y + data.h + vel.y >= SCREEN_HEIGHT) ? SCREEN_HEIGHT - data.position.y - data.h : vel.y;
-
         vel.x = (data.position.x + vel.x <= 0) ? -data.position.x : vel.x;
         vel.y = (data.position.y + vel.y <= 0) ? -data.position.y : vel.y;
-
         data.position += vel;
     }
 
@@ -47,7 +45,7 @@ namespace Mlib::Sdl2 {
     bool
     Object2D::isStatic() const
     {
-        return (data.state & (State::STATIC));
+        return data.state & State::STATIC;
     }
 
     SDL_Rect
@@ -214,7 +212,11 @@ namespace Mlib::Sdl2 {
         {
             frames++;
             pollForEvents();
-            applyPhysics();
+            // applyPhysics();
+            if (mainLoop)
+            {
+                mainLoop();
+            }
             logic();
             clear();
             draw();
@@ -327,10 +329,7 @@ namespace Mlib::Sdl2 {
         if (CoreInstance == nullptr)
         {
             lock_guard<mutex> lock(mutex);
-            if (CoreInstance == nullptr)
-            {
-                CoreInstance = new Core {window_title, window_width, window_height};
-            }
+            CoreInstance = new Core {window_title, window_width, window_height};
         }
         return CoreInstance;
     }

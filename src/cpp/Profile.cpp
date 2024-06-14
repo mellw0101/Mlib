@@ -16,25 +16,12 @@ namespace Mlib::Profile {
     /// - max() const
     /// - count() const
 
-    /// @name record
-    /// @brief
-    /// - Records the value of the duration
-    /// - of the profiled function.
-    /// @param value
-    /// - The duration of the profiled function.
-    /// @returns void
     void
-    ProfilerStats::record(double value)
+    ProfilerStats::record(f64 const value)
     {
         values.push_back(value);
     }
 
-    /// @name mean
-    /// @brief
-    /// - Calculates the mean of the recorded
-    /// - values.
-    /// @returns double
-    /// - The mean of the recorded values.
     double
     ProfilerStats::mean() const
     {
@@ -53,22 +40,22 @@ namespace Mlib::Profile {
         {
             return 0.0;
         }
-        double mean_val = mean();
-        double sq_sum   = std::accumulate(values.begin(), values.end(), 0.0,
-                                          [mean_val](double a, double b)
-                                          {
-                                            return a + (b - mean_val) * (b - mean_val);
-                                        });
+        f64 mean_val = mean();
+        f64 sq_sum   = std::accumulate(values.begin(), values.end(), 0.0,
+                                       [mean_val](f64 a, f64 b)
+                                       {
+                                         return a + (b - mean_val) * (b - mean_val);
+                                     });
         return std::sqrt(sq_sum / values.size());
     }
 
-    double
+    f64
     ProfilerStats::min() const
     {
         return values.empty() ? 0.0 : *std::min_element(values.begin(), values.end());
     }
 
-    double
+    f64
     ProfilerStats::max() const
     {
         return values.empty() ? 0.0 : *std::max_element(values.begin(), values.end());
@@ -85,7 +72,7 @@ namespace Mlib::Profile {
     GlobalProfiler* GlobalProfiler::instance = nullptr;
 
     void
-    GlobalProfiler::record(const string& name, double duration)
+    GlobalProfiler::record(string const& name, f64 const duration)
     {
         stats[name].record(duration);
     }
@@ -133,7 +120,7 @@ namespace Mlib::Profile {
     }
 
     void
-    GlobalProfiler::report(const string& filename)
+    GlobalProfiler::report(string const& filename)
     {
         ofstream file(filename, ios::app);
         file << "\n\nProfiling report: " << mili() << '\n';

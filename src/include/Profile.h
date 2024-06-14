@@ -16,7 +16,7 @@
 #include "def.h"
 
 namespace Mlib::Profile {
-    /// @class ProfilerStats
+    /// @class @c ProfilerStats
     /// @brief
     /// - This class is used to store the profiling
     /// - statistics of a particular function.
@@ -24,18 +24,60 @@ namespace Mlib::Profile {
     /// - by the function in each call.
     /// - It also provides the mean, standard deviation,
     /// - minimum, maximum and count of the values.
+    /// @ingroup @c Mlib::Profiling
     class ProfilerStats
     {
     public:
-        void   record(double value);
-        double mean() const;
-        double stddev() const;
-        double min() const;
-        double max() const;
+        /// @name @c record
+        /// @brief
+        /// - Records the value of the duration
+        /// - of the profiled function.
+        /// @param value
+        /// - The duration of the profiled function.
+        /// @returns void
+        void record(f64 value);
+
+        /// @name @c mean
+        /// @brief
+        /// - Calculates the mean of the recorded
+        /// - values.
+        /// @returns ( double )
+        f64 mean() const;
+
+        /// @name @c stddev
+        /// @brief
+        /// - Calculates the standard deviation of
+        /// - the recorded values.
+        /// @returns ( double )
+        f64 stddev() const;
+
+        /// @name @c min
+        /// @brief
+        /// - Returns the minimum of the recorded
+        /// - values.
+        /// @returns ( double )
+        f64 min() const;
+
+        /// @name @c max
+        /// @brief
+        /// - Returns the maximum of the recorded
+        /// - values.
+        /// @returns ( double )
+        f64 max() const;
+
+        /// @name @c count
+        /// @brief
+        /// - Returns the number of values recorded.
+        /// @returns ( size_t )
         size_t count() const;
 
     private:
-        vector<double> values;
+        /// @name @c values
+        /// TYPE: @b vector<f64>
+        /// @brief
+        /// - The vector of values of the duration
+        /// - of the profiled function.
+        vector<f64> values;
     };
 
     class GlobalProfiler

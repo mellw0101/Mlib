@@ -4,8 +4,8 @@
 #include "../include/Sdl2.h"
 
 namespace Mlib::Sdl2 {
-    extern int SCREEN_WIDTH;
-    extern int SCREEN_HEIGHT;
+    inline int SCREEN_WIDTH;
+    inline int SCREEN_HEIGHT;
 
     KeyObject* KeyObject::KeyObjectInstance = nullptr;
     Core*      Core::CoreInstance           = nullptr;
@@ -345,6 +345,13 @@ namespace Mlib::Sdl2 {
         return &frames;
     }
 
+    void
+    Core::setTitle(string const& title)
+    {
+        window_title = title;
+        SDL_SetWindowTitle(window, window_title.c_str());
+    }
+
     vector<Object2D*>&
     Core::getObjects()
     {
@@ -352,20 +359,13 @@ namespace Mlib::Sdl2 {
     }
 
     Core*
-    Core::Instance(string const& window_title, int const window_width, int const window_height)
+    Core::Instance()
     {
         if (CoreInstance == nullptr)
         {
             lock_guard<mutex> lock(mutex);
-            CoreInstance = new Core {window_title, window_width, window_height};
+            CoreInstance = new Core {};
         }
         return CoreInstance;
-    }
-
-    Core::Core(string const& window_title, int const window_width, int const window_height)
-        : window_title(window_title)
-    {
-        SCREEN_WIDTH  = window_width;
-        SCREEN_HEIGHT = window_height;
     }
 } // namespace Mlib::Sdl2

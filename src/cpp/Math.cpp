@@ -17,4 +17,10 @@ namespace Mlib::Math {
         ASSERT_STATEMENT(a < b);
         return x > b ? false : x < a ? false : true;
     }
+
+    f64
+    calculateBounceVelocity(f64 initialVelocity, f64 restitutionCoefficient)
+    {
+        return -initialVelocity * restitutionCoefficient;
+    }
 } // namespace Mlib::Math

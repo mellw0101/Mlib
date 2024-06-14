@@ -12,6 +12,9 @@
 #include "def.h"
 
 namespace Mlib::Sdl2 {
+    extern int SCREEN_WIDTH;
+    extern int SCREEN_HEIGHT;
+
     /// @class State
     /// @brief This class represents the state of an object.
     /// - The state is a bit field.
@@ -314,16 +317,17 @@ namespace Mlib::Sdl2 {
     class Core
     {
     private:
+        string       window_title;
+        static Core* CoreInstance;
+
         SDL_Window*       window   = nullptr;
         SDL_Renderer*     renderer = nullptr;
         function<void()>  mainLoop = nullptr;
         bool              running  = true;
-        string            window_title;
         u32               frames;
         u32               state;
         SDL_Event         event;
         vector<Object2D*> objects;
-        static Core*      CoreInstance;
 
         auto init() -> int;
 
@@ -348,7 +352,7 @@ namespace Mlib::Sdl2 {
         /// @param window_width The width of the window
         /// @param window_height The height of the window
         /// @returns Core*
-        static Core* Instance(const string& window_title, int window_width, int window_height);
+        static Core* Instance();
 
         /// @brief Cleanup used to clean up on exit
         /// @returns void
@@ -374,8 +378,9 @@ namespace Mlib::Sdl2 {
         void stop();
         u32  getCurrentFrameCount() const noexcept;
         u32* getCurrentFrameCountPtr() noexcept;
+        void setTitle(const string& title);
 
         vector<Object2D*>& getObjects();
-        Core(string const& window_title, int window_width, int window_height);
+        Core() = default;
     };
 } // namespace Mlib::Sdl2

@@ -31,4 +31,11 @@ namespace Mlib::Math {
     /// @throws std::invalid_argument
     /// - If ( a ) is greater than ( b ).
     bool between(f64 a, f64 b, f64 x);
+
+    /// @name calculateBounceVelocity
+    /// @brief Calculates the velocity of a bouncing object.
+    /// @param initialVelocity  The initial velocity of the object.
+    /// @param restitutionCoefficient  The coefficient of restitution of the object.
+    /// @returns ( f64 ) The velocity of the object after the bounce.
+    f64 calculateBounceVelocity(f64 initialVelocity, f64 restitutionCoefficient);
 } // namespace Mlib::Math

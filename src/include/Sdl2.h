@@ -234,7 +234,8 @@ namespace Mlib::Sdl2 {
         static KeyObject* KeyObjectInstance;
 
     public:
-        /// @brief Instance
+        /// @name Instance
+        /// @brief
         /// - This function returns the instance of the KeyObject.
         /// - If the instance Does Not Yet Exist, It Creates One.
         /// - This Function Is The Only Way To Get The Instance Of The KeyObject.

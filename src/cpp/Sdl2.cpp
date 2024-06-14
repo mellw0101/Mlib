@@ -67,8 +67,7 @@ namespace Mlib::Sdl2 {
         return data.state;
     }
 
-    /// @class Core
-    /// - Functions:
+    /// @class Core Functions:
     /// - @c Core::createObject
     /// - @c Core::init
     /// - @c Core::initSDL

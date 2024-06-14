@@ -59,6 +59,20 @@ namespace Mlib::FileSys {
         return files;
     }
 
+    void
+    strVecToFile(string const& path, vector<string> const& lines)
+    {
+        ofstream file(path);
+        if (!file.is_open())
+        {
+            throw runtime_error("Failed to open file: " + path);
+        }
+        for (const string& line : lines)
+        {
+            file << line << '\n';
+        }
+    }
+
     string
     currentWorkingDir()
     {

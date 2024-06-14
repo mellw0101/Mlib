@@ -11,13 +11,7 @@ namespace Mlib::Sdl2 {
     Core*      Core::CoreInstance           = nullptr;
 
     /// @struct @c Object2D Function Definitions
-    /// - @c Object2D::init
-    /// - @c Object2D::move
-    /// - @c Object2D::draw
-    /// - @c Object2D::isStatic
-    /// - @c Object2D::rect
-    /// - @c Object2D::frect
-    /// - @c Object2D::state
+
     void
     Object2D::init(ObjectData2D const& data)
     {

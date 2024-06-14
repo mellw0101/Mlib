@@ -18,6 +18,7 @@ namespace Mlib::Math {
         return x > b ? false : x < a ? false : true;
     }
 
+
     f64
     calculateBounceVelocity(f64 initialVelocity, f64 restitutionCoefficient)
     {

@@ -15,18 +15,6 @@ namespace Mlib::Sdl2 {
     extern int SCREEN_WIDTH;
     extern int SCREEN_HEIGHT;
 
-    class Direction
-    {
-    public:
-        enum
-        {
-            UP    = 1 << 0,
-            DOWN  = 1 << 1,
-            LEFT  = 1 << 2,
-            RIGHT = 1 << 3,
-        };
-    };
-
     /// @class State
     /// @brief This class represents the state of an object.
     /// - The state is a bit field.
@@ -42,55 +30,38 @@ namespace Mlib::Sdl2 {
     };
 
     /// @class Vec2D
-    /// @brief This class represents a 2D vector ( x ( float ), y ( float ) ).
+    /// @brief
+    /// - This class represents a 2D vector ( x ( float ), y ( float ) ).
     class Vec2D
     {
     public:
-        f32 x, y;
+        f64 x, y;
 
-        /// @brief Default Constructor
-        /// @note Initializes the vector to ( 0, 0 )
+        /// @name Default Constructor
+        /// @brief
+        /// - Initializes the vector to ( 0, 0 )
         Vec2D()
             : x(0)
             , y(0)
         {}
 
-        /// @brief Constructor
-        /// @param x ( float ) The x component of the vector
-        /// @param y ( float ) The y component of the vector
-        /// @note Initializes the vector to ( x, y )
-        Vec2D(f32 x, f32 y)
+        /// @name Constructor
+        /// @brief
+        /// - Initializes the vector to ( x, y )
+        /// @param x ( float )
+        /// - The x component of the vector
+        /// @param y ( float )
+        /// - The y component of the vector
+        Vec2D(f64 x, f64 y)
             : x(x)
             , y(y)
         {}
 
-        /// @brief Constructor
-        /// @param x The x component of the vector (integer)
-        /// @param y The y component of the vector (integer)
-        /// @note Initializes the vector to (x, y)
-        Vec2D(s32 x, s32 y)
-            : x(static_cast<f32>(x))
-            , y(static_cast<f32>(y))
-        {}
-
-        /// @brief Constructor
-        /// @param xY is a pair<float, float> (x, y)
-        /// @note Initializes the vector to (x, y)
-        Vec2D(pair<f32, f32> xY)
-            : x(xY.first)
-            , y(xY.second)
-        {}
-
-        /// @brief Constructor
-        /// @param xY is a pair<int, int> (x, y)
-        /// @note Initializes the vector to (x, y)
-        Vec2D(pair<s32, s32> xY)
-            : x(static_cast<f32>(xY.first))
-            , y(static_cast<f32>(xY.second))
-        {}
-
-        /// @brief Add two vectors together
-        /// @param other The other vector to add to this vector
+        /// @name operator+=
+        /// @brief
+        /// - Add two vectors together
+        /// @param other ( Vec2D const& )
+        /// - The other vector to add to this vector
         /// @returns Vec2D&
         /// - reference to this vector after adding the other vector
         Vec2D&
@@ -102,50 +73,64 @@ namespace Mlib::Sdl2 {
         }
 
         Vec2D&
-        operator*=(f32 scalar)
+        operator-=(const Vec2D& other)
         {
-            x *= scalar;
-            y *= scalar;
+            x -= other.x;
+            y -= other.y;
             return *this;
         }
 
-        SDL_FPoint
-        toSDL_FPoint() const
+        Vec2D
+        operator*(f64 const scalar) const
         {
-            return {x, y};
+            return Vec2D(x * scalar, y * scalar);
         }
 
-        // Retrieve the integer x component
-        s32
-        getXInt() const
+        f64
+        length() const
         {
-            return static_cast<s32>(x);
+            return sqrt(x * x + y * y);
         }
 
-        // Retrieve the integer y component
-        s32
-        getYInt() const
+        Vec2D
+        normalized() const
         {
-            return static_cast<s32>(y);
+            f64 len = length();
+            return Vec2D(x / len, y / len);
         }
 
-        operator pair<f32, f32>() const
+        f64
+        dot(const Vec2D& other) const
         {
-            return {x, y};
+            return x * other.x + y * other.y;
         }
     };
+
+    f64 const FPS          = 120.0f;
+    f64 const timePerFrame = 1.0f / FPS;
+    /// @name acceleration
+    /// @brief
+    /// - This is the gravity acceleration vector.
+    static Vec2D const acceleration(0.0f, 9.8f);
+    static Vec2D const velocityChange = acceleration * timePerFrame;
 
     /// @struct ObjectData
     /// @brief This struct holds the data of Object2D.
     typedef struct ObjectData2D
     {
-        /// @brief Position of the object (x, y) in the 2D plane
-        /// @note The position is a vector of floats
+        /// @name position
+        /// @brief
+        /// - Position of the object ( x (float), y (float)) in the 2D plane
         Vec2D position;
+
+        /// @name velocity
+        /// @brief
+        /// - Velocity of the object ( x (float), y (float)) in the 2D plane
+        Vec2D velocity;
 
         s32 w;
         s32 h;
-        f32 speed;
+        f64 speed;
 
         /// @brief State of the object
         /// @note This is a bit field
@@ -162,25 +147,34 @@ namespace Mlib::Sdl2 {
         ObjectData2D data;
 
         /// @name init
-        /// @brief Initialize the object with the given data.
-        /// @param data The data to initialize the object with.
-        /// @note This function is rarely used.
+        /// @brief
+        /// - Initialize the object with the given data.
+        /// @param data
+        /// - The data to initialize the object with.
+        /// @note
+        /// - This function is rarely used.
+        /// @returns void
         void init(const ObjectData2D& data);
 
         /// @name move
-        /// @brief Move Object By The Given Velocity Vector
-        /// @param vel The velocity vector to move the object by.
+        /// @brief
+        /// - Move Object By The Given Velocity Vector
+        /// @param vel
+        /// - The velocity vector to move the object by.
         /// @returns void
         void move(Vec2D vel);
 
         /// @name draw
-        /// @brief Draw the object on the screen.
-        /// @param renderer The renderer to draw the object on.
+        /// @brief
+        /// - Draw the object on the screen.
+        /// @param renderer
+        /// - The renderer to draw the object on.
         /// @returns void
         void draw(SDL_Renderer* renderer) const;
 
         /// @name isStatic
-        /// @brief Check if the object is static.
+        /// @brief
+        /// - Check if the object is static.
         /// @returns bool
         /// - true  (object is static).
         /// - false (object is not static).
@@ -212,6 +206,22 @@ namespace Mlib::Sdl2 {
         /// - does not modify the object and is only
         /// - a trivial accessor for the state.
         u32 state() const;
+
+        /// @name updateVelocity
+        /// @brief
+        /// - Update the velocity of the object.
+        /// @returns void
+        void updateVelocity();
+
+        /// @name onStaticObj
+        /// @brief
+        /// - Handle the object when it is on a static object.
+        /// @param obj
+        /// - The object to handle.
+        /// @param velVecToApply
+        /// - The velocity vector to apply.
+        /// @returns void
+        void onStaticObjCollision(Object2D const& obj, Vec2D velVecToApply);
     } Object2D;
 
     using KeyMap = unordered_map<u8, vector<function<void()>>>;
@@ -266,14 +276,14 @@ namespace Mlib::Sdl2 {
                 });
         }
 
-        /**
-            @b Function: @c 'handleKeyEvent'
-                @return void
-                @brief:
-                    @note This function handles the key event.
-                    @note Only Called From Func 'run' In 'Engine::Base' Class
-                    @note This Function Is Called Every Frame
-            */
+        /// @name handleKeyEvent
+        /// @brief
+        /// - This function handles the key events.
+        /// - Only called from function 'run' in 'Mlib::Sdl2::Core' class.
+        /// - This function is called every frame.
+        /// @note
+        /// - This function runs all lambdas for each key that is pressed.
+        /// @return void
         void
         handleKeyEvent()
         {
@@ -292,28 +302,25 @@ namespace Mlib::Sdl2 {
     };
 
     /// @class Core
-    /// @brief Core Class Of The Engine.
-    /// @note This Is The Main Class Of The Engine.
-    /// - It Handles The Creation Of Objects.
+    /// @brief
+    /// - This Is The Main Class Of The Engine.
+    /// - It Handles The Creation Of Objects
+    /// - as well as the main loop.
     /// - This Class Is A Singleton Class And Can
     /// - Only Be Accessed Through The 'Inst' Function.
     class Core
     {
     private:
-        string window_title;
-        u32    frames;
-
-        /// @brief The state of the engine (running, paused, etc.) Using Only Bitwise Operations
-        /// @note if (state & (1 << 0)) != 0, then the engine is running
-        u32 state;
-
-        SDL_Window*      window   = nullptr;
-        SDL_Renderer*    renderer = nullptr;
-        SDL_Event        event;
-        vector<Object2D> objects;
-        bool             running = true;
-        static Core*     CoreInstance;
-        function<void()> mainLoop = nullptr;
+        string            window_title;
+        u32               frames;
+        u32               state;
+        SDL_Window*       window   = nullptr;
+        SDL_Renderer*     renderer = nullptr;
+        SDL_Event         event;
+        vector<Object2D*> objects;
+        bool              running = true;
+        static Core*      CoreInstance;
+        function<void()>  mainLoop = nullptr;
 
         auto init() -> int;
 
@@ -363,7 +370,7 @@ namespace Mlib::Sdl2 {
         void setupKeys();
         void stop();
 
-        vector<Object2D>& getObjects();
+        vector<Object2D*>& getObjects();
 
         Core(const string& window_title, int window_width, int window_height);
     };

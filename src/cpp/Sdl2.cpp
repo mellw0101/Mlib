@@ -29,8 +29,9 @@ namespace Mlib::Sdl2 {
     {
         vel.x = (data.position.x + data.w + vel.x >= SCREEN_WIDTH) ? SCREEN_WIDTH - data.position.x - data.w : vel.x;
         vel.y = (data.position.y + data.h + vel.y >= SCREEN_HEIGHT) ? SCREEN_HEIGHT - data.position.y - data.h : vel.y;
-        vel.x = (data.position.x + vel.x <= 0) ? -data.position.x : vel.x;
-        vel.y = (data.position.y + vel.y <= 0) ? -data.position.y : vel.y;
+        vel.x = (data.position.x + vel.x < 0) ? -data.position.x : vel.x;
+        vel.y = (data.position.y + vel.y < 0) ? -data.position.y : vel.y;
+
         data.position += vel;
     }
 
@@ -51,20 +52,53 @@ namespace Mlib::Sdl2 {
     SDL_Rect
     Object2D::rect() const
     {
-        SDL_Rect rect = {data.position.getXInt(), data.position.getYInt(), data.w, data.h};
+        SDL_Rect rect = {static_cast<int>(data.position.x), static_cast<int>(data.position.y), data.w, data.h};
         return rect;
     }
 
     SDL_FRect
     Object2D::frect() const
     {
-        return {data.position.x, data.position.y, static_cast<f32>(data.w), static_cast<f32>(data.h)};
+        return {static_cast<f32>(data.position.x), static_cast<f32>(data.position.y), static_cast<f32>(data.w),
+                static_cast<f32>(data.h)};
     }
 
     u32
     Object2D::state() const
     {
         return data.state;
+    }
+
+    void
+    Object2D::updateVelocity()
+    {
+        // Calculate velocity change due to acceleration
+        Vec2D const velocityChange = acceleration * timePerFrame;
+
+        // Update velocity
+        data.velocity += velocityChange;
+
+        // Update position
+        data.position += data.velocity;
+    }
+
+    void
+    Object2D::onStaticObjCollision(Object2D const& obj, Vec2D velVecToApply)
+    {
+        f32 const X = data.position.x;
+        f32 const Y = data.position.y;
+        f32 const W = data.w;
+        f32 const H = data.h;
+
+        f32 const oX = obj.data.position.x;
+        f32 const oY = obj.data.position.y;
+        f32 const oW = obj.data.w;
+        f32 const oH = obj.data.h;
+
+        if (X <= oX + oW && X + W >= oX && Y <= oY + oH && Y + H >= oY)
+        {
+            move(velVecToApply);
+        }
     }
 
     /// @class Core Functions:
@@ -88,7 +122,8 @@ namespace Mlib::Sdl2 {
     void
     Core::createObject(const Object2D& object)
     {
-        objects.emplace_back(object);
+        Object2D* nObj = new Object2D {object};
+        objects.emplace_back(nObj);
     }
 
     int
@@ -147,7 +182,7 @@ namespace Mlib::Sdl2 {
             {
                 for (auto& object : objects)
                 {
-                    ((object.state() & State::STATIC) == false) ? object.move({0.0, -object.data.speed}) : void();
+                    ((object->state() & State::STATIC) == false) ? object->move({0.0, -object->data.speed}) : void();
                 }
             });
 
@@ -157,7 +192,7 @@ namespace Mlib::Sdl2 {
             {
                 for (auto& object : objects)
                 {
-                    ((object.state() & State::STATIC) == false) ? object.move({0.0, object.data.speed}) : void();
+                    ((object->state() & State::STATIC) == false) ? object->move({0.0, object->data.speed}) : void();
                 }
             });
         KeyObject::Instance()->addActionForKey(
@@ -166,7 +201,7 @@ namespace Mlib::Sdl2 {
             {
                 for (auto& object : objects)
                 {
-                    ((object.state() & State::STATIC) == false) ? object.move({-object.data.speed, 0.0}) : void();
+                    ((object->state() & State::STATIC) == false) ? object->move({-object->data.speed, 0.0}) : void();
                 }
             });
         KeyObject::Instance()->addActionForKey(
@@ -175,7 +210,7 @@ namespace Mlib::Sdl2 {
             {
                 for (auto& object : objects)
                 {
-                    !(object.state() & State::STATIC) ? object.move({object.data.speed, 0.0}) : void();
+                    !(object->state() & State::STATIC) ? object->move({object->data.speed, 0.0}) : void();
                 }
             });
         KeyObject::Instance()->addActionForKey(SDL_SCANCODE_ESCAPE,
@@ -189,15 +224,15 @@ namespace Mlib::Sdl2 {
                                                    for (auto& object : objects)
                                                    {
                                                        // If the object is static, skip
-                                                       if (object.state() & State::STATIC)
+                                                       if (object->state() & State::STATIC)
                                                        {
                                                            continue;
                                                        }
 
                                                        // If the object is a player, jump
-                                                       if (object.state() & State::IS_PLAYER)
+                                                       if (object->state() & State::IS_PLAYER)
                                                        {
-                                                           object.move({0, -10});
+                                                           object->move({0, -10});
                                                        }
                                                    }
                                                });
@@ -245,23 +280,23 @@ namespace Mlib::Sdl2 {
         for (auto& object : objects)
         {
             // Only apply gravity if the object is not static
-            if (object.state() & State::STATIC)
+            if (object->state() & State::STATIC)
             {
                 continue;
             }
             else
             {
                 // Apply Gravity
-                object.move({0.0f, 3.0f});
+                object->move({0.0f, 3.0f});
 
                 // Check if the object is on the ground
-                if (object.data.position.y + (f32)object.data.h == (f32)SCREEN_HEIGHT)
+                if (object->data.position.y + (f32)object->data.h == (f32)SCREEN_HEIGHT)
                 {
-                    object.data.state |= State::ON_GROUND;
+                    object->data.state |= State::ON_GROUND;
                 }
                 else
                 {
-                    object.data.state &= ~State::ON_GROUND;
+                    object->data.state &= ~State::ON_GROUND;
                 }
 
                 for (auto& other : objects)
@@ -287,7 +322,7 @@ namespace Mlib::Sdl2 {
     {
         for (auto const& object : objects)
         {
-            object.draw(renderer);
+            object->draw(renderer);
         }
     }
 
@@ -316,7 +351,7 @@ namespace Mlib::Sdl2 {
         running = false;
     }
 
-    vector<Object2D>&
+    vector<Object2D*>&
     Core::getObjects()
     {
         return objects;

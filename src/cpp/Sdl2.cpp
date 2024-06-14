@@ -64,8 +64,12 @@ namespace Mlib::Sdl2 {
     }
 
     u32
-    Object2D::state() const
+    Object2D::state(u32 stateToCheck) const noexcept
     {
+        if (stateToCheck)
+        {
+            return data.state & stateToCheck;
+        }
         return data.state;
     }
 
@@ -73,7 +77,7 @@ namespace Mlib::Sdl2 {
     Object2D::updateVelocity()
     {
         // Calculate velocity change due to acceleration
-        Vec2D const velocityChange = acceleration * timePerFrame;
+        Vec2D const velocityChange = GravityVec * timePerFrame;
 
         // Update velocity
         data.velocity += velocityChange;
@@ -81,6 +85,8 @@ namespace Mlib::Sdl2 {
         // Update position
         data.position += data.velocity;
     }
+
+    /// @class @c Core Function Definitions
 
     void
     Object2D::onStaticObjCollision(Object2D const& obj, Vec2D velVecToApply)
@@ -101,24 +107,6 @@ namespace Mlib::Sdl2 {
         }
     }
 
-    /// @class Core Functions:
-    /// - @c Core::createObject
-    /// - @c Core::init
-    /// - @c Core::initSDL
-    /// - @c Core::createWindow
-    /// - @c Core::createRenderer
-    /// - @c Core::setupKeys
-    /// - @c Core::run
-    /// - @c Core::cleanup
-    /// - @c Core::logic
-    /// - @c Core::applyPhysics
-    /// - @c Core::clear
-    /// - @c Core::draw
-    /// - @c Core::update
-    /// - @c Core::pollForEvents
-    /// - @c Core::stop
-    /// - @c Core::getObjects
-    /// - @c Core::Core
     void
     Core::createObject(const Object2D& object)
     {
@@ -351,6 +339,18 @@ namespace Mlib::Sdl2 {
         running = false;
     }
 
+    u32
+    Core::getCurrentFrameCount() const noexcept
+    {
+        return frames;
+    }
+
+    u32*
+    Core::getCurrentFrameCountPtr() noexcept
+    {
+        return &frames;
+    }
+
     vector<Object2D*>&
     Core::getObjects()
     {
@@ -368,7 +368,7 @@ namespace Mlib::Sdl2 {
         return CoreInstance;
     }
 
-    Core::Core(const string& window_title, int const window_width, int const window_height)
+    Core::Core(string const& window_title, int const window_width, int const window_height)
         : window_title(window_title)
     {
         SCREEN_WIDTH  = window_width;

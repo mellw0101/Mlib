@@ -3,7 +3,7 @@
 namespace std {}
 using namespace std;
 
-#pragma region 'ANSI escape codes'
+#pragma region 'Macros'
 
 #define ESC_CODE_RED "\033[31m"
 #define ESC_CODE_GREEN "\033[32m"
@@ -14,11 +14,15 @@ using namespace std;
 #define ESC_CODE_WHITE "\033[37m"
 #define ESC_CODE_RESET "\033[0m"
 
-#pragma endregion
-
-#pragma region 'Macros'
-
 #define FORCE_INLINE __attribute__((always_inline)) static __inline__
+
+#define DELETE_MOVE_CONSTRUCTORS(class_name)                                                                           \
+    class_name(class_name&&)            = delete;                                                                      \
+    class_name& operator=(class_name&&) = delete;
+
+#define DELETE_COPY_CONSTRUCTORS(class_name)                                                                           \
+    class_name(const class_name&)            = delete;                                                                 \
+    class_name& operator=(const class_name&) = delete;
 
 #pragma endregion
 

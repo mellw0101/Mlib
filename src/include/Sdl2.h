@@ -106,16 +106,20 @@ namespace Mlib::Sdl2 {
         }
     };
 
-    f64 const FPS          = 120.0f;
-    f64 const timePerFrame = 1.0f / FPS;
+    f64 static constexpr FPS          = 120.0;
+    f64 static constexpr timePerSec   = 1.0;
+    f64 static constexpr timePerFrame = timePerSec / FPS;
+    f64 static constexpr GRAVITY      = 9.8;
     /// @name acceleration
     /// @brief
     /// - This is the gravity acceleration vector.
-    static Vec2D const acceleration(0.0f, 9.8f);
-    static Vec2D const velocityChange = acceleration * timePerFrame;
+    static Vec2D const GravityVec     = Vec2D(0.0, GRAVITY);
+    static Vec2D const velocityChange = GravityVec * timePerFrame;
 
-    /// @struct ObjectData
-    /// @brief This struct holds the data of Object2D.
+    /// @name ObjectData
+    /// TYPE: @struct
+    /// @brief
+    /// - This struct holds the data of Object2D.
     typedef struct ObjectData2D
     {
         /// @name position
@@ -137,8 +141,10 @@ namespace Mlib::Sdl2 {
         u32 state;
     } ObjectData2D;
 
-    /// @struct Object2D
-    /// @brief This struct represents a 2D object.
+    /// @name Object2D
+    /// TYPE: @struct
+    /// @brief
+    /// - This struct represents a 2D object.
     typedef struct Object2D
     {
         /// @name data
@@ -205,7 +211,7 @@ namespace Mlib::Sdl2 {
         /// - This func is marked as const because it
         /// - does not modify the object and is only
         /// - a trivial accessor for the state.
-        u32 state() const;
+        u32 state(u32 stateToCheck = 0) const noexcept;
 
         /// @name updateVelocity
         /// @brief
@@ -369,9 +375,10 @@ namespace Mlib::Sdl2 {
         int  createRenderer();
         void setupKeys();
         void stop();
+        u32  getCurrentFrameCount() const noexcept;
+        u32* getCurrentFrameCountPtr() noexcept;
 
         vector<Object2D*>& getObjects();
-
-        Core(const string& window_title, int window_width, int window_height);
+        Core(string const& window_title, int window_width, int window_height);
     };
 } // namespace Mlib::Sdl2

@@ -27,14 +27,15 @@ namespace Mlib::FileSys {
     /// @param path The path to the directory.
     /// @returns vector<string>
     /// - The content of the directory as a vector of strings.
-    vector<string> dirContentToStrVec(const string& path);
+    vector<string> dirContentToStrVec(string const& path);
 
     /// @name strVecToFile
     /// @brief Write a vector of strings to a file.
     /// @param path The path to the file.
     /// @param content The vector of strings to write to the file.
     /// @returns void
-    void strVecToFile(const string& path, const vector<string>& content);
+    /// @throws ( runtime_error ) - If the file cannot be opened.
+    void strVecToFile(string const& path, vector<string> const& content);
 
     auto currentWorkingDir() -> string;
     void mkdir(const string& path);

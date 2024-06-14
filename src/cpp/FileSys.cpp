@@ -67,7 +67,7 @@ namespace Mlib::FileSys {
         {
             throw runtime_error("Failed to open file: " + path);
         }
-        for (const string& line : lines)
+        for (string const& line : lines)
         {
             file << line << '\n';
         }

@@ -4,8 +4,8 @@
 #include "../include/Sdl2.h"
 
 namespace Mlib::Sdl2 {
-    inline int SCREEN_WIDTH;
-    inline int SCREEN_HEIGHT;
+    extern int SCREEN_WIDTH;
+    extern int SCREEN_HEIGHT;
 
     KeyObject* KeyObject::KeyObjectInstance = nullptr;
     Core*      Core::CoreInstance           = nullptr;
@@ -352,7 +352,7 @@ namespace Mlib::Sdl2 {
     }
 
     Core*
-    Core::Instance(const string& window_title, int const window_width, int const window_height)
+    Core::Instance(string const& window_title, int const window_width, int const window_height)
     {
         if (CoreInstance == nullptr)
         {

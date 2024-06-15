@@ -3,8 +3,6 @@
 namespace std {}
 using namespace std;
 
-#pragma region 'Macros'
-
 #define ESC_CODE_RED "\033[31m"
 #define ESC_CODE_GREEN "\033[32m"
 #define ESC_CODE_YELLOW "\033[33m"
@@ -77,8 +75,15 @@ using namespace std;
 #define ESC_CODE_CURSOR_COLUMN_ALT "\033G"
 #define ESC_CODE_CURSOR_POSITION_ALT_ALT "\033H"
 
-
 #define FORCE_INLINE __attribute__((always_inline)) static __inline__
+
+/// @brief Bitwise operations for flags
+#define FLAGMASK(flag) ((unsigned)1 << ((flag) % (sizeof(unsigned) * 8)))
+#define SET(flag) FLAGS(flag) |= FLAGMASK(flag)
+#define UNSET(flag) FLAGS(flag) &= ~FLAGMASK(flag)
+#define ISSET(flag) ((FLAGS(flag) & FLAGMASK(flag)) != 0)
+#define TOGGLE(flag) FLAGS(flag) ^= FLAGMASK(flag)
+/// END:
 
 #define DELETE_MOVE_CONSTRUCTORS(class_name)                                                                           \
     class_name(class_name&&)            = delete;                                                                      \
@@ -87,8 +92,6 @@ using namespace std;
 #define DELETE_COPY_CONSTRUCTORS(class_name)                                                                           \
     class_name(const class_name&)            = delete;                                                                 \
     class_name& operator=(const class_name&) = delete;
-
-#pragma endregion
 
 using f64 = double;
 using f32 = float;

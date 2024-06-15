@@ -1,4 +1,10 @@
 {
     "editor.formatOnSave": true,
-    "editor.defaultFormatter": "xaver.clang-format"
+    "editor.defaultFormatter": "xaver.clang-format",
+    "editor.showFoldingControls": "always",
+    "editor.stickyScroll.defaultModel": "outlineModel",
+    "typescript.tsserver.useSyntaxServer": "always",
+    "workbench.editor.labelFormat": "medium",
+    "clang-format.executable": "/usr/bin/clang-format",
+    "editor.tabSize": 4,
 }

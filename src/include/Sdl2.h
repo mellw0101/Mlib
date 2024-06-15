@@ -106,10 +106,10 @@ namespace Mlib::Sdl2 {
         }
     };
 
-    f64 static constexpr FPS          = 120.0;
+    f64 static constexpr FPS          = 240.0;
     f64 static constexpr timePerSec   = 1.0;
     f64 static constexpr timePerFrame = timePerSec / FPS;
-    f64 static constexpr GRAVITY      = 9.8;
+    f64 static constexpr GRAVITY      = 9.81;
     /// @name acceleration
     /// @brief
     /// - This is the gravity acceleration vector.
@@ -313,7 +313,7 @@ namespace Mlib::Sdl2 {
     /// - It Handles The Creation Of Objects
     /// - as well as the main loop.
     /// - This Class Is A Singleton Class And Can
-    /// - Only Be Accessed Through The 'Inst' Function.
+    /// - Only Be Accessed Through The 'Instance' Function.
     class Core
     {
     private:

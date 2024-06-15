@@ -311,8 +311,8 @@ namespace Mlib::Sdl2 {
     void
     Core::update()
     {
-        SDL_RenderPresent(renderer); // Update screen
-        SDL_Delay(8);                // Approximately 60 frames per second
+        SDL_RenderPresent(renderer);    // Update screen
+        SDL_Delay(timePerFrame * 1000); // Approximately 60 frames per second
     }
 
     void

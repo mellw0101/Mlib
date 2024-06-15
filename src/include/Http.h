@@ -12,29 +12,30 @@
 #include <unistd.h>
 
 #include "def.h"
+namespace Mlib::Sys {
+    class HttpClient
+    {
+    public:
+        HttpClient(const string& host, const string& path);
+        string get();
 
-class HttpClient
-{
-public:
-    HttpClient(const string& host, const string& path);
-    string get();
+    private:
+        string             host_;
+        string             path_;
+        struct sockaddr_in server_;
+    };
 
-private:
-    string             host_;
-    string             path_;
-    struct sockaddr_in server_;
-};
+    class CurlHttpClient
+    {
+    public:
+        CurlHttpClient();
+        ~CurlHttpClient();
+        string get(const string& url);
 
-class CurlHttpClient
-{
-public:
-    CurlHttpClient();
-    ~CurlHttpClient();
-    string get(const string& url);
+    private:
+        static size_t writeCallback(void* contents, size_t size, size_t nmemb, void* userp);
 
-private:
-    static size_t writeCallback(void* contents, size_t size, size_t nmemb, void* userp);
-
-    CURL*       curl_;
-    std::string response_;
-};
+        CURL*       curl_;
+        std::string response_;
+    };
+} // namespace Mlib::Sys

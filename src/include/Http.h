@@ -12,7 +12,8 @@
 #include <unistd.h>
 
 #include "def.h"
-namespace Mlib::Sys {
+
+namespace Mlib::Http {
     class HttpClient
     {
     public:
@@ -38,4 +39,4 @@ namespace Mlib::Sys {
         CURL*       curl_;
         std::string response_;
     };
-} // namespace Mlib::Sys
+} // namespace Mlib::Http

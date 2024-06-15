@@ -49,4 +49,6 @@ namespace Mlib::FileSys {
     auto fileLastWriteTimeStr(const string& path) -> string;
     auto fileLastWriteTimeStr(const string& path, const string& format) -> string;
     auto fileSize(const string& path) -> size_t;
+
+    void writeStrVecToFile(const string& path, const vector<string>& lines);
 } // namespace Mlib::FileSys

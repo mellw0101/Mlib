@@ -1,5 +1,5 @@
+/// @file Sys.cpp
 #include "../include/Sys.h"
-#include <stdexcept>
 
 namespace Mlib::Sys {
     s8
@@ -40,6 +40,10 @@ namespace Mlib::Sys {
             if (WIFEXITED(status))
             {
                 result = WEXITSTATUS(status);
+                if (result != 0)
+                {
+                    throw runtime_error("Process exited with status " + to_string(result));
+                }
             }
             else
             {
@@ -47,5 +51,20 @@ namespace Mlib::Sys {
             }
         }
         return result;
+    }
+
+    /// @class @c Prompt
+
+    Prompt::Prompt(const string& prompt)
+    {
+        string input;
+        cout << prompt;
+        getline(cin, input);
+        ss.str(input);
+    }
+
+    Prompt::operator string() const
+    {
+        return ss.str();
     }
 } // namespace Mlib::Sys

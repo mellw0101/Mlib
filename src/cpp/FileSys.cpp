@@ -179,4 +179,19 @@ namespace Mlib::FileSys {
     {
         return fs::exists(path) ? fs::file_size(path) : 0;
     }
+
+    void
+    writeStrVecToFile(const string& path, const vector<string>& lines)
+    {
+        ofstream file(path);
+        if (!file.is_open())
+        {
+            throw runtime_error("Failed to open file: " + path);
+        }
+        for (const string& line : lines)
+        {
+            file << line << '\n';
+        }
+        file.close();
+    }
 } // namespace Mlib::FileSys

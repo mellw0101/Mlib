@@ -3,7 +3,7 @@
 
 /// @class @c HttpClient
 
-namespace Mlib::Sys {
+namespace Mlib::Http {
     HttpClient::HttpClient(const string& host, const string& path)
         : host_(host)
         , path_(path)
@@ -90,6 +90,8 @@ namespace Mlib::Sys {
         curl_easy_setopt(curl_, CURLOPT_URL, url.c_str());
         curl_easy_setopt(curl_, CURLOPT_WRITEFUNCTION, writeCallback);
         curl_easy_setopt(curl_, CURLOPT_WRITEDATA, &response_);
+        // Enable redirection handling
+        curl_easy_setopt(curl_, CURLOPT_FOLLOWLOCATION, 1L);
 
         CURLcode res = curl_easy_perform(curl_);
         if (res != CURLE_OK)
@@ -99,4 +101,4 @@ namespace Mlib::Sys {
 
         return response_;
     }
-} // namespace Mlib::Sys
+} // namespace Mlib::Http

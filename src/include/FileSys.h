@@ -19,6 +19,13 @@
 #include "def.h"
 
 namespace Mlib::FileSys {
+    enum Mode : u8
+    {
+        NONE            = (0),
+        MKDIR_RECURSIVE = (1 << 0),
+        NO_THROW        = (1 << 1),
+    };
+
     auto fileContentToStr(const string& filename) -> string;
     auto fileContentToFile(const string& sourcePath, const string& destinationPath) -> void;
 
@@ -29,26 +36,51 @@ namespace Mlib::FileSys {
     /// - The content of the directory as a vector of strings.
     vector<string> dirContentToStrVec(string const& path);
 
-    /// @name strVecToFile
-    /// @brief Write a vector of strings to a file.
-    /// @param path The path to the file.
-    /// @param content The vector of strings to write to the file.
+    string currentWorkingDir();
+
+    void cd(const string& path);
+
+    /// @name mkdir
+    /// @brief
+    ///  - Create a directory.
+    /// @param path
+    ///  - The path to the directory.
+    /// @param mode
+    ///  - The mode to use when creating the directory.
+    ///  - Modes:
+    ///  - - ( NONE )            - No mode.
+    ///  - - ( MKDIR_RECURSIVE ) - Create parent directories if they do not exist.
+    ///  - - ( NO_THROW )        - Do not throw exceptions.
     /// @returns void
-    /// @throws ( runtime_error ) - If the file cannot be opened.
-    void strVecToFile(string const& path, vector<string> const& content);
+    /// @throws ( if mode & NO_THROW == false )
+    ///  - ( runtime_error ) - If path is directory.
+    ///  - ( runtime_error ) - If the directory cannot be created.
+    ///  - ( runtime_error ) - If the directory already exists.
+    void mkdir(const string& path, u8 mode = NONE);
 
-    auto currentWorkingDir() -> string;
-    void mkdir(const string& path);
-    auto rmdir(const string& path) -> void;
-    auto rmFile(const string& path) -> void;
-    auto touch(const string& path) -> void;
-    auto exists(const string& path) -> bool;
-    auto isDir(const string& path) -> bool;
-    auto isFile(const string& path) -> bool;
-    auto fileLastWriteTime(const string& path) -> std::time_t;
-    auto fileLastWriteTimeStr(const string& path) -> string;
-    auto fileLastWriteTimeStr(const string& path, const string& format) -> string;
-    auto fileSize(const string& path) -> size_t;
+    void   rmdir(const string& path);
+    void   rmFile(const string& path);
+    void   touch(const string& path);
+    bool   exists(const string& path);
+    bool   isDir(const string& path);
+    bool   isFile(const string& path);
+    time_t fileLastWriteTime(const string& path);
+    string fileLastWriteTimeStr(const string& path);
+    string fileLastWriteTimeStr(const string& path, const string& format);
+    size_t fileSize(const string& path);
 
+    /// @name strVecToFile
+    /// @brief
+    ///  - Write a vector of strings to a file.
+    /// @param path
+    ///  - The path to the file.
+    /// @param content
+    ///  - The vector of strings to write to the file.
+    /// @returns void
+    /// @throws
+    ///  - ( runtime_error ) - If the file cannot be opened.
+    ///  - ( runtime_error ) - If the file cannot be written to.
+    ///  - ( runtime_error ) - If the file cannot be closed.
+    ///  - ( runtime_error ) - If the file is a dir.
     void writeStrVecToFile(const string& path, const vector<string>& lines);
 } // namespace Mlib::FileSys

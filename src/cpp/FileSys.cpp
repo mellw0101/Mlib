@@ -1,4 +1,6 @@
 #include "../include/FileSys.h"
+#include <vector>
+#include "../include/Args.h"
 
 namespace fs = std::filesystem;
 
@@ -21,32 +23,50 @@ namespace Mlib::FileSys {
     }
 
     void
-    fileContentToFile(const string& sourcePath, const string& destinationPath)
+    fileContentToFile(string const& sourcePath, string const& destinationPath)
     {
+        /// If the source file does not exist, @throw an error.
         if (!fs::exists(sourcePath))
         {
             throw runtime_error("Source file does not exist." + sourcePath);
         }
-        ifstream sourceFile(sourcePath, ios::binary);
 
+        /// If the source file is a directory, @throw an error.
+        if (fs::is_directory(sourcePath))
+        {
+            throw runtime_error("Source file is a directory." + sourcePath);
+        }
+
+        ifstream sourceFile(sourcePath, ios::binary);
+        // If the source file cannot be opened, throw an error.
         if (!sourceFile.is_open())
         {
             throw runtime_error("Failed to open source file." + sourcePath);
         }
-        ofstream destinationFile(destinationPath, ios::binary);
 
+        ofstream destinationFile(destinationPath, ios::binary);
+        // If the destination file cannot be opened, throw an error.
         if (!destinationFile.is_open())
         {
             throw runtime_error("Failed to open destination file. " + destinationPath);
         }
+
+        // Transfer the contents of the source file to the destination file.
         destinationFile << sourceFile.rdbuf();
 
+        // If the file sizes do not match, throw an error.
+        if (fileSize(sourcePath) != fileSize(destinationPath))
+        {
+            throw runtime_error("Failed to copy file. File sizes do not match.");
+        }
+
+        // Close the files.
         sourceFile.close();
         destinationFile.close();
     }
 
     vector<string>
-    dirContentToStrVec(const string& path)
+    dirContentToStrVec(string const& path)
     {
         vector<string> files;
         for (const auto& entry : fs::directory_iterator(path))
@@ -56,20 +76,6 @@ namespace Mlib::FileSys {
         return files;
     }
 
-    void
-    strVecToFile(string const& path, vector<string> const& lines)
-    {
-        ofstream file(path);
-        if (!file.is_open())
-        {
-            throw runtime_error("Failed to open file: " + path);
-        }
-        for (string const& line : lines)
-        {
-            file << line << '\n';
-        }
-    }
-
     string
     currentWorkingDir()
     {
@@ -77,19 +83,62 @@ namespace Mlib::FileSys {
     }
 
     void
-    mkdir(const string& path)
+    cd(const string& path)
+    {
+        if (!fs::exists(path))
+        {
+            throw runtime_error("Directory does not exist: " + path);
+        }
+        if (!fs::is_directory(path))
+        {
+            throw runtime_error("Path is not a directory: " + path);
+        }
+        fs::current_path(path);
+    }
+
+    void
+    mkdir(const string& path, u8 mode)
     {
         if (fs::exists(path))
         {
             if (!fs::is_directory(path))
             {
-                throw runtime_error("Path exists but is not a directory: " + path);
+                if ((mode & NO_THROW) == false)
+                {
+                    throw runtime_error("Path exists but is not a directory: " + path);
+                }
             }
-            throw runtime_error("Directory already exists: " + path);
+            if ((mode & NO_THROW) == false)
+            {
+                throw runtime_error("Directory already exists: " + path);
+            }
         }
         if (!fs::create_directories(path))
         {
-            throw runtime_error("Failed to create directory: " + path);
+            if ((mode & MKDIR_RECURSIVE) == true)
+            {
+                string         recursivePath = "";
+                vector<string> dirs          = Args::strVecFromStr(path, '/');
+                for (const string& dir : dirs)
+                {
+                    recursivePath += dir;
+                    if (!fs::exists(recursivePath))
+                    {
+                        if (!fs::create_directory(recursivePath))
+                        {
+                            if ((mode & NO_THROW) == false)
+                            {
+                                throw runtime_error("Failed to recursively create directory: " + path);
+                            }
+                        }
+                    }
+                    recursivePath += "/";
+                }
+            }
+            if ((mode & NO_THROW) == false)
+            {
+                throw runtime_error("Failed to create directory: " + path);
+            }
         }
     }
 
@@ -190,8 +239,69 @@ namespace Mlib::FileSys {
         }
         for (const string& line : lines)
         {
-            file << line << '\n';
+            if (line.back() != '\n')
+            {
+                file << line << '\n';
+            }
+            else
+            {
+                file << line;
+            }
         }
         file.close();
+    }
+
+    bool
+    isSymlink(const string& path)
+    {
+        return fs::is_symlink(path);
+    }
+
+    string
+    canonicalPath(const string& path)
+    {
+        return fs::canonical(path).string();
+    }
+
+    void
+    copyFile(const string& sourcePath, const string& destinationPath)
+    {
+        fs::copy_file(sourcePath, destinationPath);
+    }
+
+    void
+    renameFile(const string& oldPath, const string& newPath)
+    {
+        fs::rename(oldPath, newPath);
+    }
+
+    void
+    createHardLink(const string& sourcePath, const string& destinationPath)
+    {
+        fs::create_hard_link(sourcePath, destinationPath);
+    }
+
+    void
+    createSymlink(const string& sourcePath, const string& destinationPath)
+    {
+        fs::create_symlink(sourcePath, destinationPath);
+    }
+
+    void
+    createDirectorySymlink(const string& sourcePath, const string& destinationPath)
+    {
+        fs::create_directory_symlink(sourcePath, destinationPath);
+    }
+
+    void
+    setPermissions(const string& path, fs::perms permissions)
+    {
+        fs::permissions(path, permissions);
+    }
+
+    fs::perms
+    getPermissions(const string& path)
+    {
+        return fs::status(path).permissions();
     }
 } // namespace Mlib::FileSys

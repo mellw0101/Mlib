@@ -7,4 +7,20 @@
     "workbench.editor.labelFormat": "medium",
     "clang-format.executable": "/usr/bin/clang-format",
     "editor.tabSize": 4,
+    "typescript.inlayHints.parameterTypes.enabled": true,
+    "breadcrumbs.showTypeParameters": false,
+    "editor.suggest.showTypeParameters": false,
+    "C_Cpp.intelliSenseEngine": "disabled",
+    "clangd.arguments": [
+        "--header-insertion=never",
+        "--header-insertion-decorators"
+    ],
+    "clangd.enableCodeCompletion": true,
+    "editor.semanticHighlighting.enabled": true,
+    "editor.inlayHints.enabled": "offUnlessPressed",
+    "accessibility.signals.noInlayHints": {
+        "sound": "off",
+        "announcement": "off"
+    },
+    "editor.defaultFoldingRangeProvider": "llvm-vs-code-extensions.vscode-clangd",
 }

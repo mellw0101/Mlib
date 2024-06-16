@@ -135,29 +135,29 @@ using namespace std;
 #pragma endregion
 
 #pragma endregion
+#pragma region Includes
+
+
+/// Included for @c size_t and @c ssize_t"editor.defaultFormatter": "xaver.clang-format"
+#include <sys/types.h>
+
+
+#pragma endregion
 #pragma region Typedefs
 
 
 using f64 = double;
 using f32 = float;
 
-using s64 = long long;
+using s64 = ssize_t;
 using s32 = int;
 using s16 = short;
 using s8  = char;
 
-using u64 = unsigned long long;
+using u64 = size_t;
 using u32 = unsigned int;
 using u16 = unsigned short;
 using u8  = unsigned char;
-
-
-#pragma endregion
-#pragma region Includes
-
-
-/// Included for @c size_t and @c ssize_t"editor.defaultFormatter": "xaver.clang-format"
-#include <sys/types.h>
 
 
 #pragma endregion

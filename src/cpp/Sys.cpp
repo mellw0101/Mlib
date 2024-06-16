@@ -53,9 +53,8 @@ namespace Mlib::Sys {
         return result;
     }
 
-    /// @class @c Prompt
+#pragma region 'Prompt'
 
-#pragma region Prompt
 
     Prompt::Prompt(const string& prompt)
     {
@@ -65,11 +64,11 @@ namespace Mlib::Sys {
         ss.str(input);
     }
 
-
     Prompt::operator string() const
     {
         return ss.str();
     }
+
 
 #pragma endregion
 

@@ -3,10 +3,8 @@
 namespace std {}
 using namespace std;
 
-#pragma region "Macros"
-
-
-#pragma region "Color Macros"
+#pragma region /** @def Macros */
+#pragma region /** @def Color Macros */
 
 
 #define ESC_CODE_RED     "\033[31m"
@@ -21,10 +19,10 @@ using namespace std;
 #define ESC_CODE_BOLD    "\033[1m"
 
 
-#pragma endregion
+#pragma endregion /** END: Color Macros */
+#pragma region    /** @def ANSI cursor Macros */
 
 
-/// @def 'ANSI cursor Macros'
 #define ESC_CODE_UNDERLINE               "\033[4m"
 #define ESC_CODE_BLINK                   "\033[5m"
 #define ESC_CODE_REVERSE                 "\033[7m"
@@ -86,28 +84,36 @@ using namespace std;
 #define ESC_CODE_CURSOR_POSITION_ALT_ALT "\033H"
 
 
-/// @brief Function Macros
-#define FORCE_INLINE                     __attribute__((always_inline)) static __inline__
-/// END: Function Macros
+#pragma endregion /** END: ANSI cursor Macros */
+#pragma region    /** @def Function Macros */
 
 
-/// @brief String Macros
-#define STRLITERAL(x)                    #x
-/// END: String Macros
+#define FORCE_INLINE __attribute__((always_inline)) static __inline__
 
 
-/// @brief Bitwise operations for flags
-#define FLAGMASK(flag)                   ((unsigned)1 << ((flag) % (sizeof(unsigned) * 8)))
-#define SET(flag)                        FLAGS(flag) |= FLAGMASK(flag)
-#define UNSET(flag)                      FLAGS(flag) &= ~FLAGMASK(flag)
-#define ISSET(flag)                      ((FLAGS(flag) & FLAGMASK(flag)) != 0)
-#define TOGGLE(flag)                     FLAGS(flag) ^= FLAGMASK(flag)
-
-#define ISBITSET(var, bit)               ((var & bit) == true)
-/// END: Bitwise operations for flags
+#pragma endregion /** END: Function Macros */
+#pragma region    /** @def String Macros */
 
 
-/// @brief Class Macros
+#define STRLITERAL(x) #x
+
+
+#pragma endregion /** END: String Macros */
+#pragma region    /** @def Bitwise operations for flags */
+
+
+#define FLAGMASK(flag)     ((unsigned)1 << ((flag) % (sizeof(unsigned) * 8)))
+#define SET(flag)          FLAGS(flag) |= FLAGMASK(flag)
+#define UNSET(flag)        FLAGS(flag) &= ~FLAGMASK(flag)
+#define ISSET(flag)        ((FLAGS(flag) & FLAGMASK(flag)) != 0)
+#define TOGGLE(flag)       FLAGS(flag) ^= FLAGMASK(flag)
+#define ISBITSET(var, bit) ((var & bit) == true)
+
+
+#pragma endregion /** END: Bitwise operations for flags */
+#pragma region    /** @def Class Macros */
+
+
 #define DELETE_MOVE_CONSTRUCTORS(class_name)      \
     class_name(class_name&&)            = delete; \
     class_name& operator=(class_name&&) = delete;
@@ -119,30 +125,33 @@ using namespace std;
 #define DELETE_COPY_AND_MOVE_CONSTRUCTORS(class_name) \
     DELETE_COPY_CONSTRUCTORS(class_name)              \
     DELETE_MOVE_CONSTRUCTORS(class_name)
-/// END: Class Macros
 
 
-/// @brief Comment Macros
+#pragma endregion /** END: Class Macros */
+#pragma region    /** @def Comment Macros */
+
+
 #define DEPRECATED(msg) [[deprecated(#msg)]]
-/// END: Comment Macros
 
-#pragma region 'Utility Macros'
+
+#pragma endregion /** END: Comment Macros */
+#pragma region    /** @def Utility Macros */
 
 
 #define RE_CAST(type, value) reinterpret_cast<type>(value)
 
 
-#pragma endregion
-#pragma endregion
-#pragma region 'Includes'
+#pragma endregion /** END: @def Utility Macros */
+#pragma endregion /** END: Macros */
+#pragma region    /** @def Includes */
 
 
 /// Included for @c size_t and @c ssize_t"editor.defaultFormatter": "xaver.clang-format"
 #include <sys/types.h>
 
 
-#pragma endregion
-#pragma region 'Typedefs'
+#pragma endregion /** END: Includes */
+#pragma region    /** @def Typedefs */
 
 
 using f64 = double;
@@ -159,4 +168,4 @@ using u16 = unsigned short;
 using u8  = unsigned char;
 
 
-#pragma endregion
+#pragma endregion /** END: Typedefs */

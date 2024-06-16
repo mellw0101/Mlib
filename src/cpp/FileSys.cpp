@@ -6,7 +6,7 @@ namespace fs = std::filesystem;
 
 namespace Mlib::FileSys {
     string
-    fileContentToStr(const string& filename)
+    fileContentToStr(const string &filename)
     {
         if (!fs::exists(filename))
         {
@@ -23,7 +23,7 @@ namespace Mlib::FileSys {
     }
 
     vector<string>
-    fileContentToStrVec(const string& filename, u8 mode = NONE)
+    fileContentToStrVec(const string &filename, u8 mode = NONE)
     {
         // Check if the file exists.
         if (!fs::exists(filename))
@@ -55,7 +55,7 @@ namespace Mlib::FileSys {
     }
 
     void
-    fileContentToFile(string const& sourcePath, string const& destinationPath)
+    fileContentToFile(string const &sourcePath, string const &destinationPath)
     {
         /// If the source file does not exist, @throw an error.
         if (!fs::exists(sourcePath))
@@ -98,10 +98,10 @@ namespace Mlib::FileSys {
     }
 
     vector<string>
-    dirContentToStrVec(string const& path)
+    dirContentToStrVec(string const &path)
     {
         vector<string> files;
-        for (const auto& entry : fs::directory_iterator(path))
+        for (const auto &entry : fs::directory_iterator(path))
         {
             files.push_back(entry.path().string());
         }
@@ -115,7 +115,7 @@ namespace Mlib::FileSys {
     }
 
     void
-    cd(const string& path)
+    cd(const string &path)
     {
         if (!fs::exists(path))
         {
@@ -129,7 +129,7 @@ namespace Mlib::FileSys {
     }
 
     void
-    mkdir(const string& path, u8 mode)
+    mkdir(const string &path, u8 mode)
     {
         if (fs::exists(path))
         {
@@ -151,7 +151,7 @@ namespace Mlib::FileSys {
             {
                 string         recursivePath = "";
                 vector<string> dirs          = Args::strVecFromStr(path, '/');
-                for (const string& dir : dirs)
+                for (const string &dir : dirs)
                 {
                     recursivePath += dir;
                     if (!fs::exists(recursivePath))
@@ -175,7 +175,7 @@ namespace Mlib::FileSys {
     }
 
     void
-    rmdir(const string& path)
+    rmdir(const string &path)
     {
         if (!fs::exists(path))
         {
@@ -188,7 +188,7 @@ namespace Mlib::FileSys {
     }
 
     void
-    rmFile(const string& path)
+    rmFile(const string &path)
     {
         if (!fs::exists(path))
         {
@@ -201,7 +201,7 @@ namespace Mlib::FileSys {
     }
 
     void
-    touch(const string& path)
+    touch(const string &path)
     {
         if (fs::exists(path))
         {
@@ -215,61 +215,61 @@ namespace Mlib::FileSys {
     }
 
     bool
-    exists(const string& path)
+    exists(const string &path)
     {
         return fs::exists(path);
     }
 
     bool
-    isDir(const string& path)
+    isDir(const string &path)
     {
         return fs::is_directory(path);
     }
 
     bool
-    isFile(const string& path)
+    isFile(const string &path)
     {
         return fs::is_regular_file(path);
     }
 
     time_t
-    fileLastWriteTime(const string& path)
+    fileLastWriteTime(const string &path)
     {
         return fs::last_write_time(path).time_since_epoch().count();
     }
 
     string
-    fileLastWriteTimeStr(const string& path)
+    fileLastWriteTimeStr(const string &path)
     {
         time_t time = fileLastWriteTime(path);
         return ctime(&time);
     }
 
     string
-    fileLastWriteTimeStr(const string& path, const string& format)
+    fileLastWriteTimeStr(const string &path, const string &format)
     {
         time_t       time       = fileLastWriteTime(path);
-        tm*          timeStruct = localtime(&time);
+        tm          *timeStruct = localtime(&time);
         stringstream buffer;
         buffer << put_time(timeStruct, format.c_str());
         return buffer.str();
     }
 
     size_t
-    fileSize(const string& path)
+    fileSize(const string &path)
     {
         return fs::exists(path) ? fs::file_size(path) : 0;
     }
 
     void
-    writeStrVecToFile(const string& path, const vector<string>& lines)
+    writeStrVecToFile(const string &path, const vector<string> &lines)
     {
         ofstream file(path);
         if (!file.is_open())
         {
             throw runtime_error("Failed to open file: " + path);
         }
-        for (const string& line : lines)
+        for (const string &line : lines)
         {
             if (line.back() != '\n')
             {
@@ -284,74 +284,71 @@ namespace Mlib::FileSys {
     }
 
     bool
-    isSymlink(const string& path)
+    isSymlink(const string &path)
     {
         return fs::is_symlink(path);
     }
 
     string
-    canonicalPath(const string& path)
+    canonicalPath(const string &path)
     {
         return fs::canonical(path).string();
     }
 
     void
-    copyFile(const string& sourcePath, const string& destinationPath)
+    copyFile(const string &sourcePath, const string &destinationPath)
     {
         fs::copy_file(sourcePath, destinationPath);
     }
 
     void
-    renameFile(const string& oldPath, const string& newPath)
+    renameFile(const string &oldPath, const string &newPath)
     {
         fs::rename(oldPath, newPath);
     }
 
     void
-    createHardLink(const string& sourcePath, const string& destinationPath)
+    createHardLink(const string &sourcePath, const string &destinationPath)
     {
         fs::create_hard_link(sourcePath, destinationPath);
     }
 
     void
-    createSymlink(const string& sourcePath, const string& destinationPath)
+    createSymlink(const string &sourcePath, const string &destinationPath)
     {
         fs::create_symlink(sourcePath, destinationPath);
     }
 
     void
-    createDirectorySymlink(const string& sourcePath, const string& destinationPath)
+    createDirectorySymlink(const string &sourcePath, const string &destinationPath)
     {
         fs::create_directory_symlink(sourcePath, destinationPath);
     }
 
     void
-    setPermissions(const string& path, fs::perms permissions)
+    setPermissions(const string &path, fs::perms permissions)
     {
         fs::permissions(path, permissions);
     }
 
     fs::perms
-    getPermissions(const string& path)
+    getPermissions(const string &path)
     {
         return fs::status(path).permissions();
     }
 
     bool
-    isLibraryInstalled(const string& libName)
+    doesFileExistInDirs(const string &name, const vector<string> &dirPathsVec, const string &fileExtention)
     {
-        // Common library paths
-        vector<string> libraryPaths = {"/usr/lib", "/usr/local/lib", "/lib", "/opt/lib"};
-
-        for (const auto& path : libraryPaths)
+        for (const auto &path : dirPathsVec)
         {
             if (fs::exists(path) && fs::is_directory(path))
             {
-                for (const auto& entry : fs::directory_iterator(path))
+                for (const auto &entry : fs::directory_iterator(path))
                 {
                     if (entry.is_regular_file() && entry.path().extension() == ".so")
                     {
-                        if (entry.path().filename().string().find(libName) != string::npos)
+                        if (entry.path().filename().string().find(name) != string::npos)
                         {
                             return true;
                         }
@@ -359,7 +356,6 @@ namespace Mlib::FileSys {
                 }
             }
         }
-
         return false;
     }
 } // namespace Mlib::FileSys

@@ -28,8 +28,5 @@
     },
     "editor.foldingStrategy": "auto",
     "editor.showFoldingControls": "always",
-    "editor.defaultFoldingRangeProvider": "xaver.clang-format",
-    "[jsonc]": {
-        "editor.defaultFormatter": "vscode.json-language-features"
-    },
+    "editor.defaultFoldingRangeProvider": "llvm-vs-code-extensions.vscode-clangd",
 }

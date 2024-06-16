@@ -26,8 +26,8 @@ namespace Mlib::FileSys {
         NO_THROW        = (1 << 1),
     };
 
-    auto fileContentToStr(const string& filename) -> string;
-    auto fileContentToFile(const string& sourcePath, const string& destinationPath) -> void;
+    auto fileContentToStr(const string &filename) -> string;
+    auto fileContentToFile(const string &sourcePath, const string &destinationPath) -> void;
 
     /// @name dirContentToStrVec
     /// @brief
@@ -36,11 +36,11 @@ namespace Mlib::FileSys {
     /// - The path to the directory.
     /// @returns vector<string>
     /// - The content of the directory as a vector of strings.
-    vector<string> dirContentToStrVec(string const& path);
+    vector<string> dirContentToStrVec(string const &path);
 
     string currentWorkingDir();
 
-    void cd(const string& path);
+    void cd(const string &path);
 
     /// @name mkdir
     /// @brief
@@ -58,18 +58,18 @@ namespace Mlib::FileSys {
     ///  - ( runtime_error ) - If path is directory.
     ///  - ( runtime_error ) - If the directory cannot be created.
     ///  - ( runtime_error ) - If the directory already exists.
-    void mkdir(const string& path, u8 mode = NONE);
+    void mkdir(const string &path, u8 mode = NONE);
 
-    void   rmdir(const string& path);
-    void   rmFile(const string& path);
-    void   touch(const string& path);
-    bool   exists(const string& path);
-    bool   isDir(const string& path);
-    bool   isFile(const string& path);
-    time_t fileLastWriteTime(const string& path);
-    string fileLastWriteTimeStr(const string& path);
-    string fileLastWriteTimeStr(const string& path, const string& format);
-    size_t fileSize(const string& path);
+    void   rmdir(const string &path);
+    void   rmFile(const string &path);
+    void   touch(const string &path);
+    bool   exists(const string &path);
+    bool   isDir(const string &path);
+    bool   isFile(const string &path);
+    time_t fileLastWriteTime(const string &path);
+    string fileLastWriteTimeStr(const string &path);
+    string fileLastWriteTimeStr(const string &path, const string &format);
+    size_t fileSize(const string &path);
 
     /// @name strVecToFile
     /// @brief
@@ -84,7 +84,7 @@ namespace Mlib::FileSys {
     ///  - ( runtime_error ) - If the file cannot be written to.
     ///  - ( runtime_error ) - If the file cannot be closed.
     ///  - ( runtime_error ) - If the file is a dir.
-    void writeStrVecToFile(const string& path, const vector<string>& lines);
+    void writeStrVecToFile(const string &path, const vector<string> &lines);
 
-    bool isLibraryInstalled(const string& libName);
+    bool doesFileExistInDirs(const string &name, const vector<string> &dirPathsVec, const string &fileExtention);
 } // namespace Mlib::FileSys

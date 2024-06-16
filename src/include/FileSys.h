@@ -85,4 +85,6 @@ namespace Mlib::FileSys {
     ///  - ( runtime_error ) - If the file cannot be closed.
     ///  - ( runtime_error ) - If the file is a dir.
     void writeStrVecToFile(const string& path, const vector<string>& lines);
+
+    bool isLibraryInstalled(const string& libName);
 } // namespace Mlib::FileSys

@@ -336,4 +336,30 @@ namespace Mlib::FileSys {
     {
         return fs::status(path).permissions();
     }
+
+    bool
+    isLibraryInstalled(const string& libName)
+    {
+        // Common library paths
+        vector<string> libraryPaths = {"/usr/lib", "/usr/local/lib", "/lib", "/opt/lib"};
+
+        for (const auto& path : libraryPaths)
+        {
+            if (fs::exists(path) && fs::is_directory(path))
+            {
+                for (const auto& entry : fs::directory_iterator(path))
+                {
+                    if (entry.is_regular_file() && entry.path().extension() == ".so")
+                    {
+                        if (entry.path().filename().string().find(libName) != string::npos)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
 } // namespace Mlib::FileSys

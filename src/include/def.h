@@ -133,9 +133,8 @@ using namespace std;
 
 
 #pragma endregion
-
 #pragma endregion
-#pragma region Includes
+#pragma region 'Includes'
 
 
 /// Included for @c size_t and @c ssize_t"editor.defaultFormatter": "xaver.clang-format"
@@ -143,7 +142,7 @@ using namespace std;
 
 
 #pragma endregion
-#pragma region Typedefs
+#pragma region 'Typedefs'
 
 
 using f64 = double;

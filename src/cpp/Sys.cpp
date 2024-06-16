@@ -72,4 +72,7 @@ namespace Mlib::Sys {
     }
 
 #pragma endregion
+
+    template <typename T>
+    Singleton<T>* Singleton<T>::instance = nullptr;
 } // namespace Mlib::Sys

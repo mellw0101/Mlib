@@ -24,4 +24,51 @@ namespace Mlib::Sys {
     private:
         stringstream ss;
     };
+
+    template <typename T>
+    class Singleton
+    {
+    private:
+        static Singleton* instance;
+        T                 value;
+
+        Singleton(T val)
+            : value(val)
+        {}
+
+    public:
+        static Singleton*
+        getInstance(T val)
+        {
+            if (instance == nullptr)
+            {
+                instance = new Singleton(val);
+            }
+            return instance;
+        }
+
+        static void
+        deleteInstance()
+        {
+            delete instance;
+            instance = nullptr;
+        }
+
+        T
+        getValue() const
+        {
+            return value;
+        }
+
+        void
+        setValue(T val)
+        {
+            value = val;
+        }
+
+        ~Singleton()
+        {
+            std::cout << "Singleton destructor called" << std::endl;
+        }
+    };
 } // namespace Mlib::Sys

@@ -22,6 +22,38 @@ namespace Mlib::FileSys {
         return buffer.str();
     }
 
+    vector<string>
+    fileContentToStrVec(const string& filename, u8 mode = NONE)
+    {
+        // Check if the file exists.
+        if (!fs::exists(filename))
+        {
+            if ((mode & NO_THROW) == false)
+            {
+                throw runtime_error("File does not exist: " + filename);
+            }
+            // If NO_THROW is set, return an empty vector.
+            return {};
+        }
+        vector<string> lines;
+        ifstream       file(filename);
+        if (!file.is_open())
+        {
+            if ((mode & NO_THROW) == false)
+            {
+                throw runtime_error("Could not open file: " + filename);
+            }
+            // If NO_THROW is set, return an empty vector.
+            return {};
+        }
+        string line;
+        while (getline(file, line))
+        {
+            lines.push_back(line);
+        }
+        return lines;
+    }
+
     void
     fileContentToFile(string const& sourcePath, string const& destinationPath)
     {

@@ -110,7 +110,7 @@ namespace Mlib::Sdl2 {
     f64 static constexpr timePerSec   = 1.0;
     f64 static constexpr timePerFrame = timePerSec / FPS;
     f64 static constexpr GRAVITY      = 9.81;
-    /// @name acceleration
+    /// @name GravityVec
     /// @brief
     /// - This is the gravity acceleration vector.
     static Vec2D const GravityVec     = Vec2D(0.0, GRAVITY);
@@ -275,11 +275,7 @@ namespace Mlib::Sdl2 {
         addActionForKey(u8 key, F&& func, Args&&... args)
         {
             auto boundFunc = std::bind(std::forward<F>(func), std::forward<Args>(args)...);
-            keymap[key].emplace_back(
-                [boundFunc]()
-                {
-                    boundFunc();
-                });
+            keymap[key].emplace_back([boundFunc]() { boundFunc(); });
         }
 
         /// @name handleKeyEvent

@@ -1,9 +1,9 @@
 /// @file Http.cpp
 #include "../include/Http.h"
 
-/// @class @c HttpClient
 
 namespace Mlib::Http {
+    /// @class @c HttpClient
     HttpClient::HttpClient(const string& host, const string& path)
         : host_(host)
         , path_(path)
@@ -34,11 +34,11 @@ namespace Mlib::Http {
         }
 
         string request = "GET " + path_ +
-            " HTTP/1.1\r\n"
-            "Host: " +
-            host_ +
-            "\r\n"
-            "Connection: close\r\n\r\n";
+                         " HTTP/1.1\r\n"
+                         "Host: " +
+                         host_ +
+                         "\r\n"
+                         "Connection: close\r\n\r\n";
         send(sockfd, request.c_str(), request.length(), 0);
 
         char         buffer[4096];
@@ -54,9 +54,7 @@ namespace Mlib::Http {
         return response.str();
     }
 
-
     /// @class @c CurlHttpClient
-
     CurlHttpClient::CurlHttpClient()
     {
         curl_global_init(CURL_GLOBAL_DEFAULT);

@@ -30,8 +30,10 @@ namespace Mlib::FileSys {
     auto fileContentToFile(const string& sourcePath, const string& destinationPath) -> void;
 
     /// @name dirContentToStrVec
-    /// @brief Retrieve the content of a directory as a vector of strings.
-    /// @param path The path to the directory.
+    /// @brief
+    /// - Retrieve the content of a directory as a vector of strings.
+    /// @param path
+    /// - The path to the directory.
     /// @returns vector<string>
     /// - The content of the directory as a vector of strings.
     vector<string> dirContentToStrVec(string const& path);

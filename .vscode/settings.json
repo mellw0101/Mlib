@@ -1,16 +1,12 @@
 {
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "xaver.clang-format",
-    "editor.showFoldingControls": "always",
-    "editor.stickyScroll.defaultModel": "outlineModel",
-    "typescript.tsserver.useSyntaxServer": "always",
-    "workbench.editor.labelFormat": "medium",
     "clang-format.executable": "/usr/bin/clang-format",
-    "editor.tabSize": 4,
-    "typescript.inlayHints.parameterTypes.enabled": true,
+    "clang-format.style": "file",
+    "editor.foldingHighlight": false,
+    "C_Cpp.intelliSenseEngine": "disabled",
     "breadcrumbs.showTypeParameters": false,
     "editor.suggest.showTypeParameters": false,
-    "C_Cpp.intelliSenseEngine": "disabled",
     "clangd.arguments": [
         "--header-insertion=never",
         "--header-insertion-decorators"
@@ -22,5 +18,18 @@
         "sound": "off",
         "announcement": "off"
     },
-    "editor.defaultFoldingRangeProvider": "llvm-vs-code-extensions.vscode-clangd",
+    "clangd.path": "/usr/bin/clangd",
+    "editor.folding": true,
+    "editor.foldingImportsByDefault": true,
+    "editor.unfoldOnClickAfterEndOfLine": false,
+    "[cpp]": {
+        "editor.foldingStrategy": "auto",
+        "editor.showFoldingControls": "always"
+    },
+    "editor.foldingStrategy": "auto",
+    "editor.showFoldingControls": "always",
+    "editor.defaultFoldingRangeProvider": "xaver.clang-format",
+    "[jsonc]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
 }

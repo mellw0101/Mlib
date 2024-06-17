@@ -86,5 +86,5 @@ namespace Mlib::FileSys {
     ///  - ( runtime_error ) - If the file is a dir.
     void writeStrVecToFile(const string &path, const vector<string> &lines);
 
-    bool doesFileExistInDirs(const string &name, const vector<string> &dirPathsVec, const string &fileExtention);
+    bool doesFileExistInDirs(const string &name, const vector<string> &dirPathsVec, const string &fileExtention = "");
 } // namespace Mlib::FileSys

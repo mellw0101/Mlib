@@ -23,7 +23,7 @@ namespace Mlib::FileSys {
     }
 
     vector<string>
-    fileContentToStrVec(const string &filename, u8 mode = NONE)
+    fileContentToStrVec(const string &filename, const u8 mode)
     {
         // Check if the file exists.
         if (!fs::exists(filename))
@@ -338,7 +338,7 @@ namespace Mlib::FileSys {
     }
 
     bool
-    doesFileExistInDirs(const string &name, const vector<string> &dirPathsVec, const string &fileExtention = "")
+    doesFileExistInDirs(const string &name, const vector<string> &dirPathsVec, const string &fileExtention)
     {
         for (const auto &path : dirPathsVec)
         {

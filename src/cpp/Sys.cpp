@@ -3,16 +3,16 @@
 
 namespace Mlib::Sys {
     s8
-    run_binary(const string& binary_path, const vector<string>& args)
+    run_binary(const string &binary_path, const vector<string> &args)
     {
         s8 result = 0;
 
         // Convert vector of arguments to array of C-strings
-        vector<char*> argv;
-        argv.push_back(const_cast<char*>(binary_path.c_str()));
-        for (const string& arg : args)
+        vector<char *> argv;
+        argv.push_back(const_cast<char *>(binary_path.c_str()));
+        for (const string &arg : args)
         {
-            argv.push_back(const_cast<char*>(arg.c_str()));
+            argv.push_back(const_cast<char *>(arg.c_str()));
         }
         // Null-terminate the array
         argv.push_back(nullptr);
@@ -27,9 +27,10 @@ namespace Mlib::Sys {
         {
             // Child process: execute the binary
             execvp(binary_path.c_str(), argv.data());
+
             // If execvp returns, an error occurred
             // throw an exception and exit the child process
-            throw runtime_error("Error: execvp failed");
+            throw runtime_error("Error: execvp failed to execute '" + binary_path + '\'');
             exit(EXIT_FAILURE);
         }
         else
@@ -56,7 +57,7 @@ namespace Mlib::Sys {
 #pragma region 'Prompt'
 
 
-    Prompt::Prompt(const string& prompt)
+    Prompt::Prompt(const string &prompt)
     {
         string input;
         cout << prompt;
@@ -73,5 +74,5 @@ namespace Mlib::Sys {
 #pragma endregion
 
     template <typename T>
-    Singleton<T>* Singleton<T>::instance = nullptr;
+    Singleton<T> *Singleton<T>::instance = nullptr;
 } // namespace Mlib::Sys

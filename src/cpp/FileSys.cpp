@@ -338,7 +338,7 @@ namespace Mlib::FileSys {
     }
 
     bool
-    doesFileExistInDirs(const string &name, const vector<string> &dirPathsVec, const string &fileExtention)
+    doesFileExistInDirs(const string &name, const vector<string> &dirPathsVec, const string &fileExtention = "")
     {
         for (const auto &path : dirPathsVec)
         {
@@ -346,7 +346,7 @@ namespace Mlib::FileSys {
             {
                 for (const auto &entry : fs::directory_iterator(path))
                 {
-                    if (entry.is_regular_file() && entry.path().extension() == ".so")
+                    if (entry.is_regular_file() && entry.path().extension() == fileExtention || fileExtention.empty())
                     {
                         if (entry.path().filename().string().find(name) != string::npos)
                         {

@@ -9,6 +9,8 @@
 
 #include "../include/def.h"
 
+using namespace std;
+
 namespace Mlib::Atomic {
     template <typename T>
     class Atomic
@@ -79,11 +81,11 @@ namespace Mlib::Atomic {
         using Signal = function<void(T)>;
 
         // Delete copy constructor and assignment operator
-        SignalSingleton(const SignalSingleton&)            = delete;
-        SignalSingleton& operator=(const SignalSingleton&) = delete;
+        SignalSingleton(const SignalSingleton &)            = delete;
+        SignalSingleton &operator=(const SignalSingleton &) = delete;
 
         // Static method to get the singleton instance
-        static SignalSingleton&
+        static SignalSingleton &
         getInstance()
         {
             static SignalSingleton instance;
@@ -103,7 +105,7 @@ namespace Mlib::Atomic {
         emit(T value)
         {
             std::lock_guard<std::mutex> lock(mutex_);
-            for (auto& signal : signals_)
+            for (auto &signal : signals_)
             {
                 signal(value);
             }

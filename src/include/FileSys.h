@@ -18,6 +18,8 @@
 
 #include "def.h"
 
+using namespace std;
+
 namespace Mlib::FileSys {
     enum Mode : u8
     {

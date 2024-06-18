@@ -15,6 +15,8 @@
 
 #include "def.h"
 
+using namespace std;
+
 namespace Mlib::Profile {
     /// @class @c ProfilerStats
     /// @brief
@@ -83,10 +85,11 @@ namespace Mlib::Profile {
     class GlobalProfiler
     {
     public:
-        void record(string const& name, double duration);
-        void report(string const& filename);
+        void record(string const &name, double duration);
+        void report(string const &filename);
 
-        [[__nodiscard__("GlobalProfiler::Instance()")]] static GlobalProfiler* const& Instance();
+        [[__nodiscard__("GlobalProfiler::Instance()")]]
+        static GlobalProfiler *const &Instance();
 
         // Prevent copy-construction and assignment
         DELETE_COPY_CONSTRUCTORS(GlobalProfiler);
@@ -100,7 +103,7 @@ namespace Mlib::Profile {
 
     private:
         map<string, ProfilerStats> stats;
-        static GlobalProfiler*     instance;
+        static GlobalProfiler     *instance;
         GlobalProfiler()
         {}
     };
@@ -108,7 +111,7 @@ namespace Mlib::Profile {
     class AutoTimer
     {
     public:
-        AutoTimer(string const& name);
+        AutoTimer(string const &name);
         ~AutoTimer();
 
     private:

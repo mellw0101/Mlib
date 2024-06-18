@@ -1,7 +1,5 @@
 #pragma once
 
-namespace std {}
-using namespace std;
 
 #pragma region /** @def Macros */
 #pragma region /** @def Color Macros */
@@ -161,11 +159,12 @@ using f32 = float;
 using s64 = int_least64_t;
 using s32 = int_least32_t;
 using s16 = int_least16_t;
-using s8  = int_least8_t;
+using s8  = char;
 
 using u64 = uint_least64_t;
 using u32 = uint_least32_t;
 using u16 = uint_least16_t;
 using u8  = uint_least8_t;
+
 
 #pragma endregion /** END: Typedefs */

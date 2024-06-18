@@ -69,16 +69,16 @@ namespace Mlib::Profile {
 
     /// @class @c GlobalProfiler
 
-    GlobalProfiler* GlobalProfiler::instance = nullptr;
+    GlobalProfiler *GlobalProfiler::instance = nullptr;
 
     void
-    GlobalProfiler::record(string const& name, f64 const duration)
+    GlobalProfiler::record(string const &name, f64 const duration)
     {
         stats[name].record(duration);
     }
 
     string
-    makeNamePadding(const string& s)
+    makeNamePadding(const string &s)
     {
         stringstream ss;
         for (int i = 0; (i + s.length()) < 30; ++i)
@@ -120,11 +120,11 @@ namespace Mlib::Profile {
     }
 
     void
-    GlobalProfiler::report(string const& filename)
+    GlobalProfiler::report(string const &filename)
     {
         ofstream file(filename, ios::app);
         file << "\n\nProfiling report: " << mili() << '\n';
-        for (const auto& pair : stats)
+        for (const auto &pair : stats)
         {
             file << pair.first << makeNamePadding(pair.first) << ": Mean = " << pair.second.mean() << " ms, "
                  <<                                               /* makeDoublePadding(pair.second.mean())   << */
@@ -137,7 +137,7 @@ namespace Mlib::Profile {
 
         file.close();
 
-        for (const auto& i : stats)
+        for (const auto &i : stats)
         {
             ofstream File("/home/mellw/gprof/" + i.first, ios::app);
             File << i.second.mean() << ':' << i.second.stddev() << ':' << i.second.min() << ':' << i.second.max() << ':'
@@ -145,7 +145,7 @@ namespace Mlib::Profile {
         }
     }
 
-    GlobalProfiler* const&
+    GlobalProfiler *const &
     GlobalProfiler::Instance()
     {
         if (instance == nullptr)
@@ -157,7 +157,7 @@ namespace Mlib::Profile {
 
     /// @class @c AutoTimer
 
-    AutoTimer::AutoTimer(string const& name)
+    AutoTimer::AutoTimer(string const &name)
         : name(name)
         , start(chrono::high_resolution_clock::now())
     {}

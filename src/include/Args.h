@@ -5,6 +5,8 @@
 #include <vector>
 
 #include "def.h"
+using namespace std;
+
 
 namespace Mlib::Args {
     /// @name argvToStrVec
@@ -12,7 +14,7 @@ namespace Mlib::Args {
     /// @param argc The number of arguments.
     /// @param argv The arguments.
     /// @returns vector<string>
-    vector<string> argvToStrVec(int argc, char** argv);
+    vector<string> argvToStrVec(int argc, char **argv);
 
     /// @name flagValue
     /// @brief
@@ -24,7 +26,7 @@ namespace Mlib::Args {
     /// @param argV
     /// - The arguments.
     /// @returns string
-    string flagValue(const string& flag, int argC, char** argV);
+    string flagValue(const string &flag, int argC, char **argV);
 
     /// @name flagExists
     /// @brief
@@ -36,7 +38,7 @@ namespace Mlib::Args {
     /// @param argV
     /// - The arguments.
     /// @returns bool
-    bool flagExists(const string& flag, int argC, char** argV);
+    bool flagExists(const string &flag, int argC, char **argV);
 
     /// @name flagValuesToStrVec
     /// @brief
@@ -51,7 +53,7 @@ namespace Mlib::Args {
     /// @note
     /// - The flags must be in the form "--flag=value".
     /// - The flag values replace the flags in the vector.
-    vector<string> flagValuesToStrVec(vector<string>& flagVec, int argC, char** argV);
+    vector<string> flagValuesToStrVec(vector<string> &flagVec, int argC, char **argV);
 
     /// @name strVecFromStr
     /// @brief
@@ -61,7 +63,7 @@ namespace Mlib::Args {
     /// @param delim
     /// - The delimiter.
     /// @returns vector<string>
-    vector<string> strVecFromStr(const string& str, char delim);
+    vector<string> strVecFromStr(const string &str, char delim);
 
     /// @name strFromStrVec
     /// @brief
@@ -69,5 +71,5 @@ namespace Mlib::Args {
     /// @param strVec
     /// - The vector of strings.
     /// @returns string
-    string strFromStrVec(const vector<string>& strVec);
+    string strFromStrVec(const vector<string> &strVec);
 }; // namespace Mlib::Args

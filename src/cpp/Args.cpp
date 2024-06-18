@@ -1,8 +1,9 @@
 #include "../include/Args.h"
+using namespace std;
 
 namespace Mlib::Args {
     vector<string>
-    argvToStrVec(int argc, char** argv)
+    argvToStrVec(int argc, char **argv)
     {
         vector<string> args;
         for (int i = 0; i < argc; ++i)
@@ -13,7 +14,7 @@ namespace Mlib::Args {
     }
 
     string
-    argvToCmd(int argc, char** argv)
+    argvToCmd(int argc, char **argv)
     {
         string cmd;
         for (int i = 0; i < argc; ++i)
@@ -28,7 +29,7 @@ namespace Mlib::Args {
     }
 
     string
-    flagValue(const string& flag, int argC, char** argV)
+    flagValue(const string &flag, int argC, char **argV)
     {
         for (int i = 0; i < argC; ++i)
         {
@@ -48,7 +49,7 @@ namespace Mlib::Args {
     }
 
     bool
-    flagExists(const string& flag, int argC, char** argV)
+    flagExists(const string &flag, int argC, char **argV)
     {
         for (int i = 0; i < argC; ++i)
         {
@@ -61,11 +62,11 @@ namespace Mlib::Args {
     }
 
     vector<string>
-    flagValuesToStrVec(vector<string>& flagVec, int argC, char** argV)
+    flagValuesToStrVec(vector<string> &flagVec, int argC, char **argV)
     {
         for (int i = 0; i < argC; ++i)
         {
-            for (auto& flag : flagVec)
+            for (auto &flag : flagVec)
             {
                 if (argV[i] == flag)
                 {
@@ -84,7 +85,7 @@ namespace Mlib::Args {
     }
 
     vector<string>
-    strVecFromStr(const string& str, char delim)
+    strVecFromStr(const string &str, char delim)
     {
         vector<string> args;
         for (size_t i = 0, start = 0; i < str.size(); ++i)
@@ -105,7 +106,7 @@ namespace Mlib::Args {
     }
 
     string
-    strFromStrVec(const vector<string>& strVec)
+    strFromStrVec(const vector<string> &strVec)
     {
         string str;
         for (size_t i = 0; i < strVec.size(); ++i)

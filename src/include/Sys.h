@@ -12,6 +12,8 @@
 
 #include "def.h"
 
+using namespace std;
+
 namespace Mlib::Sys {
     s8 run_binary(const string &binary_path, const vector<string> &args, const vector<string> &env_vars = {});
 

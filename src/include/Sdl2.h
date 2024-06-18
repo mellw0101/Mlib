@@ -10,6 +10,8 @@
 #include <vector>
 
 #include "def.h"
+using namespace std;
+
 
 namespace Mlib::Sdl2 {
     extern int SCREEN_WIDTH;

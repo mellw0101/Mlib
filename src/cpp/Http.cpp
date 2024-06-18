@@ -1,21 +1,22 @@
 /// @file Http.cpp
 #include "../include/Http.h"
 
+using namespace std;
 
 namespace Mlib::Http {
     /// @class @c HttpClient
-    HttpClient::HttpClient(const string& host, const string& path)
+    HttpClient::HttpClient(const string &host, const string &path)
         : host_(host)
         , path_(path)
     {
-        struct hostent* he = gethostbyname(host_.c_str());
+        struct hostent *he = gethostbyname(host_.c_str());
         if (he == nullptr)
         {
             throw std::runtime_error("Failed to resolve host");
         }
         server_.sin_family = AF_INET;
         server_.sin_port   = htons(80);
-        server_.sin_addr   = *((struct in_addr*)he->h_addr);
+        server_.sin_addr   = *((struct in_addr *)he->h_addr);
     }
 
     string
@@ -27,7 +28,7 @@ namespace Mlib::Http {
             throw runtime_error("Failed to create socket");
         }
 
-        if (connect(sockfd, (struct sockaddr*)&server_, sizeof(server_)) < 0)
+        if (connect(sockfd, (struct sockaddr *)&server_, sizeof(server_)) < 0)
         {
             close(sockfd);
             throw runtime_error("Failed to connect to server");
@@ -71,14 +72,14 @@ namespace Mlib::Http {
     }
 
     size_t
-    CurlHttpClient::writeCallback(void* contents, size_t size, size_t nmemb, void* userp)
+    CurlHttpClient::writeCallback(void *contents, size_t size, size_t nmemb, void *userp)
     {
-        ((string*)userp)->append((char*)contents, size * nmemb);
+        ((string *)userp)->append((char *)contents, size * nmemb);
         return size * nmemb;
     }
 
     string
-    CurlHttpClient::get(const string& url)
+    CurlHttpClient::get(const string &url)
     {
         if (!curl_)
         {

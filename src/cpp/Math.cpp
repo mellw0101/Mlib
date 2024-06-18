@@ -1,8 +1,8 @@
 /// @file Math.cpp
-/// @brief
-///   Math functions implementation
 #include "../include/Math.h"
 #include "../include/Assert.h"
+
+using namespace std;
 
 namespace Mlib::Math {
     f64

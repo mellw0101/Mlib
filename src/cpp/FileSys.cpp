@@ -2,6 +2,8 @@
 #include <vector>
 #include "../include/Args.h"
 
+using namespace std;
+
 namespace fs = std::filesystem;
 
 namespace Mlib::FileSys {

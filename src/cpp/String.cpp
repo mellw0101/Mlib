@@ -1,8 +1,9 @@
 #include "../include/String.h"
+using namespace std;
 
 namespace Mlib::String {
     size_t
-    findN(const string& str, const string& search, size_t n)
+    findN(const string &str, const string &search, size_t n)
     {
         size_t pos = 0;
         for (size_t i = 0; i < n; ++i)
@@ -18,7 +19,7 @@ namespace Mlib::String {
     }
 
     string
-    replaceAll(const string& str, const string& search, const string& replace)
+    replaceAll(const string &str, const string &search, const string &replace)
     {
         string result = str;
         size_t pos    = 0;
@@ -31,7 +32,7 @@ namespace Mlib::String {
     }
 
     string
-    replaceN(const string& str, const string& search, const string& replace, size_t n)
+    replaceN(const string &str, const string &search, const string &replace, size_t n)
     {
         string result = str;
         size_t pos    = 0;

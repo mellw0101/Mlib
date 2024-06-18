@@ -86,15 +86,15 @@ namespace Mlib::FileSys {
         // Transfer the contents of the source file to the destination file.
         destinationFile << sourceFile.rdbuf();
 
+        // Close the files.
+        sourceFile.close();
+        destinationFile.close();
+
         // If the file sizes do not match, throw an error.
         if (fileSize(sourcePath) != fileSize(destinationPath))
         {
             throw runtime_error("Failed to copy file. File sizes do not match.");
         }
-
-        // Close the files.
-        sourceFile.close();
-        destinationFile.close();
     }
 
     vector<string>
@@ -346,7 +346,7 @@ namespace Mlib::FileSys {
             {
                 for (const auto &entry : fs::directory_iterator(path))
                 {
-                    if (entry.is_regular_file() && entry.path().extension() == fileExtention || fileExtention.empty())
+                    if (entry.is_regular_file() && (entry.path().extension() == fileExtention || fileExtention.empty()))
                     {
                         if (entry.path().filename().string().find(name) != string::npos)
                         {

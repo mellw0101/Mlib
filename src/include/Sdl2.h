@@ -64,16 +64,16 @@ namespace Mlib::Sdl2 {
         /// - The other vector to add to this vector
         /// @returns Vec2D&
         /// - reference to this vector after adding the other vector
-        Vec2D&
-        operator+=(const Vec2D& other)
+        Vec2D &
+        operator+=(const Vec2D &other)
         {
             x += other.x;
             y += other.y;
             return *this;
         }
 
-        Vec2D&
-        operator-=(const Vec2D& other)
+        Vec2D &
+        operator-=(const Vec2D &other)
         {
             x -= other.x;
             y -= other.y;
@@ -100,7 +100,7 @@ namespace Mlib::Sdl2 {
         }
 
         f64
-        dot(const Vec2D& other) const
+        dot(const Vec2D &other) const
         {
             return x * other.x + y * other.y;
         }
@@ -160,7 +160,7 @@ namespace Mlib::Sdl2 {
         /// @note
         /// - This function is rarely used.
         /// @returns void
-        void init(const ObjectData2D& data);
+        void init(const ObjectData2D &data);
 
         /// @name move
         /// @brief
@@ -176,7 +176,7 @@ namespace Mlib::Sdl2 {
         /// @param renderer
         /// - The renderer to draw the object on.
         /// @returns void
-        void draw(SDL_Renderer* renderer) const;
+        void draw(SDL_Renderer *renderer) const;
 
         /// @name isStatic
         /// @brief
@@ -192,7 +192,7 @@ namespace Mlib::Sdl2 {
         /// @returns bool
         /// - true  (object is on the ground).
         /// - false (object is not on the ground).
-        bool isColiding(const Object2D& object) const;
+        bool isColiding(const Object2D &object) const;
 
         /// @name rect
         /// @brief Get the rect of the object.
@@ -227,7 +227,7 @@ namespace Mlib::Sdl2 {
         /// @param velVecToApply
         /// - The velocity vector to apply.
         /// @returns void
-        void onStaticObjCollision(Object2D const& obj, Vec2D velVecToApply);
+        void onStaticObjCollision(Object2D const &obj, Vec2D velVecToApply);
     } Object2D;
 
     using KeyMap = unordered_map<u8, vector<function<void()>>>;
@@ -247,7 +247,7 @@ namespace Mlib::Sdl2 {
     {
     private:
         KeyMap            keymap;
-        static KeyObject* KeyObjectInstance;
+        static KeyObject *KeyObjectInstance;
 
     public:
         /// @name Instance
@@ -256,7 +256,7 @@ namespace Mlib::Sdl2 {
         /// - If the instance Does Not Yet Exist, It Creates One.
         /// - This Function Is The Only Way To Get The Instance Of The KeyObject.
         /// @returns KeyObject*
-        static KeyObject*
+        static KeyObject *
         Instance()
         {
             if (!KeyObjectInstance)
@@ -272,10 +272,14 @@ namespace Mlib::Sdl2 {
         /// - using perfect forwarding.
         template <typename F, typename... Args>
         void
-        addActionForKey(u8 key, F&& func, Args&&... args)
+        addActionForKey(u8 key, F &&func, Args &&...args)
         {
             auto boundFunc = std::bind(std::forward<F>(func), std::forward<Args>(args)...);
-            keymap[key].emplace_back([boundFunc]() { boundFunc(); });
+            keymap[key].emplace_back(
+                [boundFunc]()
+                {
+                    boundFunc();
+                });
         }
 
         /// @name handleKeyEvent
@@ -289,12 +293,12 @@ namespace Mlib::Sdl2 {
         void
         handleKeyEvent()
         {
-            const u8* state = SDL_GetKeyboardState(nullptr);
-            for (auto const& [key, funcs] : keymap)
+            const u8 *state = SDL_GetKeyboardState(nullptr);
+            for (auto const &[key, funcs] : keymap)
             {
                 if (state[key])
                 {
-                    for (auto const& func : funcs)
+                    for (auto const &func : funcs)
                     {
                         func();
                     }
@@ -314,16 +318,15 @@ namespace Mlib::Sdl2 {
     {
     private:
         string       window_title;
-        static Core* CoreInstance;
+        static Core *CoreInstance;
 
-        SDL_Window*       window   = nullptr;
-        SDL_Renderer*     renderer = nullptr;
-        function<void()>  mainLoop = nullptr;
-        bool              running  = true;
-        u32               frames;
-        u32               state;
-        SDL_Event         event;
-        vector<Object2D*> objects;
+        SDL_Window        *window   = nullptr;
+        SDL_Renderer      *renderer = nullptr;
+        function<void()>   mainLoop = nullptr;
+        bool               running  = true;
+        u32                frames;
+        SDL_Event          event;
+        vector<Object2D *> objects;
 
         auto init() -> int;
 
@@ -337,7 +340,7 @@ namespace Mlib::Sdl2 {
         /// @brief Create An Object
         /// @param object The object to create
         /// @returns void
-        void createObject(const Object2D& object);
+        void createObject(const Object2D &object);
 
         /// @brief Return The Instance Of The Core Class
         /// - If The Instance Does Not Exist,
@@ -348,7 +351,7 @@ namespace Mlib::Sdl2 {
         /// @param window_width The width of the window
         /// @param window_height The height of the window
         /// @returns Core*
-        static Core* Instance();
+        static Core *Instance();
 
         /// @brief Cleanup used to clean up on exit
         /// @returns void
@@ -356,7 +359,7 @@ namespace Mlib::Sdl2 {
 
         template <typename CallBack>
         void
-        setMainLoop(CallBack&& callBack)
+        setMainLoop(CallBack &&callBack)
         {
             mainLoop = std::forward<CallBack>(callBack);
         }
@@ -373,10 +376,10 @@ namespace Mlib::Sdl2 {
         void setupKeys();
         void stop();
         u32  getCurrentFrameCount() const noexcept;
-        u32* getCurrentFrameCountPtr() noexcept;
-        void setTitle(const string& title);
+        u32 *getCurrentFrameCountPtr() noexcept;
+        void setTitle(const string &title);
 
-        vector<Object2D*>& getObjects();
+        vector<Object2D *> &getObjects();
         Core() = default;
     };
 } // namespace Mlib::Sdl2

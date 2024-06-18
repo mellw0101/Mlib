@@ -114,13 +114,13 @@ using namespace std;
 #pragma region    /** @def Class Macros */
 
 
-#define DELETE_MOVE_CONSTRUCTORS(class_name)      \
-    class_name(class_name&&)            = delete; \
-    class_name& operator=(class_name&&) = delete;
+#define DELETE_MOVE_CONSTRUCTORS(class_name)       \
+    class_name(class_name &&)            = delete; \
+    class_name &operator=(class_name &&) = delete;
 
-#define DELETE_COPY_CONSTRUCTORS(class_name)           \
-    class_name(const class_name&)            = delete; \
-    class_name& operator=(const class_name&) = delete;
+#define DELETE_COPY_CONSTRUCTORS(class_name)            \
+    class_name(const class_name &)            = delete; \
+    class_name &operator=(const class_name &) = delete;
 
 #define DELETE_COPY_AND_MOVE_CONSTRUCTORS(class_name) \
     DELETE_COPY_CONSTRUCTORS(class_name)              \
@@ -146,7 +146,8 @@ using namespace std;
 #pragma region    /** @def Includes */
 
 
-/// Included for @c size_t and @c ssize_t"editor.defaultFormatter": "xaver.clang-format"
+/// Included for @c size_t and @c ssize_t
+#include <cstdint>
 #include <sys/types.h>
 
 
@@ -157,15 +158,14 @@ using namespace std;
 using f64 = double;
 using f32 = float;
 
-using s64 = ssize_t;
-using s32 = int;
-using s16 = short;
-using s8  = char;
+using s64 = int_least64_t;
+using s32 = int_least32_t;
+using s16 = int_least16_t;
+using s8  = int_least8_t;
 
-using u64 = size_t;
-using u32 = unsigned int;
-using u16 = unsigned short;
-using u8  = unsigned char;
-
+using u64 = uint_least64_t;
+using u32 = uint_least32_t;
+using u16 = uint_least16_t;
+using u8  = uint_least8_t;
 
 #pragma endregion /** END: Typedefs */

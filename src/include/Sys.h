@@ -13,12 +13,12 @@
 #include "def.h"
 
 namespace Mlib::Sys {
-    s8 run_binary(const string& binary_path, const vector<string>& args);
+    s8 run_binary(const string &binary_path, const vector<string> &args, const vector<string> &env_vars = {});
 
     class Prompt
     {
     public:
-        Prompt(const string& prompt);
+        Prompt(const string &prompt);
         operator string() const;
 
     private:
@@ -29,7 +29,7 @@ namespace Mlib::Sys {
     class Singleton
     {
     private:
-        static Singleton* instance;
+        static Singleton *instance;
         T                 value;
 
         Singleton(T val)
@@ -37,7 +37,7 @@ namespace Mlib::Sys {
         {}
 
     public:
-        static Singleton*
+        static Singleton *
         getInstance(T val)
         {
             if (instance == nullptr)

@@ -15,8 +15,6 @@
 
 #include "def.h"
 
-using namespace std;
-
 namespace Mlib::Profile {
     /// @class @c ProfilerStats
     /// @brief
@@ -79,14 +77,14 @@ namespace Mlib::Profile {
         /// @brief
         /// - The vector of values of the duration
         /// - of the profiled function.
-        vector<f64> values;
+        std::vector<f64> values;
     };
 
     class GlobalProfiler
     {
     public:
-        void record(string const &name, double duration);
-        void report(string const &filename);
+        void record(std::string const &name, double duration);
+        void report(std::string const &filename);
 
         [[__nodiscard__("GlobalProfiler::Instance()")]]
         static GlobalProfiler *const &Instance();
@@ -102,8 +100,8 @@ namespace Mlib::Profile {
         {}
 
     private:
-        map<string, ProfilerStats> stats;
-        static GlobalProfiler     *instance;
+        std::map<std::string, ProfilerStats> stats;
+        static GlobalProfiler               *instance;
         GlobalProfiler()
         {}
     };
@@ -111,12 +109,12 @@ namespace Mlib::Profile {
     class AutoTimer
     {
     public:
-        AutoTimer(string const &name);
+        AutoTimer(std::string const &name);
         ~AutoTimer();
 
     private:
-        string                                            name;
-        chrono::time_point<chrono::high_resolution_clock> start;
+        std::string                                                 name;
+        std::chrono::time_point<std::chrono::high_resolution_clock> start;
     };
 
     /// @name @c setupReportGeneration

@@ -4,8 +4,6 @@
 /// - profiling classes and functions.
 #include "../include/Profile.h"
 
-using namespace std;
-
 namespace Mlib::Profile {
     /// @class @c ProfilerStats
     /// Functions:
@@ -72,15 +70,15 @@ namespace Mlib::Profile {
     GlobalProfiler *GlobalProfiler::instance = nullptr;
 
     void
-    GlobalProfiler::record(string const &name, f64 const duration)
+    GlobalProfiler::record(std::string const &name, f64 const duration)
     {
         stats[name].record(duration);
     }
 
-    string
-    makeNamePadding(const string &s)
+    std::string
+    makeNamePadding(const std::string &s)
     {
-        stringstream ss;
+        std::stringstream ss;
         for (int i = 0; (i + s.length()) < 30; ++i)
         {
             ss << ' ';
@@ -89,7 +87,7 @@ namespace Mlib::Profile {
         return ss.str();
     }
 
-    string
+    std::string
     mili()
     {
         // Get the current time point
@@ -120,9 +118,9 @@ namespace Mlib::Profile {
     }
 
     void
-    GlobalProfiler::report(string const &filename)
+    GlobalProfiler::report(std::string const &filename)
     {
-        ofstream file(filename, ios::app);
+        std::ofstream file(filename, std::ios::app);
         file << "\n\nProfiling report: " << mili() << '\n';
         for (const auto &pair : stats)
         {
@@ -139,7 +137,7 @@ namespace Mlib::Profile {
 
         for (const auto &i : stats)
         {
-            ofstream File("/home/mellw/gprof/" + i.first, ios::app);
+            std::ofstream File("/home/mellw/gprof/" + i.first, std::ios::app);
             File << i.second.mean() << ':' << i.second.stddev() << ':' << i.second.min() << ':' << i.second.max() << ':'
                  << i.second.count() << ':' << "\n";
         }
@@ -157,16 +155,16 @@ namespace Mlib::Profile {
 
     /// @class @c AutoTimer
 
-    AutoTimer::AutoTimer(string const &name)
+    AutoTimer::AutoTimer(std::string const &name)
         : name(name)
-        , start(chrono::high_resolution_clock::now())
+        , start(std::chrono::high_resolution_clock::now())
     {}
 
     AutoTimer::~AutoTimer()
     {
-        auto end = chrono::high_resolution_clock::now();
+        auto end = std::chrono::high_resolution_clock::now();
 
-        chrono::duration<double, milli> duration = end - start;
+        std::chrono::duration<double, std::milli> duration = end - start;
         GlobalProfiler::Instance()->record(name, duration.count());
     }
 

@@ -1,0 +1,4 @@
+#!/bin/bash
+
+AmakeCpp --build
+Amake --lib --install-lib -y

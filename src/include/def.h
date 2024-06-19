@@ -87,7 +87,8 @@
 
 
 #define FORCE_INLINE __attribute__((always_inline)) static __inline__
-
+#define UNUSED       __attribute__((unused))
+#define NORETURN     __attribute__((noreturn))
 
 #pragma endregion /** END: Function Macros */
 #pragma region    /** @def String Macros */

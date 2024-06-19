@@ -1,6 +1,4 @@
 /// @file Assert.h
-/// @brief Contains the definition of the Assert class.
-/// @note This file is included in the Assert.cpp file.
 #pragma once
 
 #include <iostream>
@@ -8,14 +6,28 @@
 #include <string>
 
 #include "def.h"
-#define ASSERT_STATEMENT(x) x ? void(0) : throw std::invalid_argument("Assertion failed: " #x)
+
 using namespace std;
 
+#define ASSERT_STATEMENT(x) x ? void(0) : throw std::invalid_argument("Assertion failed: " #x)
+
 namespace Mlib::Assert {
-    /// @brief Asserts that the given condition is true.
-    /// @param condition The condition to assert.
-    /// @param message The message to display if the condition is false.
-    /// @note If the condition is false, this function will throw a std::runtime_error.
+    //
+    /// @brief
+    ///  -  Asserts that the given condition is true.
+    ///
+    /// @param condition
+    ///  -  The condition to assert.
+    ///
+    /// @param message
+    ///  -  The message to display if the condition is false.
+    ///
+    /// @note
+    ///  -  If the condition is false, this function will throw a std::runtime_error.
+    ///
+    /// @returns
+    ///  -  void
+    //
     void isTrue(bool condition, const string &message);
 
     /// @brief Asserts that the given condition is false.

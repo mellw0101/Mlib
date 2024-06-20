@@ -28,8 +28,9 @@ namespace Mlib::FileSys {
         NO_THROW        = (1 << 1),
     };
 
-    auto fileContentToStr(const string &filename) -> string;
-    auto fileContentToFile(const string &sourcePath, const string &destinationPath) -> void;
+    auto           fileContentToStr(const string &filename) -> string;
+    vector<string> fileContentToStrVec(const string &filename, const u8 mode);
+    auto           fileContentToFile(const string &sourcePath, const string &destinationPath) -> void;
 
     /// @name dirContentToStrVec
     /// @brief

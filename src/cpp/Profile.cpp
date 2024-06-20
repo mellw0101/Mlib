@@ -70,7 +70,7 @@ namespace Mlib::Profile {
     GlobalProfiler *GlobalProfiler::instance = nullptr;
 
     void
-    GlobalProfiler::record(std::string const &name, f64 const duration)
+    GlobalProfiler::record(const std::string &name, const f64 duration)
     {
         stats[name].record(duration);
     }
@@ -143,7 +143,7 @@ namespace Mlib::Profile {
         }
     }
 
-    GlobalProfiler *const &
+    GlobalProfiler *
     GlobalProfiler::Instance()
     {
         if (instance == nullptr)

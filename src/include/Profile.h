@@ -87,7 +87,7 @@ namespace Mlib::Profile {
         void report(std::string const &filename);
 
         [[__nodiscard__("GlobalProfiler::Instance()")]]
-        static GlobalProfiler *const &Instance();
+        static GlobalProfiler *Instance();
 
         // Prevent copy-construction and assignment
         DELETE_COPY_CONSTRUCTORS(GlobalProfiler);

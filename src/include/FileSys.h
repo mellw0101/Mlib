@@ -29,7 +29,7 @@ namespace Mlib::FileSys {
     };
 
     auto           fileContentToStr(const string &filename) -> string;
-    vector<string> fileContentToStrVec(const string &filename, const u8 mode);
+    vector<string> fileContentToStrVec(const string &filename, const u8 mode = NONE);
     auto           fileContentToFile(const string &sourcePath, const string &destinationPath) -> void;
 
     /// @name dirContentToStrVec

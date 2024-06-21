@@ -162,10 +162,41 @@ using s32 = int_least32_t;
 using s16 = int_least16_t;
 using s8  = char;
 
-using u64 = uint_least64_t;
-using u32 = uint_least32_t;
-using u16 = uint_least16_t;
-using u8  = uint_least8_t;
-
+using u128 = unsigned long long;
+using u64  = uint_least64_t;
+using u32  = uint_least32_t;
+using u16  = uint_least16_t;
+using u8   = uint_least8_t;
 
 #pragma endregion /** END: Typedefs */
+
+//
+//  Constants for the maximum and minimum values of the integer types.
+//
+constexpr f64 f64_MAX = 1.7976931348623157e+308;
+constexpr f64 f64_MIN = 2.2250738585072014e-308;
+constexpr f32 f32_MAX = 3.402823466e+38;
+constexpr f32 f32_MIN = 1.175494351;
+constexpr f32 f32_EPS = 1.192092896e-07;
+constexpr u64 u64_MAX = 0xFFFFFFFFFFFFFFFF;
+constexpr u64 u64_MIN = 0x0000000000000000;
+constexpr s64 s64_MAX = 0x7FFFFFFFFFFFFFFF;
+constexpr s64 s64_MIN = 0x8000000000000000;
+constexpr u32 u32_MAX = 0xFFFFFFFF;
+constexpr u32 u32_MIN = 0x00000000;
+constexpr s32 s32_MAX = 0x7FFFFFFF;
+constexpr s32 s32_MIN = 0x80000000;
+constexpr u16 u16_MAX = 0xFFFF;
+constexpr u16 u16_MIN = 0x0000;
+constexpr s16 s16_MAX = 0x7FFF;
+constexpr s16 s16_MIN = 0x8000;
+constexpr u8  u8_MAX  = 0xFF;
+constexpr u8  u8_MIN  = 0x00;
+constexpr s8  s8_MAX  = 0x7F;
+constexpr s8  s8_MIN  = 0x80;
+
+constexpr u64
+operator"" _KB(u128 value)
+{
+    return value * 1024;
+}

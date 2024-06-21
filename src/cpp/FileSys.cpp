@@ -31,9 +31,9 @@ namespace Mlib::FileSys {
         {
             if ((mode & NO_THROW) == false)
             {
+                // If NO_THROW is set, dont throw an error.
                 throw runtime_error("File does not exist: " + filename);
             }
-            // If NO_THROW is set, return an empty vector.
             return {};
         }
         vector<string> lines;

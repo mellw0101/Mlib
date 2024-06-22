@@ -2,18 +2,19 @@
 /// @brief Contains the implementation of the Sdl2 namespace.
 /// @note This file defines the implementation of the Sdl2 namespace.
 #include "../include/Sdl2.h"
+#if defined(__i386__) || defined(__x86_64__)
 
 namespace Mlib::Sdl2 {
     inline int SCREEN_WIDTH;
     inline int SCREEN_HEIGHT;
 
-    KeyObject* KeyObject::KeyObjectInstance = nullptr;
-    Core*      Core::CoreInstance           = nullptr;
+    KeyObject *KeyObject::KeyObjectInstance = nullptr;
+    Core      *Core::CoreInstance           = nullptr;
 
     /// @struct @c Object2D Function Definitions
 
     void
-    Object2D::init(ObjectData2D const& data)
+    Object2D::init(ObjectData2D const &data)
     {
         this->data = data;
     }
@@ -30,7 +31,7 @@ namespace Mlib::Sdl2 {
     }
 
     void
-    Object2D::draw(SDL_Renderer* renderer) const
+    Object2D::draw(SDL_Renderer *renderer) const
     {
         SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
         SDL_Rect currentRect = rect();
@@ -83,7 +84,7 @@ namespace Mlib::Sdl2 {
     /// @class @c Core Function Definitions
 
     void
-    Object2D::onStaticObjCollision(Object2D const& obj, Vec2D velVecToApply)
+    Object2D::onStaticObjCollision(Object2D const &obj, Vec2D velVecToApply)
     {
         f32 const X = data.position.x;
         f32 const Y = data.position.y;
@@ -102,9 +103,9 @@ namespace Mlib::Sdl2 {
     }
 
     void
-    Core::createObject(const Object2D& object)
+    Core::createObject(const Object2D &object)
     {
-        Object2D* nObj = new Object2D {object};
+        Object2D *nObj = new Object2D {object};
         objects.emplace_back(nObj);
     }
 
@@ -162,7 +163,7 @@ namespace Mlib::Sdl2 {
             SDL_SCANCODE_W,
             [&]() -> void
             {
-                for (auto& object : objects)
+                for (auto &object : objects)
                 {
                     ((object->state() & State::STATIC) == false) ? object->move({0.0, -object->data.speed}) : void();
                 }
@@ -172,7 +173,7 @@ namespace Mlib::Sdl2 {
             SDL_SCANCODE_S,
             [&]() -> void
             {
-                for (auto& object : objects)
+                for (auto &object : objects)
                 {
                     ((object->state() & State::STATIC) == false) ? object->move({0.0, object->data.speed}) : void();
                 }
@@ -181,7 +182,7 @@ namespace Mlib::Sdl2 {
             SDL_SCANCODE_A,
             [&]() -> void
             {
-                for (auto& object : objects)
+                for (auto &object : objects)
                 {
                     ((object->state() & State::STATIC) == false) ? object->move({-object->data.speed, 0.0}) : void();
                 }
@@ -190,7 +191,7 @@ namespace Mlib::Sdl2 {
             SDL_SCANCODE_D,
             [&]() -> void
             {
-                for (auto& object : objects)
+                for (auto &object : objects)
                 {
                     !(object->state() & State::STATIC) ? object->move({object->data.speed, 0.0}) : void();
                 }
@@ -203,7 +204,7 @@ namespace Mlib::Sdl2 {
         KeyObject::Instance()->addActionForKey(SDL_SCANCODE_SPACE,
                                                [&]() -> void
                                                {
-                                                   for (auto& object : objects)
+                                                   for (auto &object : objects)
                                                    {
                                                        // If the object is static, skip
                                                        if (object->state() & State::STATIC)
@@ -259,7 +260,7 @@ namespace Mlib::Sdl2 {
     void
     Core::applyPhysics()
     {
-        for (auto& object : objects)
+        for (auto &object : objects)
         {
             // Only apply gravity if the object is not static
             if (object->state() & State::STATIC)
@@ -281,7 +282,7 @@ namespace Mlib::Sdl2 {
                     object->data.state &= ~State::ON_GROUND;
                 }
 
-                for (auto& other : objects)
+                for (auto &other : objects)
                 {
                     if (&object == &other)
                     {
@@ -302,7 +303,7 @@ namespace Mlib::Sdl2 {
     void
     Core::draw()
     {
-        for (auto const& object : objects)
+        for (auto const &object : objects)
         {
             object->draw(renderer);
         }
@@ -339,26 +340,26 @@ namespace Mlib::Sdl2 {
         return frames;
     }
 
-    u32*
+    u32 *
     Core::getCurrentFrameCountPtr() noexcept
     {
         return &frames;
     }
 
     void
-    Core::setTitle(string const& title)
+    Core::setTitle(string const &title)
     {
         window_title = title;
         SDL_SetWindowTitle(window, window_title.c_str());
     }
 
-    vector<Object2D*>&
+    vector<Object2D *> &
     Core::getObjects()
     {
         return objects;
     }
 
-    Core*
+    Core *
     Core::Instance()
     {
         if (CoreInstance == nullptr)
@@ -369,3 +370,5 @@ namespace Mlib::Sdl2 {
         return CoreInstance;
     }
 } // namespace Mlib::Sdl2
+
+#endif

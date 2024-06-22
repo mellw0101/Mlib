@@ -72,4 +72,12 @@ namespace Mlib::Args {
     /// - The vector of strings.
     /// @returns string
     string strFromStrVec(const vector<string> &strVec);
+
+    template <typename T>
+    void
+    eraseFromVector(vector<T> &vec, const T &objToErase)
+    {
+        vec.erase(std::remove(vec.begin(), vec.end(), objToErase), vec.end());
+    }
+
 }; // namespace Mlib::Args

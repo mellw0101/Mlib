@@ -1,15 +1,17 @@
 #pragma once
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_rect.h>
-#include <functional>
-#include <map>
-#include <mutex>
-#include <string>
-#include <unordered_map>
-#include <vector>
+#if defined(__i386__) || defined(__x86_64__)
 
-#include "def.h"
+#    include <SDL2/SDL.h>
+#    include <SDL2/SDL_rect.h>
+#    include <functional>
+#    include <map>
+#    include <mutex>
+#    include <string>
+#    include <unordered_map>
+#    include <vector>
+
+#    include "def.h"
 using namespace std;
 
 
@@ -209,6 +211,7 @@ namespace Mlib::Sdl2 {
         /// @name state
         /// @brief Get the state of the object.
         /// @returns u32 (state of the object as a bit field)
+
         /// @note
         /// - This func is marked as const because it
         /// - does not modify the object and is only
@@ -385,3 +388,5 @@ namespace Mlib::Sdl2 {
         Core() = default;
     };
 } // namespace Mlib::Sdl2
+
+#endif

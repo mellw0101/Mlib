@@ -1,6 +1,6 @@
 #!/bin/bash
 
 # AmakeCpp --build
-AmakeCpp --build --arm
+AmakeCpp --build
 Amake --lib --install-lib -y
 # Amake --build --lib --install-lib -y

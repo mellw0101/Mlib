@@ -12,7 +12,8 @@
 // #include <vector>
 // #include <unordered_map>
 
-namespace Mlib::Constexpr {
+namespace Mlib::Constexpr
+{
     template <typename T1, typename T2>
     struct MapEntry
     {

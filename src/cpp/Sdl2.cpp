@@ -4,7 +4,8 @@
 #include "../include/Sdl2.h"
 #if defined(__i386__) || defined(__x86_64__)
 
-namespace Mlib::Sdl2 {
+namespace Mlib::Sdl2
+{
     inline int SCREEN_WIDTH;
     inline int SCREEN_HEIGHT;
 

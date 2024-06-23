@@ -127,14 +127,8 @@ namespace Mlib::Threads
             }
         }
     };
-} // namespace Mlib::Threads
 
-template <typename ThreadPoolType, typename Func, typename... Args>
-auto
-enqueueTask(ThreadPoolType &pool, Func &&func, Args &&...args) -> std::future<decltype(func(args...))>
-{
-    return pool.enqueue(std::forward<Func>(func), std::forward<Args>(args)...);
-}
+} // namespace Mlib::Threads
 
 
 #define enqueueT(__Name, __Pool, ...) std::future<void> __Name = __Pool.enqueue(__VA_ARGS__)

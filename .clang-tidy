@@ -1,0 +1,15 @@
+Checks: >
+  -readability-static-accessed-through-instance,
+  -readability-convert-member-functions-to-static,
+  -performance-static-assert
+
+WarningsAsErrors: ''
+HeaderFilterRegex: '.*'
+AnalyzeTemporaryDtors: false
+FormatStyle: none
+User: ''
+CheckOptions:
+  - key: readability-static-accessed-through-instance.IgnoreTemplates
+    value: 'false'
+  - key: readability-static-accessed-through-instance.IgnoreThisMethods
+    value: 'false'

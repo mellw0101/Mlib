@@ -83,23 +83,13 @@
 
 
 #pragma endregion /** END: ANSI cursor Macros */
-#pragma region    /** @def Function Macros */
 
 
-#define FORCE_INLINE __attribute__((always_inline)) static __inline__
-#define UNUSED       __attribute__((unused))
-#define NORETURN     __attribute__((noreturn))
+#define FORCE_INLINE       __attribute__((always_inline)) static __inline__
+#define UNUSED             __attribute__((unused))
+#define NORETURN           __attribute__((noreturn))
 
-#pragma endregion /** END: Function Macros */
-#pragma region    /** @def String Macros */
-
-
-#define STRLITERAL(x) #x
-
-
-#pragma endregion /** END: String Macros */
-#pragma region    /** @def Bitwise operations for flags */
-
+#define STRLITERAL(x)      #x
 
 #define FLAGMASK(flag)     ((unsigned)1 << ((flag) % (sizeof(unsigned) * 8)))
 #define SET(flag)          FLAGS(flag) |= FLAGMASK(flag)
@@ -107,11 +97,6 @@
 #define ISSET(flag)        ((FLAGS(flag) & FLAGMASK(flag)) != 0)
 #define TOGGLE(flag)       FLAGS(flag) ^= FLAGMASK(flag)
 #define ISBITSET(var, bit) ((var & bit) == true)
-
-
-#pragma endregion /** END: Bitwise operations for flags */
-#pragma region    /** @def Class Macros */
-
 
 #define DELETE_MOVE_CONSTRUCTORS(class_name)       \
     class_name(class_name &&)            = delete; \
@@ -125,34 +110,14 @@
     DELETE_COPY_CONSTRUCTORS(class_name)              \
     DELETE_MOVE_CONSTRUCTORS(class_name)
 
-
-#pragma endregion /** END: Class Macros */
-#pragma region    /** @def Comment Macros */
-
-
-#define DEPRECATED(msg) [[deprecated(#msg)]]
-
-
-#pragma endregion /** END: Comment Macros */
-#pragma region    /** @def Utility Macros */
-
+#define DEPRECATED(msg)      [[deprecated(#msg)]]
 
 #define RE_CAST(type, value) reinterpret_cast<type>(value)
-
-
-#pragma endregion /** END: @def Utility Macros */
-#pragma endregion /** END: Macros */
-#pragma region    /** @def Includes */
 
 
 /// Included for @c size_t and @c ssize_t
 #include <cstdint>
 #include <sys/types.h>
-
-
-#pragma endregion /** END: Includes */
-#pragma region    /** @def Typedefs */
-
 
 using f64 = double;
 using f32 = float;
@@ -200,3 +165,18 @@ operator"" _KB(u128 value)
 {
     return value * 1024;
 }
+
+#define __FILENAME__ (std::strrchr(__FILE__, '/') ? std::strrchr(__FILE__, '/') + 1 : __FILE__)
+
+#define MAKE_CONSTEXPR_WRAPPER(_name, _type)     \
+    struct _name                                 \
+    {                                            \
+        _type value;                             \
+        constexpr _name(_type val)               \
+            : value(val)                         \
+        {}                                       \
+    };                                           \
+    constexpr _name _name##_Wrapper(_type value) \
+    {                                            \
+        return _name {value};                    \
+    }

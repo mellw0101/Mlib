@@ -1,7 +1,8 @@
 #include "../include/String.h"
 using namespace std;
 
-namespace Mlib::String {
+namespace Mlib::String
+{
     size_t
     findN(const string &str, const string &search, size_t n)
     {

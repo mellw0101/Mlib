@@ -14,7 +14,8 @@
 #include "def.h"
 using namespace std;
 
-namespace Mlib::Http {
+namespace Mlib::Http
+{
     class HttpClient
     {
     public:

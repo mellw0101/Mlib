@@ -3,6 +3,7 @@
 
 #include <cstring>
 #include <iostream>
+#include <spawn.h>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -12,19 +13,19 @@
 
 #include "def.h"
 
-using namespace std;
-
-namespace Mlib::Sys {
-    s8 run_binary(const string &binary_path, const vector<string> &args, const vector<string> &env_vars = {});
+namespace Mlib::Sys
+{
+    s8 run_binary(const std::string &binary_path, const std::vector<std::string> &args,
+                  const std::vector<std::string> &env_vars = {});
 
     class Prompt
     {
     public:
-        Prompt(const string &prompt);
-        operator string() const;
+        Prompt(const std::string &prompt);
+        operator std::string() const;
 
     private:
-        stringstream ss;
+        std::stringstream ss;
     };
 
     template <typename T>
@@ -73,4 +74,7 @@ namespace Mlib::Sys {
             std::cout << "Singleton destructor called" << std::endl;
         }
     };
+
+    s32 launch_child_process(const s8 *command);
+
 } // namespace Mlib::Sys

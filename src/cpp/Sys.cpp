@@ -1,69 +1,18 @@
 /// @file Sys.cpp
 #include "../include/Sys.h"
 
-namespace Mlib::Sys {
-    // s8
-    // run_binary(const string &binary_path, const vector<string> &args)
-    // {
-    //     s8 result = 0;
-
-    //     // Convert vector of arguments to array of C-strings
-    //     vector<char *> argv;
-    //     argv.push_back(const_cast<char *>(binary_path.c_str()));
-    //     for (const string &arg : args)
-    //     {
-    //         argv.push_back(const_cast<char *>(arg.c_str()));
-    //     }
-    //     // Null-terminate the array
-    //     argv.push_back(nullptr);
-
-    //     // Fork a new process
-    //     pid_t pid = fork();
-    //     if (pid == -1)
-    //     {
-    //         throw runtime_error("Failed to fork process");
-    //     }
-    //     else if (pid == 0)
-    //     {
-    //         // Child process: execute the binary
-    //         execvp(binary_path.c_str(), argv.data());
-
-    //         // If execvp returns, an error occurred
-    //         // throw an exception and exit the child process
-    //         throw runtime_error("Error: execvp failed to execute '" + binary_path + '\'');
-    //         exit(EXIT_FAILURE);
-    //     }
-    //     else
-    //     {
-    //         // Parent process: wait for the child to finish
-    //         int status;
-    //         waitpid(pid, &status, 0);
-    //         if (WIFEXITED(status))
-    //         {
-    //             result = WEXITSTATUS(status);
-    //             if (result != 0)
-    //             {
-    //                 throw runtime_error("Process exited with status " + to_string(result));
-    //             }
-    //         }
-    //         else
-    //         {
-    //             throw runtime_error("Process did not exit normally");
-    //         }
-    //     }
-    //     return result;
-    // }
-
-
+namespace Mlib::Sys
+{
     s8
-    run_binary(const string &binary_path, const vector<string> &args, const vector<string> &env_vars)
+    run_binary(const std::string &binary_path, const std::vector<std::string> &args,
+               const std::vector<std::string> &env_vars)
     {
         s8 result = 0;
 
         // Convert vector of arguments to array of C-strings
-        vector<char *> argv;
+        std::vector<char *> argv;
         argv.push_back(const_cast<char *>(binary_path.c_str()));
-        for (const string &arg : args)
+        for (const std::string &arg : args)
         {
             argv.push_back(const_cast<char *>(arg.c_str()));
         }
@@ -71,8 +20,8 @@ namespace Mlib::Sys {
         argv.push_back(nullptr);
 
         // Convert vector of environment variables to array of C-strings
-        vector<char *> envp;
-        for (const string &env_var : env_vars)
+        std::vector<char *> envp;
+        for (const std::string &env_var : env_vars)
         {
             envp.push_back(const_cast<char *>(env_var.c_str()));
         }
@@ -83,7 +32,7 @@ namespace Mlib::Sys {
         pid_t pid = fork();
         if (pid == -1)
         {
-            throw runtime_error("Failed to fork process");
+            throw std::runtime_error("Failed to fork process");
         }
         else if (pid == 0)
         {
@@ -98,7 +47,7 @@ namespace Mlib::Sys {
             }
 
             // If execvpe or execvp returns, an error occurred
-            throw runtime_error("Error: execvp failed to execute '" + binary_path + '\'');
+            throw std::runtime_error("Error: execvp failed to execute '" + binary_path + '\'');
             exit(EXIT_FAILURE);
         }
         else
@@ -111,36 +60,57 @@ namespace Mlib::Sys {
                 result = WEXITSTATUS(status);
                 if (result != 0)
                 {
-                    throw runtime_error("Process exited with status " + to_string(result));
+                    throw std::runtime_error("Process exited with status " + std::to_string(result));
                 }
             }
             else
             {
-                throw runtime_error("Process did not exit normally");
+                throw std::runtime_error("Process did not exit normally");
             }
         }
         return result;
     }
 
-#pragma region 'Prompt'
-
-
-    Prompt::Prompt(const string &prompt)
+    Prompt::Prompt(const std::string &prompt)
     {
-        string input;
-        cout << prompt;
-        getline(cin, input);
+        std::string input;
+        std::cout << prompt;
+        getline(std::cin, input);
         ss.str(input);
     }
 
-    Prompt::operator string() const
+    Prompt::operator std::string() const
     {
         return ss.str();
     }
 
-
-#pragma endregion
-
     template <typename T>
     Singleton<T> *Singleton<T>::instance = nullptr;
+
+    s32
+    launch_child_process(const s8 *command)
+    {
+        pid_t             pid;
+        posix_spawnattr_t attr;
+
+        std::string command_path = "/bin/" + std::string(command);
+
+        char *argv[] = {const_cast<char *>(command_path.c_str()), NULL};
+
+        posix_spawnattr_init(&attr);
+        posix_spawnattr_setpgroup(&attr, 0);
+
+        int result = posix_spawn(&pid, command_path.c_str(), NULL, &attr, argv, environ);
+        posix_spawnattr_destroy(&attr);
+
+        if (result == 0)
+        {
+            return 0;
+        }
+        else
+        {
+            return result;
+        }
+    }
+
 } // namespace Mlib::Sys

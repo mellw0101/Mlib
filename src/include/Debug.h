@@ -73,8 +73,6 @@
 #include <xcb/xinput.h>
 #include <xcb/xproto.h>
 
-extern bool NET_DEBUG;
-
 #include "constexpr.hpp"
 #include "def.h"
 
@@ -222,6 +220,17 @@ namespace Mlib::Debug
             return true;
         }
 
+        LogMessage
+        retrieve()
+        {
+            using namespace std;
+
+            lock_guard<mutex> guard(mutex_);
+            LogMessage        message = queue_.front();
+            queue_.pop();
+            return message;
+        }
+
     private:
         std::mutex             mutex_;
         std::queue<LogMessage> queue_;
@@ -270,35 +279,35 @@ namespace Mlib::Debug
     class Lout
     {
     private:
-        std::string_view   output_file;
-        LogLevel           currentLevel;
-        std::string        currentFunction;
-        std::string        current_file;
-        int                current_line;
-        std::ostringstream buffer;
-        std::mutex         log_mutex;
+        std::string_view   _output_file;
+        LogLevel           _level;
+        std::string        _function;
+        std::string        _file;
+        int                _line;
+        std::ostringstream _buffer;
+        std::mutex         _log_mutex;
 
-        static Lout *LoutInstance;
+        static Lout *_LoutInstance;
 
         static constexpr std::string_view
-        logPrefix(LogLevel level)
+        _logPrefix(LogLevel level)
         {
             return logLevelMap[level].key;
         }
 
         void
-        logMessage()
+        _logMessage()
         {
             using namespace std;
 
-            lock_guard<mutex> guard(log_mutex);
+            lock_guard<mutex> guard(_log_mutex);
 
-            ofstream file(output_file.data(), ios::app); // Append mode
+            ofstream file(_output_file.data(), ios::app); // Append mode
             if (file)
             {
-                file << TIME::mili() << ":" << logPrefix(currentLevel) << ":" << ESC_CODE_YELLOW
-                     << "[Line:" << current_line << "]" << ESC_CODE_RESET << ":" << ESC_CODE_MAGENTA << "["
-                     << currentFunction << "]" << ESC_CODE_RESET << ": " << buffer.str() << "\n";
+                file << TIME::mili() << ":" << _logPrefix(_level) << ":" << ESC_CODE_YELLOW << "[Line:" << _line << "]"
+                     << ESC_CODE_RESET << ":" << ESC_CODE_MAGENTA << "[" << _function << "]" << ESC_CODE_RESET << ": "
+                     << _buffer.str() << "\n";
             }
         }
 
@@ -310,28 +319,28 @@ namespace Mlib::Debug
         Lout &
         operator<<(LogLevel logLevel)
         {
-            currentLevel = logLevel;
+            _level = logLevel;
             return *this;
         }
 
         Lout &
         operator<<(const FuncName &funcName)
         {
-            currentFunction = funcName.value;
+            _function = funcName.value;
             return *this;
         }
 
         Lout &
         operator<<(const Line &line)
         {
-            current_line = line.value;
+            _line = line.value;
             return *this;
         }
 
         Lout &
         operator<<(const FileName &file_name)
         {
-            current_file = file_name.value;
+            _file = file_name.value;
             return *this;
         }
 
@@ -340,11 +349,11 @@ namespace Mlib::Debug
         {
             if (pf == static_cast<std::ostream &(*)(std::ostream &)>(std::endl))
             {
-                logMessage();
+                _logMessage();
                 //
                 //  Reset the buffer for new messages
                 //
-                buffer = std::ostringstream();
+                _buffer = std::ostringstream();
             }
             return *this;
         }
@@ -354,12 +363,12 @@ namespace Mlib::Debug
         {
             if (c == '\n')
             {
-                logMessage();
-                buffer = std::ostringstream(); // Reset the buffer for new messages
+                _logMessage();
+                _buffer = std::ostringstream(); // Reset the buffer for new messages
             }
             else
             {
-                buffer << c;
+                _buffer << c;
             }
             return *this;
         }
@@ -367,7 +376,7 @@ namespace Mlib::Debug
         Lout &
         operator<<(const ErrnoMsg &errno_msg)
         {
-            buffer << errno_msg.value;
+            _buffer << errno_msg.value;
             return *this;
         }
 
@@ -375,7 +384,7 @@ namespace Mlib::Debug
         typename std::enable_if<std::is_arithmetic<T>::value, Lout &>::type
         operator<<(T value)
         {
-            buffer << ESC_CODE_YELLOW << value << ESC_CODE_RESET;
+            _buffer << ESC_CODE_YELLOW << value << ESC_CODE_RESET;
             return *this;
         }
 
@@ -383,7 +392,7 @@ namespace Mlib::Debug
         typename std::enable_if<!std::is_arithmetic<T>::value, Lout &>::type
         operator<<(const T &message)
         {
-            buffer << message;
+            _buffer << message;
             return *this;
         }
 
@@ -393,7 +402,7 @@ namespace Mlib::Debug
         constexpr void
         setOutputFile(std::string_view path)
         {
-            output_file = path;
+            _output_file = path;
         }
     };
 
@@ -408,83 +417,25 @@ namespace Mlib::Debug
     class NetworkLogger
     {
     private:
-        long             _socket;
-        int              _connected;
-        std::string_view _address;
-        u32              _port;
-        sockaddr_in      _sock_addr;
+        s64         _socket;
+        sockaddr_in _socket_address;
+
+        bool _CONNECTED = false;
+        bool _NET_DEBUG = false;
+
+        static NetworkLogger *_NetworkLoggerInstance;
 
         NetworkLogger()
-            : _connected(false)
+            : _CONNECTED(false)
         {}
 
     public:
-        // Methods.
-        void
-        init(std::string_view address, s32 port)
-        {
-            if (NET_DEBUG == false)
-            {
-                return;
-            }
+        void init(std::string_view address, s32 port);
+        void enable();
+        void send_to_server(std::string_view input);
+        void destroy();
 
-            if ((_socket = socket(AF_INET, SOCK_STREAM, 0)) == -1)
-            {
-                perror("socket");
-                return;
-            }
-
-            _sock_addr.sin_family = AF_INET;
-            if (address == _address)
-            {
-                _sock_addr.sin_port = htons(_port);
-            }
-            else
-            {
-                _sock_addr.sin_port = htons(port);
-            }
-
-            if (inet_pton(AF_INET, address.data(), &_sock_addr.sin_addr) < 0)
-            {
-                perror("inet_pton");
-                return;
-            }
-
-            if (connect(_socket, (struct sockaddr *)&_sock_addr, sizeof(_sock_addr)) < 0)
-            {
-                perror("connect");
-                return;
-            }
-
-            _connected = true;
-        }
-
-        void
-        send_to_server(std::string_view input)
-        {
-            if (NET_DEBUG == false)
-            {
-                return;
-            }
-
-            if (!_connected)
-            {
-                return;
-            }
-
-            if (send(_socket, input.data(), input.length(), 0) < 0)
-            {
-                _connected = false;
-                return;
-            }
-
-            char s_char('\0');
-            if (send(_socket, &s_char, 1, 0) < 0)
-            {
-                _connected = false;
-                return;
-            }
-        }
+        static NetworkLogger *Instance();
     };
 
 } // namespace Mlib::Debug
@@ -499,49 +450,4 @@ namespace Mlib::Debug
 #define LoutE            LOUT << Mlib::Debug::ERROR << FUNC << LINE
 #define LoutErrno(__msg) LoutE << Mlib::Debug::Lout_errno_msg(__msg) << '\n'
 
-// #define ESP_SERVER           "192.168.0.29"
-// #define ESP_PORT             23
-// #define NET_LOG_MSG(message) "\033[33m" + message + "\033[0m"
-// #define FUNC_NAME_STR        string(__func__)
-// #define NET_LOG_FUNCTION     "\033[34m(FUNCTION) " + FUNC_NAME_STR + "\033[0m"
-// #define NET_LOG_WINDOW(window_name, window)                                                                      \
-//     "\033[35m(FUNCTION) " + FUNC_NAME_STR + ":\033[34m (WINDOW_NAME) " + window_name + ":\033[32m (uint32_t) " + \
-//         to_string(window) + "\033[0m"
-// #define WINDOW(window) to_string(window)
-// #define CLASS_NAME_RAW typeid(*this).name()
-// #define CLASS_NAME_STR string(CLASS_NAME_RAW)
-// /**
-//  *
-//  * @brief fetches the calling class's name and extracts a substr containing only
-//  * the class name
-//  *
-//  * NOTE: this only works for class's with prefix '__'
-//  *
-//  */
-// #define CLASS_NAME     CLASS_NAME_STR.substr(CLASS_NAME_STR.find("__"))
-// #define NET_LOG_CLASS  "\033[35m(CLASS) " + CLASS_NAME + "\033[0m"
-// // #define NET_LOG(__type) net_logger->send_to_server(__type)
-// #ifdef NET_LOG_ENABLED
-// #    define NET_LOG(__type) net_logger->send_to_server(__type)
-// #else
-// #    define NET_LOG(__type) (void)0
-// #endif
-// #ifdef NET_LOG_ENABLED
-// #    define INIT_NET_LOG(__address)      \
-//         net_logger = new __net_logger__; \
-//         net_logger->init(__address);
-// #else
-// #    define INIT_NET_LOG(__address) (void)0
-// #endif
-// #define NET_LOG_CLASS_FUNCTION_START() \
-//     NET_LOG(NET_LOG_CLASS + " -> " + NET_LOG_FUNCTION + " -> " + NET_LOG_MSG("Starting"))
-// #define NET_LOG_CLASS_FUNCTION_DONE() \
-//     NET_LOG(NET_LOG_CLASS + " -> " + NET_LOG_FUNCTION + " -> " + NET_LOG_MSG("Done!!!"))
-// #define loutNUM(__variable)           "(\033[33m" << __variable << "\033[0m)"
-// #define loutCFUNC(__calling_function) "calling_function(\033[35m" << __calling_function << "\033[0m)"
-// #define lout_error_code(__error_code) "\033[31merror_code\033[0m" << __error_code
-// #define loutCEcode(__error_code)      lout_error_code(__error_code) << " " << loutCFUNC(__calling_function)
-// #define loutPath(__path)              "(\033[32m" << __path << "\033[0m)"
-// #define loutUser(__user)              "(" << log_BLUE << __user << log_RESET << ")"
-// #define loutEND                       '\n'
-// #define Var_(_Var)                    #_Var << ' ' << _Var
+#define NETLOGGER        Mlib::Debug::NetworkLogger::Instance()

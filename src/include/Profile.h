@@ -38,11 +38,12 @@ namespace Mlib::Profile
         /// @returns void
         void record(f64 value);
 
-        /// @name @c mean
-        /// @brief
-        /// - Calculates the mean of the recorded
-        /// - values.
-        /// @returns ( double )
+        //
+        //  -  Calculates the mean of the recorded
+        //  -  values.
+        //
+        //  @return f64 ( double )
+        //
         f64 mean() const;
 
         /// @name @c stddev
@@ -96,6 +97,9 @@ namespace Mlib::Profile
         void destroy();
         void setOutputFile(std::string_view file_path);
 
+        std::map<std::string, ProfilerStats> getStatsCopy() const;
+        std::vector<std::string>             retrveFormatedStrVecStats() const;
+
         [[__nodiscard__("GlobalProfiler::Instance()")]]
         static GlobalProfiler *Instance();
 
@@ -105,7 +109,7 @@ namespace Mlib::Profile
     class AutoTimer
     {
     public:
-        AutoTimer(std::string const &name);
+        AutoTimer(const std::string &name);
         ~AutoTimer();
 
     private:
@@ -118,8 +122,14 @@ namespace Mlib::Profile
     //  This means that the report will be generated at the end of the program.
     //  Note that this function must be called before any profiling is done,
     //  otherwise the report will not be generated.
-    //  The report is generated in the file path
+    //  @param file_path (std::string_view)
+    //  - The path to the file where the report will be generated.
     //
     void setupReportGeneration(std::string_view file_path);
 
 } // namespace Mlib::Profile
+
+#define GLOBALPROFILER                Mlib::Profile::GlobalProfiler::Instance()
+#define PROFILE_CURRENT_SCOPE(__Name) Mlib::Profile::AutoTimer PROFILE_CURRENT_SCOPE__(__Name)
+#define PROFILE_FUNCTION              PROFILE_CURRENT_SCOPE(__FUNCTION__)
+#define PROFILE_SCOPE                 PROFILE_CURRENT_SCOPE(__PRETTY_FUNCTION__)

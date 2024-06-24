@@ -1,6 +1,7 @@
 #pragma once
 
 
+#include <algorithm>
 #pragma region /** @def Macros */
 #pragma region /** @def Color Macros */
 
@@ -114,7 +115,13 @@
 
 #define RE_CAST(type, value) reinterpret_cast<type>(value)
 
-#define ERRNO_STR            std::string(std::strerror(errno))
+//
+//  Some macros for ease of use for errno handling.
+//
+#define ERRNO_C_STR          std::strerror(errno)
+#define ERRNO_STR            std::string(ERRNO_C_STR)
+#define ERRNO_CODE_STR       std::to_string(errno)
+#define PERROR(__FUNCTION)   std::perror(#__FUNCTION)
 
 /// Included for @c size_t and @c ssize_t
 #include <cstdint>

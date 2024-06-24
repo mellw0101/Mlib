@@ -4,6 +4,9 @@
 /// - profiling classes and functions.
 #include "../include/Profile.h"
 
+using namespace std;
+using namespace chrono;
+
 namespace Mlib::Profile
 {
     /// @class @c ProfilerStats
@@ -84,19 +87,25 @@ namespace Mlib::Profile
     }
 
     void
-    GlobalProfiler::record(const std::string &name, const f64 duration)
+    GlobalProfiler ::record(const string &name, const f64 duration)
     {
         stats[name].record(duration);
     }
 
     void
-    GlobalProfiler::setOutputFile(std::string_view file_path)
+    GlobalProfiler ::setOutputFile(string_view file_path)
     {
         output_file = file_path;
     }
 
+    map<string, ProfilerStats>
+    GlobalProfiler ::getStatsCopy() const
+    {
+        return stats;
+    }
+
     std::string
-    makeNamePadding(const std::string &s)
+    makeNamePadding(const string &s)
     {
         std::stringstream ss;
         for (int i = 0; (i + s.length()) < 30; ++i)
@@ -144,8 +153,8 @@ namespace Mlib::Profile
         file << "\n\nProfiling report: " << mili() << '\n';
         for (const auto &pair : stats)
         {
-            file << pair.first << makeNamePadding(pair.first) << ": Mean = " << pair.second.mean() << " ms, "
-                 <<                                               /* makeDoublePadding(pair.second.mean())   << */
+            file << pair.first << makeNamePadding(pair.first) <<  /*  */
+                ": Mean = " << pair.second.mean() << " ms, " <<   /* makeDoublePadding(pair.second.mean())   << */
                 "Stddev = " << pair.second.stddev() << " ms, " << /* makeDoublePadding(pair.second.stddev()) << */
                 "   Min = " << pair.second.min() << " ms, " <<    /* makeDoublePadding(pair.second.min())    << */
                 "   Max = " << pair.second.max() << " ms, " <<    /* makeDoublePadding(pair.second.max())    << */
@@ -154,14 +163,26 @@ namespace Mlib::Profile
         }
 
         file.close();
+    }
 
-        // for (const auto &i : stats)
-        // {
-        //     std::ofstream File("/home/mellw/gprof/" + i.first.data(), std::ios::app);
-        //     File << i.second.mean() << ':' << i.second.stddev() << ':' << i.second.min() << ':' << i.second.max() <<
-        //     ':'
-        //          << i.second.count() << ':' << "\n";
-        // }
+    vector<string>
+    GlobalProfiler ::retrveFormatedStrVecStats() const
+    {
+        vector<string> formated_stats;
+        formated_stats.push_back("\n\nProfiling report: " + mili() + '\n');
+        for (const auto &pair : stats)
+        {
+            std::stringstream ss;
+            ss << pair.first << makeNamePadding(pair.first) <<    /*  */
+                ": Mean = " << pair.second.mean() << " ms, " <<   /* makeDoublePadding(pair.second.mean())   << */
+                "Stddev = " << pair.second.stddev() << " ms, " << /* makeDoublePadding(pair.second.stddev()) << */
+                "   Min = " << pair.second.min() << " ms, " <<    /* makeDoublePadding(pair.second.min())    << */
+                "   Max = " << pair.second.max() << " ms, " <<    /* makeDoublePadding(pair.second.max())    << */
+                " Count = " << pair.second.count() <<             /* makeDoublePadding(pair.second.count())  << */
+                "\n";
+            formated_stats.push_back(ss.str());
+        }
+        return formated_stats;
     }
 
     GlobalProfiler *
@@ -176,27 +197,27 @@ namespace Mlib::Profile
 
     /// @class @c AutoTimer
 
-    AutoTimer ::AutoTimer(std::string const &name)
+    AutoTimer ::AutoTimer(string const &name)
         : name(name)
-        , start(std::chrono::high_resolution_clock::now())
+        , start(high_resolution_clock::now())
     {}
 
     AutoTimer ::~AutoTimer()
     {
-        auto end = std::chrono::high_resolution_clock::now();
-
-        std::chrono::duration<double, std::milli> duration = end - start;
-        GlobalProfiler::Instance()->record(name, duration.count());
+        auto                    end      = high_resolution_clock::now();
+        duration<double, milli> duration = end - start;
+        GLOBALPROFILER->record(name, duration.count());
     }
 
     void
     setupReportGeneration(std::string_view file_path)
     {
-        GlobalProfiler::Instance()->setOutputFile(file_path);
+        GLOBALPROFILER->setOutputFile(file_path);
         atexit(
             []
             {
-                GlobalProfiler::Instance()->report();
+                GLOBALPROFILER->report();
+                GLOBALPROFILER->destroy();
             });
     }
 } // namespace Mlib::Profile

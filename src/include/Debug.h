@@ -293,25 +293,25 @@ namespace Mlib::Debug
 
         static Lout *_LoutInstance;
 
-        static constexpr std::string_view
-        _logPrefix(LogLevel level)
-        {
-            return logLevelMap[level].key;
-        }
-
         void
         _logMessage()
         {
             using namespace std;
 
+            //
+            //  Lock the mutex to ensure thread safety.
+            //
             lock_guard<mutex> guard(_log_mutex);
 
-            ofstream file(_output_file.data(), ios::app); // Append mode
+            //
+            //  Open the outputfile in append mode.
+            //
+            ofstream file(_output_file.data(), ios::app);
             if (file)
             {
-                file << TIME::mili() << ":" << _logPrefix(_level) << ":" << ESC_CODE_YELLOW << "[Line:" << _line << "]"
-                     << ESC_CODE_RESET << ":" << ESC_CODE_MAGENTA << "[" << _function << "]" << ESC_CODE_RESET << ": "
-                     << _buffer.str() << "\n";
+                file << TIME::mili() << ":" << logLevelMap[_level].key << ":" << ESC_CODE_YELLOW << "[Line:" << _line
+                     << "]" << ESC_CODE_RESET << ":" << ESC_CODE_MAGENTA << "[" << _function << "]" << ESC_CODE_RESET
+                     << ": " << _buffer.str() << "\n";
             }
         }
 
@@ -413,7 +413,7 @@ namespace Mlib::Debug
     inline ErrnoMsg
     Lout_errno_msg(std::string_view str)
     {
-        std::string s = std::string(str) + ": " + std::strerror(errno) + " (errno: " + std::to_string(errno) + ")";
+        std::string s = std::string(str) + ": " + ERRNO_C_STR + " (errno: " + std::to_string(errno) + ")";
         const char *c = &s[0];
         return {c};
     }

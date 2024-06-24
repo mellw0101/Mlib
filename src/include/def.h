@@ -114,6 +114,7 @@
 
 #define RE_CAST(type, value) reinterpret_cast<type>(value)
 
+#define ERRNO_STR            std::string(std::strerror(errno))
 
 /// Included for @c size_t and @c ssize_t
 #include <cstdint>

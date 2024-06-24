@@ -1,21 +1,21 @@
 #pragma once
 
+#include <cstring>
 #include <stdexcept>
 #include <string>
 #include <vector>
 
 #include "def.h"
-using namespace std;
 
 
-namespace Mlib::Args
+namespace Mlib ::Args
 {
     /// @name argvToStrVec
     /// @brief Converts the command line arguments to a vector of strings.
     /// @param argc The number of arguments.
     /// @param argv The arguments.
     /// @returns vector<string>
-    vector<string> argvToStrVec(int argc, char **argv);
+    std::vector<std::string> argvToStrVec(int argc, char **argv);
 
     /// @name flagValue
     /// @brief
@@ -27,7 +27,7 @@ namespace Mlib::Args
     /// @param argV
     /// - The arguments.
     /// @returns string
-    string flagValue(const string &flag, int argC, char **argV);
+    std::string flagValue(const std::string &flag, int argC, char **argV);
 
     /// @name flagExists
     /// @brief
@@ -39,7 +39,7 @@ namespace Mlib::Args
     /// @param argV
     /// - The arguments.
     /// @returns bool
-    bool flagExists(const string &flag, int argC, char **argV);
+    bool flagExists(const std::string &flag, int argC, char **argV);
 
     /// @name flagValuesToStrVec
     /// @brief
@@ -54,7 +54,7 @@ namespace Mlib::Args
     /// @note
     /// - The flags must be in the form "--flag=value".
     /// - The flag values replace the flags in the vector.
-    vector<string> flagValuesToStrVec(vector<string> &flagVec, int argC, char **argV);
+    std::vector<std::string> flagValuesToStrVec(std::vector<std::string> &flagVec, int argC, char **argV);
 
     /// @name strVecFromStr
     /// @brief
@@ -64,7 +64,7 @@ namespace Mlib::Args
     /// @param delim
     /// - The delimiter.
     /// @returns vector<string>
-    vector<string> strVecFromStr(const string &str, char delim);
+    std::vector<std::string> strVecFromStr(const std::string &str, char delim);
 
     /// @name strFromStrVec
     /// @brief
@@ -72,13 +72,24 @@ namespace Mlib::Args
     /// @param strVec
     /// - The vector of strings.
     /// @returns string
-    string strFromStrVec(const vector<string> &strVec);
+    std::string strFromStrVec(const std::vector<std::string> &strVec);
 
     template <typename T>
     void
-    eraseFromVector(vector<T> &vec, const T &objToErase)
+    eraseFromVector(std::vector<T> &vec, const T &objToErase)
     {
         vec.erase(std::remove(vec.begin(), vec.end(), objToErase), vec.end());
     }
+
+    //
+    //  Helper function to split a command str into a tokens and create a vector<string_views>
+    //
+    std::vector<std::string_view> tokenizeCommand(std::string_view command);
+
+    //
+    //  Function to construct the argument list for the execv function.
+    //  This function also adds a filename to the argument list.
+    //
+    void constructArgumentListWFile(char **&arguments, std::string_view command, std::string_view filename);
 
 }; // namespace Mlib::Args

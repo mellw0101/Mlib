@@ -1,4 +1,5 @@
 #include "../include/Args.h"
+
 using namespace std;
 
 namespace Mlib::Args
@@ -119,6 +120,85 @@ namespace Mlib::Args
             str.pop_back();
         }
         return str;
+    }
+
+    vector<string_view>
+    tokenizeCommand(string_view command)
+    {
+        vector<string_view> tokens;
+
+        u64 start = 0;
+        u64 end   = command.find(' ');
+
+        while (end != std::string_view::npos)
+        {
+            if (end != start)
+            {
+                tokens.emplace_back(command.substr(start, end - start));
+            }
+            start = end + 1;
+            end   = command.find(' ', start);
+        }
+
+        if (start < command.size())
+        {
+            tokens.emplace_back(command.substr(start));
+        }
+
+        return tokens;
+    }
+
+    void
+    constructArgumentListWFile(s8 **&arguments, string_view command, string_view file_name)
+    {
+        auto tokens = tokenizeCommand(command);
+        //
+        //  +1 for filename, +1 for nullptr terminator
+        //
+        s32 count = tokens.size() + 2;
+        //
+        //  Allocate memory for the char* array
+        //
+        arguments = new char *[count];
+
+        //
+        //  Copy tokens to the char* array
+        //
+        u64 i = 0;
+        for (; i < tokens.size(); ++i)
+        {
+            const auto &token = tokens[i];
+            s8         *arg   = new s8[token.size() + 1];
+            std::memcpy(arg, token.data(), token.size());
+            arg[token.size()] = '\0';
+            arguments[i]      = arg;
+        }
+
+        //
+        //  Add the filename
+        //
+        s8 *file_arg = new s8[file_name.size() + 1];
+        std::memcpy(file_arg, file_name.data(), file_name.size());
+        file_arg[file_name.size()] = '\0';
+        arguments[i++]             = file_arg;
+
+        //
+        //  Add the nullptr terminator
+        //
+        arguments[i] = nullptr;
+    }
+
+    // Function to clean up the allocated memory
+    //
+    //
+    void
+    freeArgumentList(s8 **arguments)
+    {
+        for (size_t i = 0; arguments[i] != nullptr; ++i)
+        {
+            delete[] arguments[i];
+        }
+        delete[] arguments;
     }
 
 } // namespace Mlib::Args

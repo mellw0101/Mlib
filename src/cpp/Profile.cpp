@@ -70,10 +70,29 @@ namespace Mlib::Profile
 
     GlobalProfiler *GlobalProfiler::instance = nullptr;
 
+    GlobalProfiler ::GlobalProfiler()
+    {}
+
+    void
+    GlobalProfiler ::destroy()
+    {
+        if (instance != nullptr)
+        {
+            delete instance;
+            instance = nullptr;
+        }
+    }
+
     void
     GlobalProfiler::record(const std::string &name, const f64 duration)
     {
         stats[name].record(duration);
+    }
+
+    void
+    GlobalProfiler::setOutputFile(std::string_view file_path)
+    {
+        output_file = file_path;
     }
 
     std::string
@@ -119,9 +138,9 @@ namespace Mlib::Profile
     }
 
     void
-    GlobalProfiler ::report(std::string const &filename)
+    GlobalProfiler ::report()
     {
-        std::ofstream file(filename, std::ios::app);
+        std::ofstream file(output_file, std::ios::app);
         file << "\n\nProfiling report: " << mili() << '\n';
         for (const auto &pair : stats)
         {
@@ -136,12 +155,13 @@ namespace Mlib::Profile
 
         file.close();
 
-        for (const auto &i : stats)
-        {
-            std::ofstream File("/home/mellw/gprof/" + i.first, std::ios::app);
-            File << i.second.mean() << ':' << i.second.stddev() << ':' << i.second.min() << ':' << i.second.max() << ':'
-                 << i.second.count() << ':' << "\n";
-        }
+        // for (const auto &i : stats)
+        // {
+        //     std::ofstream File("/home/mellw/gprof/" + i.first.data(), std::ios::app);
+        //     File << i.second.mean() << ':' << i.second.stddev() << ':' << i.second.min() << ':' << i.second.max() <<
+        //     ':'
+        //          << i.second.count() << ':' << "\n";
+        // }
     }
 
     GlobalProfiler *
@@ -170,12 +190,13 @@ namespace Mlib::Profile
     }
 
     void
-    setupReportGeneration()
+    setupReportGeneration(std::string_view file_path)
     {
+        GlobalProfiler::Instance()->setOutputFile(file_path);
         atexit(
             []
             {
-                GlobalProfiler::Instance()->report("/home/mellw/profiling_report.txt");
+                GlobalProfiler::Instance()->report();
             });
     }
 } // namespace Mlib::Profile

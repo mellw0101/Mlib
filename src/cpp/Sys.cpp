@@ -128,4 +128,15 @@ namespace Mlib::Sys
         }
     }
 
+    u64
+    retriveSysLogicCores()
+    {
+        u64 sys_cores = sysconf(_SC_NPROCESSORS_ONLN);
+        if (sys_cores == -1)
+        {
+            throw std::runtime_error("Failed to retrieve system logic cores" + ERRNO_STR);
+        }
+        return sys_cores;
+    }
+
 } // namespace Mlib::Sys

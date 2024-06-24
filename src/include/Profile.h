@@ -83,28 +83,23 @@ namespace Mlib::Profile
 
     class GlobalProfiler
     {
+    private:
+        std::map<std::string, ProfilerStats> stats;
+        std::string                          output_file;
+        static GlobalProfiler               *instance;
+
+        GlobalProfiler();
+
     public:
-        void record(std::string const &name, double duration);
-        void report(std::string const &filename);
+        void record(const std::string &name, double duration);
+        void report();
+        void destroy();
+        void setOutputFile(std::string_view file_path);
 
         [[__nodiscard__("GlobalProfiler::Instance()")]]
         static GlobalProfiler *Instance();
 
-        // Prevent copy-construction and assignment
-        DELETE_COPY_CONSTRUCTORS(GlobalProfiler);
-
-        // Prevent move-construction and assignment
-        DELETE_MOVE_CONSTRUCTORS(GlobalProfiler);
-
-        // Destructor
-        ~GlobalProfiler()
-        {}
-
-    private:
-        std::map<std::string, ProfilerStats> stats;
-        static GlobalProfiler               *instance;
-        GlobalProfiler()
-        {}
+        DELETE_COPY_AND_MOVE_CONSTRUCTORS(GlobalProfiler);
     };
 
     class AutoTimer
@@ -118,10 +113,13 @@ namespace Mlib::Profile
         std::chrono::time_point<std::chrono::high_resolution_clock> start;
     };
 
-    /// @name @c setupReportGeneration
-    /// @brief
-    /// - Sets up the generation of the profiling
-    /// - report at the end of the program.
-    /// @returns void
-    void setupReportGeneration();
+    //
+    //  Sets up the generation of the profiling.
+    //  This means that the report will be generated at the end of the program.
+    //  Note that this function must be called before any profiling is done,
+    //  otherwise the report will not be generated.
+    //  The report is generated in the file path
+    //
+    void setupReportGeneration(std::string_view file_path);
+
 } // namespace Mlib::Profile

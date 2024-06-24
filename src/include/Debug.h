@@ -12,6 +12,7 @@
 #include <netinet/ip_icmp.h>
 #include <sstream>
 #include <thread>
+#include <unistd.h>
 
 #include "constexpr.hpp"
 #include "def.h"

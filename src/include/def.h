@@ -130,10 +130,11 @@
 using f64 = double;
 using f32 = float;
 
-using s64 = int_least64_t;
-using s32 = int_least32_t;
-using s16 = int_least16_t;
-using s8  = char;
+using s64   = int_least64_t;
+using s32   = int_least32_t;
+using s16   = int_least16_t;
+using s8    = char;
+using SigS8 = int_least8_t;
 
 using u128 = unsigned long long;
 using u64  = uint_least64_t;

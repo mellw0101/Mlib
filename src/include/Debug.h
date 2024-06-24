@@ -20,6 +20,7 @@
 #include <cstring>
 #include <dbus-c++-1/dbus-c++/dbus.h>
 #include <dirent.h>
+#include <errno.h>
 #include <exception>
 #include <fcntl.h>
 #include <features.h>
@@ -34,6 +35,8 @@
 #include <mutex> // Added for thread safety
 #include <netdb.h>
 #include <netinet/in.h>
+#include <netinet/ip.h>
+#include <netinet/ip_icmp.h>
 #include <png.h>
 #include <pulse/pulseaudio.h>
 #include <ratio>
@@ -44,6 +47,7 @@
 #include <stdexcept>
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <string>
 #include <sys/cdefs.h>
@@ -397,7 +401,7 @@ namespace Mlib::Debug
         }
 
         static Lout &Instance();
-        void         Destroy();
+        void         destroy();
 
         constexpr void
         setOutputFile(std::string_view path)
@@ -414,6 +418,8 @@ namespace Mlib::Debug
         return {c};
     }
 
+    MAKE_CONSTEXPR_WRAPPER(NetworkLoggerEndl, s8)
+
     class NetworkLogger
     {
     private:
@@ -423,11 +429,13 @@ namespace Mlib::Debug
         bool _CONNECTED = false;
         bool _NET_DEBUG = false;
 
-        static NetworkLogger *_NetworkLoggerInstance;
+        std::stringstream _buffer;
 
-        NetworkLogger()
-            : _CONNECTED(false)
-        {}
+        static NetworkLogger *_NetworkLoggerInstance;
+        NetworkLogger();
+
+        u16  checksum(void *b, s32 len);
+        bool ping(std::string_view ip);
 
     public:
         void init(std::string_view address, s32 port);
@@ -435,19 +443,34 @@ namespace Mlib::Debug
         void send_to_server(std::string_view input);
         void destroy();
 
-        static NetworkLogger *Instance();
+        NetworkLogger &operator<<(const NetworkLoggerEndl &endl);
+
+        template <typename T>
+        NetworkLogger &
+        operator<<(T value)
+        {
+            _buffer << value;
+            return Instance();
+        }
+
+        static NetworkLogger &Instance();
     };
 
 } // namespace Mlib::Debug
 
-#define LOUT             Mlib::Debug::Lout::Instance()
-
+//
+//  Macros for logging
+//
 #define FUNC             Mlib::Debug::FuncName_Wrapper(__func__)
 #define LINE             Mlib::Debug::Line_Wrapper(__LINE__)
 #define FILE_NAME        Mlib::Debug::FileName_Wrapper(__FILENAME__)
-
+#define LOUT             Mlib::Debug::Lout::Instance()
 #define LoutI            LOUT << Mlib::Debug::INFO << FUNC << LINE
 #define LoutE            LOUT << Mlib::Debug::ERROR << FUNC << LINE
 #define LoutErrno(__msg) LoutE << Mlib::Debug::Lout_errno_msg(__msg) << '\n'
 
+//
+//  Macro to get the NetworkLogger instance
+//
 #define NETLOGGER        Mlib::Debug::NetworkLogger::Instance()
+#define NETLOG_ENDL      Mlib::Debug::NetworkLoggerEndl_Wrapper('\n')

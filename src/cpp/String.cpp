@@ -3,11 +3,11 @@ using namespace std;
 
 namespace Mlib::String
 {
-    size_t
-    findN(const string &str, const string &search, size_t n)
+    u64
+    findN(const string &str, const string &search, u64 n)
     {
-        size_t pos = 0;
-        for (size_t i = 0; i < n; ++i)
+        u64 pos = 0;
+        for (u64 i = 0; i < n; ++i)
         {
             pos = str.find(search, pos);
             if (pos == string::npos)

@@ -15,7 +15,8 @@
 
 #include "def.h"
 
-namespace Mlib::Profile {
+namespace Mlib::Profile
+{
     /// @class @c ProfilerStats
     /// @brief
     /// - This class is used to store the profiling

@@ -1,9 +1,9 @@
 #include "../include/Threads.h"
 
-namespace Mlib::Threads
+namespace Mlib ::Threads
 {
 
-    ThreadPool::ThreadPool(size_t threads)
+    ThreadPool ::ThreadPool(size_t threads)
         : stop(false)
     {
         for (size_t i = 0; i < threads; ++i)
@@ -36,7 +36,7 @@ namespace Mlib::Threads
         }
     }
 
-    ThreadPool::~ThreadPool()
+    ThreadPool ::~ThreadPool()
     {
         {
             std::unique_lock<std::mutex> lock(queueMutex);

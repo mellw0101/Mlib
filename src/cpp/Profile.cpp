@@ -4,7 +4,8 @@
 /// - profiling classes and functions.
 #include "../include/Profile.h"
 
-namespace Mlib::Profile {
+namespace Mlib::Profile
+{
     /// @class @c ProfilerStats
     /// Functions:
     /// - record(double value)
@@ -118,7 +119,7 @@ namespace Mlib::Profile {
     }
 
     void
-    GlobalProfiler::report(std::string const &filename)
+    GlobalProfiler ::report(std::string const &filename)
     {
         std::ofstream file(filename, std::ios::app);
         file << "\n\nProfiling report: " << mili() << '\n';
@@ -144,9 +145,9 @@ namespace Mlib::Profile {
     }
 
     GlobalProfiler *
-    GlobalProfiler::Instance()
+    GlobalProfiler ::Instance()
     {
-        if (instance == nullptr)
+        if (!instance)
         {
             instance = new GlobalProfiler;
         }
@@ -155,12 +156,12 @@ namespace Mlib::Profile {
 
     /// @class @c AutoTimer
 
-    AutoTimer::AutoTimer(std::string const &name)
+    AutoTimer ::AutoTimer(std::string const &name)
         : name(name)
         , start(std::chrono::high_resolution_clock::now())
     {}
 
-    AutoTimer::~AutoTimer()
+    AutoTimer ::~AutoTimer()
     {
         auto end = std::chrono::high_resolution_clock::now();
 

@@ -1,7 +1,8 @@
 #include "../include/Args.h"
 using namespace std;
 
-namespace Mlib::Args {
+namespace Mlib::Args
+{
     vector<string>
     argvToStrVec(int argc, char **argv)
     {
@@ -119,4 +120,5 @@ namespace Mlib::Args {
         }
         return str;
     }
+
 } // namespace Mlib::Args

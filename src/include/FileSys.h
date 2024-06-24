@@ -20,7 +20,8 @@
 
 using namespace std;
 
-namespace Mlib::FileSys {
+namespace Mlib::FileSys
+{
     enum Mode : u8
     {
         NONE            = (0),

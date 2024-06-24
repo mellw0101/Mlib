@@ -6,7 +6,8 @@
 #include <stdexcept>
 #include "def.h"
 
-namespace Mlib::Math {
+namespace Mlib::Math
+{
     /// @name clamp
     /// @brief
     ///   - Clamps a value of x to the range [ a, b ].

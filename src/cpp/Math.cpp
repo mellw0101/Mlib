@@ -4,7 +4,7 @@
 
 using namespace std;
 
-namespace Mlib::Math
+namespace Mlib ::Math
 {
     f64
     clamp(f64 a, f64 b, f64 x)
@@ -25,4 +25,5 @@ namespace Mlib::Math
     {
         return -initialVelocity * restitutionCoefficient;
     }
+
 } // namespace Mlib::Math

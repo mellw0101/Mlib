@@ -41,7 +41,7 @@ namespace Mlib::Sys
 
     public:
         static Singleton *
-        getInstance(T val)
+        Instance(T val)
         {
             if (instance == nullptr)
             {

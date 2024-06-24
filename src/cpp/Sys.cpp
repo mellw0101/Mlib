@@ -16,19 +16,27 @@ namespace Mlib::Sys
         {
             argv.push_back(const_cast<char *>(arg.c_str()));
         }
-        // Null-terminate the array
+        //
+        //  Null-terminate the array
+        //
         argv.push_back(nullptr);
 
-        // Convert vector of environment variables to array of C-strings
+        //
+        //  Convert vector of environment variables to array of C-strings
+        //
         std::vector<char *> envp;
         for (const std::string &env_var : env_vars)
         {
             envp.push_back(const_cast<char *>(env_var.c_str()));
         }
-        // Null-terminate the array
+        //
+        //  Null-terminate the array
+        //
         envp.push_back(nullptr);
 
-        // Fork a new process
+        //
+        //  Fork a new process
+        //
         pid_t pid = fork();
         if (pid == -1)
         {
@@ -36,7 +44,9 @@ namespace Mlib::Sys
         }
         else if (pid == 0)
         {
-            // Child process: set environment variables if any
+            //
+            //  Child process: set environment variables if any
+            //
             if (!env_vars.empty())
             {
                 execvpe(binary_path.c_str(), argv.data(), envp.data());
@@ -46,14 +56,18 @@ namespace Mlib::Sys
                 execvp(binary_path.c_str(), argv.data());
             }
 
-            // If execvpe or execvp returns, an error occurred
+            //
+            //  If execvpe or execvp returns, an error occurred
+            //
             throw std::runtime_error("Error: execvp failed to execute '" + binary_path + '\'');
             exit(EXIT_FAILURE);
         }
         else
         {
-            // Parent process: wait for the child to finish
-            int status;
+            //
+            //  Parent process: wait for the child to finish
+            //
+            s32 status;
             waitpid(pid, &status, 0);
             if (WIFEXITED(status))
             {
@@ -68,10 +82,11 @@ namespace Mlib::Sys
                 throw std::runtime_error("Process did not exit normally");
             }
         }
+
         return result;
     }
 
-    Prompt::Prompt(const std::string &prompt)
+    Prompt ::Prompt(const std::string &prompt)
     {
         std::string input;
         std::cout << prompt;
@@ -79,7 +94,7 @@ namespace Mlib::Sys
         ss.str(input);
     }
 
-    Prompt::operator std::string() const
+    Prompt ::operator std::string() const
     {
         return ss.str();
     }

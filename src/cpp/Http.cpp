@@ -3,9 +3,10 @@
 
 using namespace std;
 
-namespace Mlib::Http {
+namespace Mlib::Http
+{
     /// @class @c HttpClient
-    HttpClient::HttpClient(const string &host, const string &path)
+    HttpClient ::HttpClient(const string &host, const string &path)
         : host_(host)
         , path_(path)
     {
@@ -20,7 +21,7 @@ namespace Mlib::Http {
     }
 
     string
-    HttpClient::get()
+    HttpClient ::get()
     {
         int sockfd = socket(AF_INET, SOCK_STREAM, 0);
         if (sockfd < 0)
@@ -56,13 +57,13 @@ namespace Mlib::Http {
     }
 
     /// @class @c CurlHttpClient
-    CurlHttpClient::CurlHttpClient()
+    CurlHttpClient ::CurlHttpClient()
     {
         curl_global_init(CURL_GLOBAL_DEFAULT);
         curl_ = curl_easy_init();
     }
 
-    CurlHttpClient::~CurlHttpClient()
+    CurlHttpClient ::~CurlHttpClient()
     {
         if (curl_)
         {
@@ -72,14 +73,14 @@ namespace Mlib::Http {
     }
 
     size_t
-    CurlHttpClient::writeCallback(void *contents, size_t size, size_t nmemb, void *userp)
+    CurlHttpClient ::writeCallback(void *contents, size_t size, size_t nmemb, void *userp)
     {
         ((string *)userp)->append((char *)contents, size * nmemb);
         return size * nmemb;
     }
 
     string
-    CurlHttpClient::get(const string &url)
+    CurlHttpClient ::get(const string &url)
     {
         if (!curl_)
         {

@@ -15,13 +15,13 @@ namespace Mlib::Sdl2
     /// @struct @c Object2D Function Definitions
 
     void
-    Object2D::init(ObjectData2D const &data)
+    Object2D ::init(ObjectData2D const &data)
     {
         this->data = data;
     }
 
     void
-    Object2D::move(Vec2D vel)
+    Object2D ::move(Vec2D vel)
     {
         vel.x = (data.position.x + data.w + vel.x >= SCREEN_WIDTH) ? SCREEN_WIDTH - data.position.x - data.w : vel.x;
         vel.y = (data.position.y + data.h + vel.y >= SCREEN_HEIGHT) ? SCREEN_HEIGHT - data.position.y - data.h : vel.y;
@@ -32,7 +32,7 @@ namespace Mlib::Sdl2
     }
 
     void
-    Object2D::draw(SDL_Renderer *renderer) const
+    Object2D ::draw(SDL_Renderer *renderer) const
     {
         SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
         SDL_Rect currentRect = rect();
@@ -40,27 +40,27 @@ namespace Mlib::Sdl2
     }
 
     bool
-    Object2D::isStatic() const
+    Object2D ::isStatic() const
     {
         return data.state & State::STATIC;
     }
 
     SDL_Rect
-    Object2D::rect() const
+    Object2D ::rect() const
     {
         SDL_Rect rect = {static_cast<int>(data.position.x), static_cast<int>(data.position.y), data.w, data.h};
         return rect;
     }
 
     SDL_FRect
-    Object2D::frect() const
+    Object2D ::frect() const
     {
         return {static_cast<f32>(data.position.x), static_cast<f32>(data.position.y), static_cast<f32>(data.w),
                 static_cast<f32>(data.h)};
     }
 
     u32
-    Object2D::state(u32 stateToCheck) const noexcept
+    Object2D ::state(u32 stateToCheck) const noexcept
     {
         if (stateToCheck)
         {
@@ -70,7 +70,7 @@ namespace Mlib::Sdl2
     }
 
     void
-    Object2D::updateVelocity()
+    Object2D ::updateVelocity()
     {
         // Calculate velocity change due to acceleration
         Vec2D const velocityChange = GravityVec * timePerFrame;
@@ -82,10 +82,8 @@ namespace Mlib::Sdl2
         data.position += data.velocity;
     }
 
-    /// @class @c Core Function Definitions
-
     void
-    Object2D::onStaticObjCollision(Object2D const &obj, Vec2D velVecToApply)
+    Object2D ::onStaticObjCollision(Object2D const &obj, Vec2D velVecToApply)
     {
         f32 const X = data.position.x;
         f32 const Y = data.position.y;
@@ -103,15 +101,17 @@ namespace Mlib::Sdl2
         }
     }
 
+    /// @class @c Core Function Definitions
+
     void
-    Core::createObject(const Object2D &object)
+    Core ::createObject(const Object2D &object)
     {
         Object2D *nObj = new Object2D {object};
         objects.emplace_back(nObj);
     }
 
     int
-    Core::init()
+    Core ::init()
     {
         initSDL();
         createWindow();
@@ -121,7 +121,7 @@ namespace Mlib::Sdl2
     }
 
     int
-    Core::initSDL()
+    Core ::initSDL()
     {
         if (SDL_Init(SDL_INIT_VIDEO) < 0)
         {
@@ -132,7 +132,7 @@ namespace Mlib::Sdl2
     }
 
     int
-    Core::createWindow()
+    Core ::createWindow()
     {
         window = SDL_CreateWindow(window_title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
                                   SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
@@ -145,7 +145,7 @@ namespace Mlib::Sdl2
     }
 
     int
-    Core::createRenderer()
+    Core ::createRenderer()
     {
         renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
         if (!renderer)
@@ -158,7 +158,7 @@ namespace Mlib::Sdl2
     }
 
     void
-    Core::setupKeys()
+    Core ::setupKeys()
     {
         KeyObject::Instance()->addActionForKey(
             SDL_SCANCODE_W,
@@ -223,7 +223,7 @@ namespace Mlib::Sdl2
     }
 
     int
-    Core::run()
+    Core ::run()
     {
         init();
         while (running)
@@ -245,7 +245,7 @@ namespace Mlib::Sdl2
     }
 
     void
-    Core::cleanup()
+    Core ::cleanup()
     {
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
@@ -253,13 +253,13 @@ namespace Mlib::Sdl2
     }
 
     void
-    Core::logic()
+    Core ::logic()
     {
         KeyObject::Instance()->handleKeyEvent();
     }
 
     void
-    Core::applyPhysics()
+    Core ::applyPhysics()
     {
         for (auto &object : objects)
         {
@@ -295,14 +295,14 @@ namespace Mlib::Sdl2
     }
 
     void
-    Core::clear()
+    Core ::clear()
     {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
     }
 
     void
-    Core::draw()
+    Core ::draw()
     {
         for (auto const &object : objects)
         {
@@ -311,14 +311,14 @@ namespace Mlib::Sdl2
     }
 
     void
-    Core::update()
+    Core ::update()
     {
         SDL_RenderPresent(renderer);    // Update screen
         SDL_Delay(timePerFrame * 1000); // Approximately 60 frames per second
     }
 
     void
-    Core::pollForEvents()
+    Core ::pollForEvents()
     {
         while (SDL_PollEvent(&event))
         {
@@ -330,38 +330,38 @@ namespace Mlib::Sdl2
     }
 
     void
-    Core::stop()
+    Core ::stop()
     {
         running = false;
     }
 
     u32
-    Core::getCurrentFrameCount() const noexcept
+    Core ::getCurrentFrameCount() const noexcept
     {
         return frames;
     }
 
     u32 *
-    Core::getCurrentFrameCountPtr() noexcept
+    Core ::getCurrentFrameCountPtr() noexcept
     {
         return &frames;
     }
 
     void
-    Core::setTitle(string const &title)
+    Core ::setTitle(string const &title)
     {
         window_title = title;
         SDL_SetWindowTitle(window, window_title.c_str());
     }
 
     vector<Object2D *> &
-    Core::getObjects()
+    Core ::getObjects()
     {
         return objects;
     }
 
     Core *
-    Core::Instance()
+    Core ::Instance()
     {
         if (CoreInstance == nullptr)
         {

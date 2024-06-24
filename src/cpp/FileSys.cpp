@@ -5,7 +5,7 @@ using namespace std;
 
 namespace fs = std::filesystem;
 
-namespace Mlib::FileSys
+namespace Mlib ::FileSys
 {
     string
     fileContentToStr(const string &filename)

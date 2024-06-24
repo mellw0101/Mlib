@@ -11,7 +11,8 @@ using namespace std;
 
 #define ASSERT_STATEMENT(x) x ? void(0) : throw std::invalid_argument("Assertion failed: " #x)
 
-namespace Mlib::Assert {
+namespace Mlib::Assert
+{
     //
     /// @brief
     ///  -  Asserts that the given condition is true.

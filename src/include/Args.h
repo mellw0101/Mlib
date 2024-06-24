@@ -8,7 +8,8 @@
 using namespace std;
 
 
-namespace Mlib::Args {
+namespace Mlib::Args
+{
     /// @name argvToStrVec
     /// @brief Converts the command line arguments to a vector of strings.
     /// @param argc The number of arguments.

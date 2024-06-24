@@ -15,7 +15,8 @@
 using namespace std;
 
 
-namespace Mlib::Sdl2 {
+namespace Mlib::Sdl2
+{
     extern int SCREEN_WIDTH;
     extern int SCREEN_HEIGHT;
 

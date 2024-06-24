@@ -11,7 +11,8 @@
 
 using namespace std;
 
-namespace Mlib::Atomic {
+namespace Mlib::Atomic
+{
     template <typename T>
     class Atomic
     {

@@ -3,10 +3,10 @@
 
 namespace Mlib::Debug
 {
-    Lout *Lout::_LoutInstance = nullptr;
+    Lout *Lout ::_LoutInstance = nullptr;
 
     Lout &
-    Lout::Instance()
+    Lout ::Instance()
     {
         using namespace std;
 
@@ -19,7 +19,7 @@ namespace Mlib::Debug
     }
 
     void
-    Lout::Destroy()
+    Lout ::destroy()
     {
         if (_LoutInstance != nullptr)
         {
@@ -28,25 +28,119 @@ namespace Mlib::Debug
         }
     }
 
-    NetworkLogger *NetworkLogger::_NetworkLoggerInstance = nullptr;
+    NetworkLogger *NetworkLogger ::_NetworkLoggerInstance = nullptr;
 
-    NetworkLogger *
-    NetworkLogger::Instance()
+    NetworkLogger ::NetworkLogger()
+        : _CONNECTED(false)
+    {}
+
+    static constexpr u8 PACKET_SIZE = 64;
+    static constexpr u8 TIMEOUT     = 1;
+
+    u16
+    NetworkLogger ::checksum(void *b, s32 len)
+    {
+        u16 *buf = static_cast<u16 *>(b);
+        u16  result;
+        u32  sum = 0;
+
+        for (sum = 0; len > 1; len -= 2)
+        {
+            sum += *buf++;
+        }
+        if (len == 1)
+        {
+            sum += *(u8 *)buf;
+        }
+        sum = (sum >> 16) + (sum & 0xFFFF);
+        sum += (sum >> 16);
+        result = ~sum;
+        return result;
+    }
+
+    bool
+    NetworkLogger ::ping(std::string_view ip)
+    {
+        struct sockaddr_in addr;
+        struct icmp        icmp_hdr;
+        struct timeval     timeout = {TIMEOUT, 0};
+        struct sockaddr_in r_addr;
+
+        socklen_t addr_len = sizeof(r_addr);
+
+        s32 sockfd;
+        s8  packet[PACKET_SIZE];
+
+        if ((sockfd = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP)) < 0)
+        {
+            perror("socket");
+            return false;
+        }
+
+        addr.sin_family      = AF_INET;
+        addr.sin_addr.s_addr = inet_addr(ip.data());
+
+        memset(&icmp_hdr, 0, sizeof(icmp_hdr));
+        icmp_hdr.icmp_type  = ICMP_ECHO;
+        icmp_hdr.icmp_code  = 0;
+        icmp_hdr.icmp_cksum = 0;
+        icmp_hdr.icmp_id    = getpid();
+        icmp_hdr.icmp_seq   = 1;
+
+        memcpy(packet, &icmp_hdr, sizeof(icmp_hdr));
+        icmp_hdr.icmp_cksum = checksum(packet, sizeof(icmp_hdr));
+        memcpy(packet, &icmp_hdr, sizeof(icmp_hdr));
+
+        if (setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout)) < 0)
+        {
+            perror("setsockopt");
+            close(sockfd);
+            return false;
+        }
+
+        if (sendto(sockfd, packet, sizeof(icmp_hdr), 0, (struct sockaddr *)&addr, sizeof(addr)) <= 0)
+        {
+            perror("sendto");
+            close(sockfd);
+            return false;
+        }
+
+        if (recvfrom(sockfd, packet, PACKET_SIZE, 0, (struct sockaddr *)&r_addr, &addr_len) <= 0)
+        {
+            if (errno == EAGAIN)
+            {
+                close(sockfd);
+                return false;
+            }
+            else
+            {
+                perror("recvfrom");
+                close(sockfd);
+                return false;
+            }
+        }
+
+        close(sockfd);
+        return true;
+    }
+
+    NetworkLogger &
+    NetworkLogger ::Instance()
     {
         using namespace std;
 
-        if (_NetworkLoggerInstance == nullptr)
+        if (!_NetworkLoggerInstance)
         {
             lock_guard<mutex> lock(mutex);
             _NetworkLoggerInstance = new NetworkLogger();
         }
-        return _NetworkLoggerInstance;
+        return *_NetworkLoggerInstance;
     }
 
     void
-    NetworkLogger::init(std::string_view address, s32 port)
+    NetworkLogger ::init(std::string_view address, s32 port)
     {
-        if (_NET_DEBUG == false)
+        if (!_NET_DEBUG)
         {
             return;
         }
@@ -76,13 +170,13 @@ namespace Mlib::Debug
     }
 
     void
-    NetworkLogger::enable()
+    NetworkLogger ::enable()
     {
         _NET_DEBUG = true;
     }
 
     void
-    NetworkLogger::send_to_server(std::string_view input)
+    NetworkLogger ::send_to_server(std::string_view input)
     {
         if (!_NET_DEBUG || !_CONNECTED)
         {
@@ -97,13 +191,21 @@ namespace Mlib::Debug
     }
 
     void
-    NetworkLogger::destroy()
+    NetworkLogger ::destroy()
     {
         if (_NetworkLoggerInstance != nullptr)
         {
             delete _NetworkLoggerInstance;
             _NetworkLoggerInstance = nullptr;
         }
+    }
+
+    NetworkLogger &
+    NetworkLogger ::operator<<(const NetworkLoggerEndl &endl)
+    {
+        send_to_server(_buffer.str());
+        _buffer.str("");
+        return Instance();
     }
 
 } // namespace Mlib::Debug

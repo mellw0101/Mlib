@@ -8,7 +8,9 @@
 #include <cstring>
 #include <filesystem>
 #include <fstream>
+#include <iostream>
 #include <netinet/ip_icmp.h>
+#include <sstream>
 #include <thread>
 
 #include "constexpr.hpp"

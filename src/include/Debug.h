@@ -4,78 +4,12 @@
 #include <sys/socket.h>
 #include <sys/stat.h>
 
-#include <Imlib2.h>
-#include <X11/X.h>
-#include <X11/Xauth.h>
-#include <X11/keysym.h>
-#include <algorithm> // For std::remove_if
 #include <arpa/inet.h>
-#include <array>
-#include <atomic>
-#include <chrono>
-#include <cmath>
-#include <cstddef>
-#include <cstdint>
-#include <cstdlib>
 #include <cstring>
-#include <dbus-c++-1/dbus-c++/dbus.h>
-#include <dirent.h>
-#include <errno.h>
-#include <exception>
-#include <fcntl.h>
-#include <features.h>
 #include <filesystem>
 #include <fstream>
-#include <functional>
-#include <ifaddrs.h>
-#include <iostream>
-#include <iterator>
-#include <iwlib.h>
-#include <map>
-#include <mutex> // Added for thread safety
-#include <netdb.h>
-#include <netinet/in.h>
-#include <netinet/ip.h>
 #include <netinet/ip_icmp.h>
-#include <png.h>
-#include <pulse/pulseaudio.h>
-#include <ratio>
-#include <regex>
-#include <spawn.h>
-#include <sstream>
-#include <stdbool.h>
-#include <stdexcept>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <string>
-#include <sys/cdefs.h>
-#include <sys/socket.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <sys/un.h>
-#include <sys/wait.h> // For waitpid()
-#include <sys/wait.h>
 #include <thread>
-#include <type_traits>
-#include <unistd.h>
-#include <unistd.h> // For fork() and exec()
-#include <unistd.h>
-#include <unordered_map>
-#include <utility>
-#include <vector>
-#include <xcb/randr.h>
-#include <xcb/render.h>
-#include <xcb/xcb.h>
-#include <xcb/xcb_cursor.h> // For cursor
-#include <xcb/xcb_ewmh.h>
-#include <xcb/xcb_icccm.h>
-#include <xcb/xcb_image.h>
-#include <xcb/xcb_keysyms.h>
-#include <xcb/xcb_xrm.h>
-#include <xcb/xinput.h>
-#include <xcb/xproto.h>
 
 #include "constexpr.hpp"
 #include "def.h"

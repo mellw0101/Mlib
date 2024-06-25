@@ -178,6 +178,64 @@ namespace Mlib::Constexpr
         return constexpr_strcmp(&lhs[0], rhs);
     }
 
+    constexpr s32
+    constexpr_tolower(s32 ch)
+    {
+        return (ch >= 'A' && ch <= 'Z') ? (ch + 'a' - 'A') : ch;
+    }
+
+    constexpr s32
+    constexpr_strcasecmp(const s32 *s1, const s32 *s2)
+    {
+        while (*s1 && *s2)
+        {
+            const s32 c1 = constexpr_tolower(*s1);
+            const s32 c2 = constexpr_tolower(*s2);
+            if (c1 != c2)
+            {
+                return c1 - c2;
+            }
+            ++s1;
+            ++s2;
+        }
+        return constexpr_tolower(*s1) - constexpr_tolower(*s2);
+    }
+
+    //
+    //  Returns 0 if the strings are equal,
+    //  a positive number if s1 is greater than s2,
+    //  and a negative number if s1 is less than s2
+    //
+    constexpr int
+    constexpr_strncasecmp(const s8 *s1, const s8 *s2, u64 n)
+    {
+        u64 i = 0;
+        while (i < n && *s1 && *s2)
+        {
+            s32 c1 = constexpr_tolower(*s1);
+            s32 c2 = constexpr_tolower(*s2);
+            if (c1 != c2)
+            {
+                return c1 - c2;
+            }
+            ++s1;
+            ++s2;
+            ++i;
+        }
+        if (i < n)
+        {
+            if (*s1)
+            {
+                // s1 is longer than s2
+                return 1;
+            }
+            if (*s2)
+            {
+                return -1; // s2 is longer than s1
+            }
+        }
+        return 0;
+    }
 } // namespace Mlib::Constexpr
 
 //

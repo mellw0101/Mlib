@@ -226,23 +226,29 @@ namespace Mlib::Constexpr
         {
             if (*s1)
             {
-                // s1 is longer than s2
+                //
+                //  's1' is longer than 's2'
+                //
                 return 1;
             }
             if (*s2)
             {
-                return -1; // s2 is longer than s1
+                //
+                //  's2' is longer than 's1'
+                //
+                return -1;
             }
         }
         return 0;
     }
+
 } // namespace Mlib::Constexpr
 
 //
 //  Some useful aliases for the Constexpr namespace
 //
 #define CONSTEXPR_STRING     constexpr Mlib::Constexpr::String
-#define CONSTEXPR_ARRAY      constexpr Mlib::Constexpr::Array
+#define CONSTEXPR_ARRAY      constexpr std::array
 #define CONSTEXPR_MAP        constexpr Mlib::Constexpr::ConstexprMap
 #define CONSTEXPR_STRBITMAP  constexpr Mlib::Constexpr::ConstexprStrBitfieldMap
 #define CONSTEXPR_HASHBITMAP constexpr Mlib::Constexpr::ConstexprHashBitfieldMap

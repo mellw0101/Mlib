@@ -88,7 +88,7 @@ namespace Mlib::Constexpr
     //  Compile-time string comparison function
     //
     constexpr bool
-    constexpr_strcmp(const s8 *str1, const s8 *str2)
+    strcmp(const s8 *str1, const s8 *str2)
     {
         while (*str1 && (*str1 == *str2))
         {
@@ -99,7 +99,7 @@ namespace Mlib::Constexpr
     }
 
     constexpr s32
-    constexpr_strncmp(const s8 *s1, const s8 *s2, u64 n)
+    strncmp(const s8 *s1, const s8 *s2, u64 n)
     {
         for (std::size_t i = 0; i < n; ++i)
         {
@@ -129,7 +129,7 @@ namespace Mlib::Constexpr
 
     template <u64 N>
     constexpr void
-    constexpr_strncpy(char (&dest)[N], const s8 *src, u64 count)
+    strncpy(char (&dest)[N], const s8 *src, u64 count)
     {
         u64 i = 0;
         for (; i < count && src[i] != '\0'; ++i)
@@ -140,6 +140,15 @@ namespace Mlib::Constexpr
         {
             dest[i] = '\0';
         }
+    }
+
+    constexpr u64
+    strlen(const s8 *str)
+    {
+        u64 i = 0;
+        for (; str[i]; ++i)
+        {}
+        return i;
     }
 
     template <std::size_t N>
@@ -179,18 +188,18 @@ namespace Mlib::Constexpr
     }
 
     constexpr s32
-    constexpr_tolower(s32 ch)
+    tolower(s32 ch)
     {
         return (ch >= 'A' && ch <= 'Z') ? (ch + 'a' - 'A') : ch;
     }
 
     constexpr s32
-    constexpr_strcasecmp(const s32 *s1, const s32 *s2)
+    strcasecmp(const s32 *s1, const s32 *s2)
     {
         while (*s1 && *s2)
         {
-            const s32 c1 = constexpr_tolower(*s1);
-            const s32 c2 = constexpr_tolower(*s2);
+            const s32 c1 = tolower(*s1);
+            const s32 c2 = tolower(*s2);
             if (c1 != c2)
             {
                 return c1 - c2;
@@ -198,7 +207,7 @@ namespace Mlib::Constexpr
             ++s1;
             ++s2;
         }
-        return constexpr_tolower(*s1) - constexpr_tolower(*s2);
+        return tolower(*s1) - tolower(*s2);
     }
 
     //
@@ -206,14 +215,14 @@ namespace Mlib::Constexpr
     //  a positive number if s1 is greater than s2,
     //  and a negative number if s1 is less than s2
     //
-    constexpr int
-    constexpr_strncasecmp(const s8 *s1, const s8 *s2, u64 n)
+    constexpr s32
+    strncasecmp(const s8 *s1, const s8 *s2, u64 n)
     {
         u64 i = 0;
         while (i < n && *s1 && *s2)
         {
-            s32 c1 = constexpr_tolower(*s1);
-            s32 c2 = constexpr_tolower(*s2);
+            s32 c1 = tolower(*s1);
+            s32 c2 = tolower(*s2);
             if (c1 != c2)
             {
                 return c1 - c2;

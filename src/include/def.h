@@ -130,17 +130,16 @@
 using f64 = double;
 using f32 = float;
 
-using s64   = int_least64_t;
-using s32   = int_least32_t;
-using s16   = int_least16_t;
+using s64   = int64_t;
+using s32   = int32_t;
+using s16   = int16_t;
 using s8    = char;
-using SigS8 = int_least8_t;
+using SigS8 = int8_t;
 
-using u128 = unsigned long long;
-using u64  = uint_least64_t;
-using u32  = uint_least32_t;
-using u16  = uint_least16_t;
-using u8   = uint_least8_t;
+using u64 = uint64_t;
+using u32 = uint32_t;
+using u16 = uint16_t;
+using u8  = uint8_t;
 
 #pragma endregion /** END: Typedefs */
 
@@ -169,8 +168,11 @@ constexpr u8  u8_MIN  = 0x00;
 constexpr s8  s8_MAX  = 0x7F;
 constexpr s8  s8_MIN  = 0x80;
 
+constexpr auto FAILURE = 1;
+constexpr auto SUCCESS = 0;
+
 constexpr u64
-operator"" _KB(u128 value)
+operator"" _KB(unsigned long long value)
 {
     return value * 1024;
 }
@@ -189,3 +191,11 @@ operator"" _KB(u128 value)
     {                                            \
         return _name {value};                    \
     }
+
+#define VISIBILITY(V) __attribute__((__visibility__(#V)))
+
+#define ARRAY         std::array
+#define VECTOR        std::vector
+#define STRING        std::string
+#define STRING_VIEW   std::string_view
+#define PAIR          std::pair

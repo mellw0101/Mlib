@@ -10,22 +10,15 @@ using namespace chrono;
 namespace Mlib::Profile
 {
     /// @class @c ProfilerStats
-    /// Functions:
-    /// - record(double value)
-    /// - mean() const
-    /// - stddev() const
-    /// - min() const
-    /// - max() const
-    /// - count() const
 
     void
-    ProfilerStats::record(f64 const value)
+    ProfilerStats ::record(f64 const value)
     {
         values.push_back(value);
     }
 
     double
-    ProfilerStats::mean() const
+    ProfilerStats ::mean() const
     {
         if (values.empty())
         {
@@ -36,7 +29,7 @@ namespace Mlib::Profile
     }
 
     double
-    ProfilerStats::stddev() const
+    ProfilerStats ::stddev() const
     {
         if (values.size() < 2)
         {
@@ -52,19 +45,19 @@ namespace Mlib::Profile
     }
 
     f64
-    ProfilerStats::min() const
+    ProfilerStats ::min() const
     {
         return values.empty() ? 0.0 : *std::min_element(values.begin(), values.end());
     }
 
     f64
-    ProfilerStats::max() const
+    ProfilerStats ::max() const
     {
         return values.empty() ? 0.0 : *std::max_element(values.begin(), values.end());
     }
 
     size_t
-    ProfilerStats::count() const
+    ProfilerStats ::count() const
     {
         return values.size();
     }

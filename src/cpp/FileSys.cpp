@@ -217,21 +217,27 @@ namespace Mlib ::FileSys
     }
 
     bool
-    exists(const string &path)
+    exists(STRING_VIEW path)
     {
         return fs::exists(path);
     }
 
     bool
-    isDir(const string &path)
+    isDir(STRING_VIEW path)
     {
         return fs::is_directory(path);
     }
 
     bool
-    isFile(const string &path)
+    isFile(STRING_VIEW path)
     {
         return fs::is_regular_file(path);
+    }
+
+    bool
+    isSymLink(STRING_VIEW path)
+    {
+        return fs::is_symlink(path);
     }
 
     time_t

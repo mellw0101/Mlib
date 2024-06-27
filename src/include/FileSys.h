@@ -18,7 +18,6 @@
 
 #include "def.h"
 
-using namespace std;
 
 namespace Mlib::FileSys
 {
@@ -29,9 +28,9 @@ namespace Mlib::FileSys
         NO_THROW        = (1 << 1),
     };
 
-    auto           fileContentToStr(const string &filename) -> string;
-    vector<string> fileContentToStrVec(const string &filename, const u8 mode = NONE);
-    auto           fileContentToFile(const string &sourcePath, const string &destinationPath) -> void;
+    auto           fileContentToStr(const STRING &filename) -> STRING;
+    VECTOR<STRING> fileContentToStrVec(const STRING &filename, const u8 mode = NONE);
+    auto           fileContentToFile(const STRING &sourcePath, const STRING &destinationPath) -> void;
 
     /// @name dirContentToStrVec
     /// @brief
@@ -40,11 +39,11 @@ namespace Mlib::FileSys
     /// - The path to the directory.
     /// @returns vector<string>
     /// - The content of the directory as a vector of strings.
-    vector<string> dirContentToStrVec(string const &path);
+    VECTOR<STRING> dirContentToStrVec(const STRING &path);
 
-    string currentWorkingDir();
+    STRING currentWorkingDir();
 
-    void cd(const string &path);
+    void cd(const STRING &path);
 
     /// @name mkdir
     /// @brief
@@ -62,18 +61,18 @@ namespace Mlib::FileSys
     ///  - ( runtime_error ) - If path is directory.
     ///  - ( runtime_error ) - If the directory cannot be created.
     ///  - ( runtime_error ) - If the directory already exists.
-    void mkdir(const string &path, u8 mode = NONE);
+    void mkdir(const STRING &path, u8 mode = NONE);
 
-    void   rmdir(const string &path);
-    void   rmFile(const string &path);
-    void   touch(const string &path);
-    bool   exists(const string &path);
-    bool   isDir(const string &path);
-    bool   isFile(const string &path);
-    time_t fileLastWriteTime(const string &path);
-    string fileLastWriteTimeStr(const string &path);
-    string fileLastWriteTimeStr(const string &path, const string &format);
-    size_t fileSize(const string &path);
+    void   rmdir(const STRING &path);
+    void   rmFile(const STRING &path);
+    void   touch(const STRING &path);
+    bool   exists(STRING_VIEW path);
+    bool   isDir(STRING_VIEW path);
+    bool   isFile(STRING_VIEW path);
+    time_t fileLastWriteTime(const STRING &path);
+    STRING fileLastWriteTimeStr(const STRING &path);
+    STRING fileLastWriteTimeStr(const STRING &path, const STRING &format);
+    size_t fileSize(const STRING &path);
 
     /// @name strVecToFile
     /// @brief
@@ -88,7 +87,15 @@ namespace Mlib::FileSys
     ///  - ( runtime_error ) - If the file cannot be written to.
     ///  - ( runtime_error ) - If the file cannot be closed.
     ///  - ( runtime_error ) - If the file is a dir.
-    void writeStrVecToFile(const string &path, const vector<string> &lines);
+    void writeStrVecToFile(const STRING &path, const VECTOR<STRING> &lines);
 
-    bool doesFileExistInDirs(const string &name, const vector<string> &dirPathsVec, const string &fileExtention = "");
+    bool doesFileExistInDirs(const STRING &name, const VECTOR<STRING> &dirPathsVec, const STRING &fileExtention = "");
+
+    [[nodiscard]]
+    inline bool
+    is_regular_file(STRING_VIEW p, ERROR_CODE &ec) _NO_THROW
+    {
+        return FS::is_regular_file(p, ec);
+    }
+
 } // namespace Mlib::FileSys

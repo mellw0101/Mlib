@@ -199,3 +199,6 @@ operator"" _KB(unsigned long long value)
 #define STRING        std::string
 #define STRING_VIEW   std::string_view
 #define PAIR          std::pair
+#define ERROR_CODE    std::error_code
+#define _NO_THROW     noexcept
+#define FS            std::filesystem

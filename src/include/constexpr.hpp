@@ -251,6 +251,44 @@ namespace Mlib::Constexpr
         return 0;
     }
 
+    constexpr s8 *
+    strchr(s8 *str, s8 ch)
+    {
+        while (*str)
+        {
+            if (*str == ch)
+            {
+                return str;
+            }
+            ++str;
+        }
+        return nullptr;
+    }
+
+    constexpr const s8 *
+    strchr(const s8 *str, s8 ch)
+    {
+        while (*str)
+        {
+            if (*str == ch)
+            {
+                return str;
+            }
+            ++str;
+        }
+        return nullptr;
+    }
+
+    namespace Chars
+    {
+        constexpr bool
+        isblank(s8 ch)
+        {
+            return ch == ' ' || ch == '\t';
+        }
+
+    } // namespace Chars
+
 } // namespace Mlib::Constexpr
 
 //

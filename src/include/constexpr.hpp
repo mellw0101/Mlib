@@ -2,16 +2,6 @@
 
 #include "def.h"
 
-#include <array>
-// #include <cstdint>
-// #include <iostream>
-// #include <stdexcept>
-// #include <string>
-// #include <cmath>
-#include <string_view>
-// #include <vector>
-// #include <unordered_map>
-
 namespace Mlib::Constexpr
 {
     template <typename T1, typename T2>
@@ -26,36 +16,8 @@ namespace Mlib::Constexpr
         {}
     };
 
-    template <typename T1, typename T2, u64 SIZE>
-    struct Map
-    {
-        std::array<MapEntry<T1, T2>, SIZE> map;
-
-        constexpr Map(std::initializer_list<MapEntry<T1, T2>> map, size_t size)
-            : map((std::array<MapEntry<T1, T2>, map.size()>)map)
-        {}
-
-        constexpr MapEntry<T1, T2> &
-        operator[](size_t index)
-        {
-            return map[index];
-        }
-
-        constexpr const MapEntry<T1, T2> &
-        operator[](size_t index) const
-        {
-            return map[index];
-        }
-    };
-
     template <typename T1, typename T2, u64 Size>
-    using ConstexprMap = std::array<MapEntry<T1, T2>, Size>;
-
-    template <u64 Size>
-    using ConstexprHashBitfieldMap = ConstexprMap<u64, u32, Size>;
-
-    template <u64 Size>
-    using ConstexprStrBitfieldMap = ConstexprMap<std::string_view, u32, Size>;
+    using Map = ARRAY<MapEntry<T1, T2>, Size>;
 
     constexpr u64
     fnv1a_32(const s8 *s, u64 count)
@@ -319,6 +281,55 @@ namespace Mlib::Constexpr
         return nullptr;
     }
 
+    //
+    //  Helper function to compare two characters case-insensitively
+    //
+    static constexpr bool char_equal_ignore_case(s8 a, s8 b) HIDDEN;
+    static constexpr bool
+    char_equal_ignore_case(s8 a, s8 b)
+    {
+        return tolower(a) == tolower(b);
+    }
+
+    //
+    //  Helper function to check if a string starts with another string, case-insensitively
+    //
+    static constexpr bool starts_with_ignore_case(C_s8 *str, C_s8 *prefix) HIDDEN;
+    static constexpr bool
+    starts_with_ignore_case(C_s8 *str, C_s8 *prefix)
+    {
+        while (*prefix)
+        {
+            if (!char_equal_ignore_case(*str++, *prefix++))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    //
+    //  The constexpr version of strcasestr
+    //
+    constexpr C_s8 *
+    strcasestr(C_s8 *haystack, C_s8 *needle)
+    {
+        if (!*needle)
+        {
+            return haystack;
+        }
+
+        while (*haystack)
+        {
+            if (starts_with_ignore_case(haystack, needle))
+            {
+                return haystack;
+            }
+            ++haystack;
+        }
+
+        return nullptr;
+    }
 
     namespace Chars
     {
@@ -328,6 +339,227 @@ namespace Mlib::Constexpr
             return ch == ' ' || ch == '\t';
         }
 
+        //
+        //  Helper function to check if a character is a combining character
+        //
+        static constexpr bool is_combining_character(c32 ucs) HIDDEN;
+        static constexpr bool
+        is_combining_character(c32 ucs)
+        {
+            // Comprehensive Unicode combining characters ranges
+            return (ucs >= 0x0300 && ucs <= 0x036F) || (ucs >= 0x1AB0 && ucs <= 0x1AFF) ||
+                   (ucs >= 0x1DC0 && ucs <= 0x1DFF) || (ucs >= 0x20D0 && ucs <= 0x20FF) ||
+                   (ucs >= 0xFE20 && ucs <= 0xFE2F) || (ucs >= 0x0591 && ucs <= 0x05BD) || (ucs == 0x05BF) ||
+                   (ucs >= 0x05C1 && ucs <= 0x05C2) || (ucs >= 0x05C4 && ucs <= 0x05C5) || (ucs == 0x05C7) ||
+                   (ucs >= 0x0610 && ucs <= 0x061A) || (ucs >= 0x064B && ucs <= 0x065F) || (ucs == 0x0670) ||
+                   (ucs >= 0x06D6 && ucs <= 0x06DC) || (ucs >= 0x06DF && ucs <= 0x06E4) ||
+                   (ucs >= 0x06E7 && ucs <= 0x06E8) || (ucs >= 0x06EA && ucs <= 0x06ED) ||
+                   (ucs >= 0x0711 && ucs <= 0x073F) || (ucs >= 0x07A6 && ucs <= 0x07B0) ||
+                   (ucs >= 0x07EB && ucs <= 0x07F3) || (ucs >= 0x0816 && ucs <= 0x0819) ||
+                   (ucs >= 0x081B && ucs <= 0x0823) || (ucs >= 0x0825 && ucs <= 0x0827) ||
+                   (ucs >= 0x0829 && ucs <= 0x082D) || (ucs >= 0x0859 && ucs <= 0x085B) ||
+                   (ucs >= 0x08D3 && ucs <= 0x08E1) || (ucs >= 0x08E3 && ucs <= 0x0903) ||
+                   (ucs >= 0x093A && ucs <= 0x093C) || (ucs >= 0x093E && ucs <= 0x094F) ||
+                   (ucs >= 0x0951 && ucs <= 0x0957) || (ucs >= 0x0962 && ucs <= 0x0963) ||
+                   (ucs >= 0x0981 && ucs <= 0x0983) || (ucs == 0x09BC) || (ucs == 0x09BE) ||
+                   (ucs >= 0x09C0 && ucs <= 0x09C4) || (ucs >= 0x09C7 && ucs <= 0x09C8) ||
+                   (ucs >= 0x09CB && ucs <= 0x09CD) || (ucs == 0x09D7) || (ucs >= 0x09E2 && ucs <= 0x09E3) ||
+                   (ucs == 0x09FE) || (ucs >= 0x0A01 && ucs <= 0x0A03) || (ucs == 0x0A3C) || (ucs == 0x0A3E) ||
+                   (ucs >= 0x0A40 && ucs <= 0x0A42) || (ucs >= 0x0A47 && ucs <= 0x0A48) ||
+                   (ucs >= 0x0A4B && ucs <= 0x0A4D) || (ucs >= 0x0A51 && ucs <= 0x0A52) ||
+                   (ucs >= 0x0A70 && ucs <= 0x0A71) || (ucs >= 0x0A75 && ucs <= 0x0A82) ||
+                   (ucs >= 0x0ABC && ucs <= 0x0ACD) || (ucs >= 0x0AE2 && ucs <= 0x0AE3) || (ucs == 0x0AFA) ||
+                   (ucs >= 0x0B01 && ucs <= 0x0B03) || (ucs >= 0x0B3C && ucs <= 0x0B4D) ||
+                   (ucs >= 0x0B56 && ucs <= 0x0B57) || (ucs >= 0x0B62 && ucs <= 0x0B63) ||
+                   (ucs >= 0x0B82 && ucs <= 0x0BC0) || (ucs >= 0x0BCD && ucs <= 0x0C4A) ||
+                   (ucs >= 0x0C55 && ucs <= 0x0C56) || (ucs >= 0x0C62 && ucs <= 0x0C63) ||
+                   (ucs >= 0x0CBC && ucs <= 0x0CC8) || (ucs >= 0x0CCA && ucs <= 0x0CCD) ||
+                   (ucs >= 0x0CE2 && ucs <= 0x0CE3) || (ucs >= 0x0D00 && ucs <= 0x0D0C) ||
+                   (ucs >= 0x0D3B && ucs <= 0x0D4D) || (ucs >= 0x0D62 && ucs <= 0x0D63) ||
+                   (ucs >= 0x0DCA && ucs <= 0x0DD6) || (ucs >= 0x0E31 && ucs <= 0x0E3A) ||
+                   (ucs >= 0x0E47 && ucs <= 0x0E4E) || (ucs >= 0x0EB1 && ucs <= 0x0EBC) ||
+                   (ucs >= 0x0EC8 && ucs <= 0x0ECD) || (ucs >= 0x0F18 && ucs <= 0x0F39) ||
+                   (ucs >= 0x0F71 && ucs <= 0x0F84) || (ucs >= 0x0F86 && ucs <= 0x0F87) ||
+                   (ucs >= 0x0F8D && ucs <= 0x0F97) || (ucs >= 0x0F99 && ucs <= 0x0FBC) ||
+                   (ucs >= 0x102B && ucs <= 0x103E) || (ucs >= 0x1056 && ucs <= 0x1059) ||
+                   (ucs >= 0x105E && ucs <= 0x1060) || (ucs >= 0x1062 && ucs <= 0x1064) ||
+                   (ucs >= 0x1067 && ucs <= 0x106D) || (ucs >= 0x1071 && ucs <= 0x1074) ||
+                   (ucs >= 0x1082 && ucs <= 0x108D) || (ucs >= 0x108F && ucs <= 0x109A) ||
+                   (ucs >= 0x135D && ucs <= 0x135F) || (ucs >= 0x1712 && ucs <= 0x1714) ||
+                   (ucs >= 0x1732 && ucs <= 0x1734) || (ucs >= 0x1752 && ucs <= 0x1753) ||
+                   (ucs >= 0x1772 && ucs <= 0x1773) || (ucs >= 0x17B4 && ucs <= 0x17D3) ||
+                   (ucs >= 0x180B && ucs <= 0x180D) || (ucs >= 0x1885 && ucs <= 0x1886) ||
+                   (ucs >= 0x18A9 && ucs <= 0x1923) || (ucs >= 0x1927 && ucs <= 0x1928) ||
+                   (ucs >= 0x1932 && ucs <= 0x1935) || (ucs >= 0x1939 && ucs <= 0x193B) ||
+                   (ucs >= 0x1A17 && ucs <= 0x1A1B) || (ucs >= 0x1A56 && ucs <= 0x1A60) ||
+                   (ucs >= 0x1A62 && ucs <= 0x1A7C) || (ucs >= 0x1B00 && ucs <= 0x1B04) ||
+                   (ucs >= 0x1B34 && ucs <= 0x1B44) || (ucs >= 0x1B6B && ucs <= 0x1B73) ||
+                   (ucs >= 0x1B80 && ucs <= 0x1B82) || (ucs >= 0x1BA2 && ucs <= 0x1BA5) ||
+                   (ucs >= 0x1BA8 && ucs <= 0x1BAA) || (ucs >= 0x1BAB && ucs <= 0x1BAD) ||
+                   (ucs >= 0x1BE6 && ucs <= 0x1BF3) || (ucs >= 0x1C24 && ucs <= 0x1C37) ||
+                   (ucs >= 0x1C36 && ucs <= 0x1C37) || (ucs >= 0x1CD0 && ucs <= 0x1CD2) ||
+                   (ucs >= 0x1CD4 && ucs <= 0x1CE8) || (ucs >= 0x1CED && ucs <= 0x1CF7) ||
+                   (ucs >= 0x1CF9 && ucs <= 0x1CFA) || (ucs >= 0x1DC0 && ucs <= 0x1DFF) ||
+                   (ucs >= 0x20D0 && ucs <= 0x20FF) || (ucs >= 0x2CEF && ucs <= 0x2CF1) ||
+                   (ucs >= 0x2D7F && ucs <= 0x2DEB) || (ucs >= 0x2DEB && ucs <= 0x2DFF) ||
+                   (ucs >= 0x302A && ucs <= 0x302F) || (ucs >= 0x3099 && ucs <= 0x309A) ||
+                   (ucs >= 0xA66F && ucs <= 0xA672) || (ucs >= 0xA674 && ucs <= 0xA67D) ||
+                   (ucs >= 0xA69E && ucs <= 0xA6A0) || (ucs >= 0xA6F0 && ucs <= 0xA6F1) ||
+                   (ucs >= 0xA8E0 && ucs <= 0xA8F1) || (ucs >= 0xA8FF && ucs <= 0xA92D) ||
+                   (ucs >= 0xA92D && ucs <= 0xA92F) || (ucs >= 0xA953 && ucs <= 0xA96B) ||
+                   (ucs >= 0xA9B3 && ucs <= 0xA9B3) || (ucs >= 0xA9B6 && ucs <= 0xA9B9) ||
+                   (ucs >= 0xA9BC && ucs <= 0xA9BD) || (ucs >= 0xA9E5 && ucs <= 0xA9E5) ||
+                   (ucs >= 0xAA29 && ucs <= 0xAA2E) || (ucs >= 0xAA31 && ucs <= 0xAA32) ||
+                   (ucs >= 0xAA35 && ucs <= 0xAA36) || (ucs >= 0xAA43 && ucs <= 0xAA4C) ||
+                   (ucs >= 0xAA4C && ucs <= 0xAA4C) || (ucs >= 0xAA7C && ucs <= 0xAA7C) ||
+                   (ucs >= 0xAAB0 && ucs <= 0xAAB0) || (ucs >= 0xAAB2 && ucs <= 0xAAB4) ||
+                   (ucs >= 0xAAB7 && ucs <= 0xAAB8) || (ucs >= 0xAABE && ucs <= 0xAABF) ||
+                   (ucs >= 0xAAC1 && ucs <= 0xAAC1) || (ucs >= 0xAAEC && ucs <= 0xAAED) ||
+                   (ucs >= 0xAAF6 && ucs <= 0xAB5B) || (ucs >= 0xAB5B && ucs <= 0xAB60) ||
+                   (ucs >= 0xAB65 && ucs <= 0xAB65) || (ucs >= 0xABE3 && ucs <= 0xABE4) ||
+                   (ucs >= 0xABE6 && ucs <= 0xABE7) || (ucs >= 0xABE9 && ucs <= 0xABEA) ||
+                   (ucs >= 0xABEC && ucs <= 0xABED) || (ucs >= 0xFB1E && ucs <= 0xFE00) ||
+                   (ucs >= 0xFE00 && ucs <= 0xFE0F) || (ucs >= 0xFE20 && ucs <= 0xFE2F) ||
+                   (ucs >= 0x101FD && ucs <= 0x101FD) || (ucs >= 0x102E0 && ucs <= 0x102E0) ||
+                   (ucs >= 0x10376 && ucs <= 0x1037A) || (ucs >= 0x10A01 && ucs <= 0x10A03) ||
+                   (ucs >= 0x10A05 && ucs <= 0x10A06) || (ucs >= 0x10A0C && ucs <= 0x10A0F) ||
+                   (ucs >= 0x10A38 && ucs <= 0x10A3A) || (ucs >= 0x10A3F && ucs <= 0x10AE5) ||
+                   (ucs >= 0x10D24 && ucs <= 0x10D27) || (ucs >= 0x10EAB && ucs <= 0x10EAC) ||
+                   (ucs >= 0x10F46 && ucs <= 0x10F50) || (ucs >= 0x11000 && ucs <= 0x11002) ||
+                   (ucs >= 0x11038 && ucs <= 0x11046) || (ucs >= 0x1107F && ucs <= 0x11082) ||
+                   (ucs >= 0x110B0 && ucs <= 0x110B2) || (ucs >= 0x110B7 && ucs <= 0x110B8) ||
+                   (ucs >= 0x11100 && ucs <= 0x11102) || (ucs >= 0x11127 && ucs <= 0x11134) ||
+                   (ucs >= 0x11173 && ucs <= 0x11173) || (ucs >= 0x11180 && ucs <= 0x11182) ||
+                   (ucs >= 0x111B3 && ucs <= 0x111C0) || (ucs >= 0x111C9 && ucs <= 0x111CC) ||
+                   (ucs >= 0x1122C && ucs <= 0x11237) || (ucs >= 0x112DF && ucs <= 0x112EA) ||
+                   (ucs >= 0x11301 && ucs <= 0x11303) || (ucs >= 0x1133C && ucs <= 0x11340) ||
+                   (ucs >= 0x11357 && ucs <= 0x11357) || (ucs >= 0x11362 && ucs <= 0x11363) ||
+                   (ucs >= 0x114B0 && ucs <= 0x114C3) || (ucs >= 0x115AF && ucs <= 0x115B5) ||
+                   (ucs >= 0x115B8 && ucs <= 0x115C0) || (ucs >= 0x11630 && ucs <= 0x11640) ||
+                   (ucs >= 0x116AB && ucs <= 0x116B7) || (ucs >= 0x1171D && ucs <= 0x1172B) ||
+                   (ucs >= 0x1182C && ucs <= 0x1183A) || (ucs >= 0x119D1 && ucs <= 0x119E1) ||
+                   (ucs >= 0x11A01 && ucs <= 0x11A0A) || (ucs >= 0x11A33 && ucs <= 0x11A39) ||
+                   (ucs >= 0x11C2F && ucs <= 0x11C36) || (ucs >= 0x11C38 && ucs <= 0x11C40) ||
+                   (ucs >= 0x11C92 && ucs <= 0x11CA7) || (ucs >= 0x11D31 && ucs <= 0x11D36) ||
+                   (ucs >= 0x11D3A && ucs <= 0x11D3A) || (ucs >= 0x11D3C && ucs <= 0x11D3D) ||
+                   (ucs >= 0x11D3F && ucs <= 0x11D45) || (ucs >= 0x11D47 && ucs <= 0x11D48) ||
+                   (ucs >= 0x11D90 && ucs <= 0x11D91) || (ucs >= 0x11D95 && ucs <= 0x11D95) ||
+                   (ucs >= 0x11F00 && ucs <= 0x11F10) || (ucs >= 0x16AF0 && ucs <= 0x16AF5) ||
+                   (ucs >= 0x16B30 && ucs <= 0x16B36) || (ucs >= 0x16F51 && ucs <= 0x16F87) ||
+                   (ucs >= 0x16FF0 && ucs <= 0x16FF1) || (ucs >= 0x1BC9D && ucs <= 0x1BC9E) ||
+                   (ucs >= 0x1C2C && ucs <= 0x1C33) || (ucs >= 0x1C36 && ucs <= 0x1C37) ||
+                   (ucs >= 0x1CD0 && ucs <= 0x1CD2) || (ucs >= 0x1CD4 && ucs <= 0x1CE0) ||
+                   (ucs >= 0x1CE2 && ucs <= 0x1CE8) || (ucs >= 0x1CED && ucs <= 0x1CED) ||
+                   (ucs >= 0x1CF4 && ucs <= 0x1CF4) || (ucs >= 0x1CF8 && ucs <= 0x1CF9) ||
+                   (ucs >= 0x1DC0 && ucs <= 0x1DFF) || (ucs >= 0x20D0 && ucs <= 0x20F0) ||
+                   (ucs >= 0x2CEF && ucs <= 0x2CF1) || (ucs >= 0x2D7F && ucs <= 0x2D7F) ||
+                   (ucs >= 0x2DE0 && ucs <= 0x2DFF) || (ucs >= 0x302A && ucs <= 0x302D) ||
+                   (ucs >= 0x3099 && ucs <= 0x309A) || (ucs >= 0xA66F && ucs <= 0xA672) ||
+                   (ucs >= 0xA674 && ucs <= 0xA67D) || (ucs >= 0xA69E && ucs <= 0xA69F) ||
+                   (ucs >= 0xA6F0 && ucs <= 0xA6F1) || (ucs >= 0xA8E0 && ucs <= 0xA8F1) ||
+                   (ucs >= 0xA8FF && ucs <= 0xA8FF) || (ucs >= 0xA926 && ucs <= 0xA92D) ||
+                   (ucs >= 0xA947 && ucs <= 0xA953) || (ucs >= 0xA980 && ucs <= 0xA982) ||
+                   (ucs >= 0xA9B3 && ucs <= 0xA9B3) || (ucs >= 0xA9B6 && ucs <= 0xA9B9) ||
+                   (ucs >= 0xA9BC && ucs <= 0xA9BD) || (ucs >= 0xA9E5 && ucs <= 0xA9E5) ||
+                   (ucs >= 0xAA29 && ucs <= 0xAA2E) || (ucs >= 0xAA31 && ucs <= 0xAA32) ||
+                   (ucs >= 0xAA35 && ucs <= 0xAA36) || (ucs >= 0xAA43 && ucs <= 0xAA43) ||
+                   (ucs >= 0xAA4C && ucs <= 0xAA4C) || (ucs >= 0xAA7C && ucs <= 0xAA7C) ||
+                   (ucs >= 0xAAB0 && ucs <= 0xAAB0) || (ucs >= 0xAAB2 && ucs <= 0xAAB4) ||
+                   (ucs >= 0xAAB7 && ucs <= 0xAAB8) || (ucs >= 0xAABE && ucs <= 0xAABF) ||
+                   (ucs >= 0xAAC1 && ucs <= 0xAAC1) || (ucs >= 0xAAEC && ucs <= 0xAAED) ||
+                   (ucs >= 0xAAF6 && ucs <= 0xAAF6) || (ucs >= 0xABE5 && ucs <= 0xABE5) ||
+                   (ucs >= 0xABE8 && ucs <= 0xABE8) || (ucs >= 0xABED && ucs <= 0xABED) ||
+                   (ucs >= 0xFB1E && ucs <= 0xFB1E) || (ucs >= 0xFE00 && ucs <= 0xFE0F) ||
+                   (ucs >= 0xFE20 && ucs <= 0xFE2F) || (ucs >= 0x101FD && ucs <= 0x101FD) ||
+                   (ucs >= 0x102E0 && ucs <= 0x102E0) || (ucs >= 0x10376 && ucs <= 0x1037A) ||
+                   (ucs >= 0x10A01 && ucs <= 0x10A03) || (ucs >= 0x10A05 && ucs <= 0x10A06) ||
+                   (ucs >= 0x10A0C && ucs <= 0x10A0F) || (ucs >= 0x10A38 && ucs <= 0x10A3A) ||
+                   (ucs >= 0x10A3F && ucs <= 0x10A3F) || (ucs >= 0x11001 && ucs <= 0x11001) ||
+                   (ucs >= 0x11038 && ucs <= 0x11046) || (ucs >= 0x1107F && ucs <= 0x11082) ||
+                   (ucs >= 0x110B3 && ucs <= 0x110B6) || (ucs >= 0x110B9 && ucs <= 0x110BA) ||
+                   (ucs >= 0x11100 && ucs <= 0x11102) || (ucs >= 0x11127 && ucs <= 0x1112B) ||
+                   (ucs >= 0x1112D && ucs <= 0x11134) || (ucs >= 0x11173 && ucs <= 0x11173) ||
+                   (ucs >= 0x11180 && ucs <= 0x11181) || (ucs >= 0x111B6 && ucs <= 0x111BE) ||
+                   (ucs >= 0x111C9 && ucs <= 0x111CC) || (ucs >= 0x1122F && ucs <= 0x11231) ||
+                   (ucs >= 0x11234 && ucs <= 0x11234) || (ucs >= 0x11236 && ucs <= 0x11237) ||
+                   (ucs >= 0x112DF && ucs <= 0x112DF) || (ucs >= 0x112E3 && ucs <= 0x112EA) ||
+                   (ucs >= 0x11300 && ucs <= 0x11301) || (ucs >= 0x1133B && ucs <= 0x1133B) ||
+                   (ucs >= 0x1133E && ucs <= 0x1133F) || (ucs >= 0x11357 && ucs <= 0x11357) ||
+                   (ucs >= 0x11366 && ucs <= 0x1136C) || (ucs >= 0x11370 && ucs <= 0x11374) ||
+                   (ucs >= 0x114B3 && ucs <= 0x114B8) || (ucs >= 0x114BA && ucs <= 0x114BA) ||
+                   (ucs >= 0x114BF && ucs <= 0x114C0) || (ucs >= 0x114C2 && ucs <= 0x114C3) ||
+                   (ucs >= 0x115B2 && ucs <= 0x115B5) || (ucs >= 0x115BC && ucs <= 0x115BD) ||
+                   (ucs >= 0x115BF && ucs <= 0x115C0) || (ucs >= 0x115DC && ucs <= 0x115DD) ||
+                   (ucs >= 0x11633 && ucs <= 0x1163A) || (ucs >= 0x1163D && ucs <= 0x1163D) ||
+                   (ucs >= 0x1163F && ucs <= 0x11640) || (ucs >= 0x116AB && ucs <= 0x116AB) ||
+                   (ucs >= 0x116AD && ucs <= 0x116AD) || (ucs >= 0x116B0 && ucs <= 0x116B5) ||
+                   (ucs >= 0x116B7 && ucs <= 0x116B7) || (ucs >= 0x1171D && ucs <= 0x1171F) ||
+                   (ucs >= 0x11722 && ucs <= 0x11725) || (ucs >= 0x11727 && ucs <= 0x1172B) ||
+                   (ucs >= 0x1182F && ucs <= 0x11837) || (ucs >= 0x11839 && ucs <= 0x1183A) ||
+                   (ucs >= 0x11A01 && ucs <= 0x11A0A) || (ucs >= 0x11A33 && ucs <= 0x11A38) ||
+                   (ucs >= 0x11A3B && ucs <= 0x11A3E) || (ucs >= 0x11A47 && ucs <= 0x11A47) ||
+                   (ucs >= 0x11A51 && ucs <= 0x11A56) || (ucs >= 0x11A59 && ucs <= 0x11A5B) ||
+                   (ucs >= 0x11A8A && ucs <= 0x11A96) || (ucs >= 0x11A98 && ucs <= 0x11A99) ||
+                   (ucs >= 0x11C30 && ucs <= 0x11C36) || (ucs >= 0x11C38 && ucs <= 0x11C3D) ||
+                   (ucs >= 0x11C3F && ucs <= 0x11C3F) || (ucs >= 0x11C92 && ucs <= 0x11CA7) ||
+                   (ucs >= 0x11CAA && ucs <= 0x11CB0) || (ucs >= 0x11CB2 && ucs <= 0x11CB3) ||
+                   (ucs >= 0x11CB5 && ucs <= 0x11CB6) || (ucs >= 0x16AF0 && ucs <= 0x16AF4) ||
+                   (ucs >= 0x16B30 && ucs <= 0x16B36) || (ucs >= 0x16F8F && ucs <= 0x16F92) ||
+                   (ucs >= 0x1BC9D && ucs <= 0x1BC9E) || (ucs >= 0x1D167 && ucs <= 0x1D169) ||
+                   (ucs >= 0x1D17B && ucs <= 0x1D182) || (ucs >= 0x1D185 && ucs <= 0x1D18B) ||
+                   (ucs >= 0x1D1AA && ucs <= 0x1D1AD) || (ucs >= 0x1D242 && ucs <= 0x1D244) ||
+                   (ucs >= 0x1DA00 && ucs <= 0x1DA36) || (ucs >= 0x1DA3B && ucs <= 0x1DA6C) ||
+                   (ucs >= 0x1DA75 && ucs <= 0x1DA75) || (ucs >= 0x1DA84 && ucs <= 0x1DA84) ||
+                   (ucs >= 0x1DA9B && ucs <= 0x1DA9F) || (ucs >= 0x1DAA1 && ucs <= 0x1DAAF) ||
+                   (ucs >= 0x1E000 && ucs <= 0x1E006) || (ucs >= 0x1E008 && ucs <= 0x1E018) ||
+                   (ucs >= 0x1E01B && ucs <= 0x1E021) || (ucs >= 0x1E023 && ucs <= 0x1E024) ||
+                   (ucs >= 0x1E026 && ucs <= 0x1E02A) || (ucs >= 0x1E8D0 && ucs <= 0x1E8D6) ||
+                   (ucs >= 0x1E944 && ucs <= 0x1E94A) || (ucs >= 0xE0100 && ucs <= 0xE01EF);
+        }
+
+        //
+        //  The constexpr version of wcwidth
+        //
+        //  TODO : DOES NOT WORK YET
+        //
+        constexpr s32
+        wcwidth(char32_t ucs)
+        {
+            // Control characters
+            if (ucs == 0)
+            {
+                return 0;
+            }
+            if (ucs < 32 || (ucs >= 0x7F && ucs < 0xA0))
+            {
+                return -1;
+            }
+
+            // Combining characters
+            if (is_combining_character(ucs))
+            {
+                return 0;
+            }
+
+            // Wide characters
+            if ((ucs >= 0x1100 && ucs <= 0x115F) || // Hangul Jamo init. consonants
+                (ucs >= 0x2329 && ucs <= 0x232A) || (ucs >= 0x2E80 && ucs <= 0xA4CF && ucs != 0x303F) || // CJK ... Yi
+                (ucs >= 0xAC00 && ucs <= 0xD7A3) || // Hangul Syllables
+                (ucs >= 0xF900 && ucs <= 0xFAFF) || // CJK Compatibility Ideographs
+                (ucs >= 0xFE10 && ucs <= 0xFE19) || // Vertical forms
+                (ucs >= 0xFE30 && ucs <= 0xFE6F) || // CJK Compatibility Forms
+                (ucs >= 0xFF00 && ucs <= 0xFF60) || // Fullwidth Forms
+                (ucs >= 0xFFE0 && ucs <= 0xFFE6) || (ucs >= 0x20000 && ucs <= 0x2FFFD) ||
+                (ucs >= 0x30000 && ucs <= 0x3FFFD))
+            {
+                return 2;
+            }
+
+            //
+            //  All other characters are assumed to be of width 1
+            //
+            return 1;
+        }
     } // namespace Chars
 
 } // namespace Mlib::Constexpr
@@ -337,9 +569,7 @@ namespace Mlib::Constexpr
 //
 #define CONSTEXPR_STRING                            constexpr Mlib::Constexpr::String
 #define CONSTEXPR_ARRAY                             constexpr std::array
-#define CONSTEXPR_MAP                               constexpr Mlib::Constexpr::ConstexprMap
-#define CONSTEXPR_STRBITMAP                         constexpr Mlib::Constexpr::ConstexprStrBitfieldMap
-#define CONSTEXPR_HASHBITMAP                        constexpr Mlib::Constexpr::ConstexprHashBitfieldMap
+#define CONSTEXPR_MAP                               constexpr Mlib::Constexpr::Map
 
 #define constexpr_strcasecmp(_Str1, _Str2)          Mlib::Constexpr::strcasecmp(_Str1, _Str2)
 #define constexpr_strncasecmp(_Str1, _Str2, _Count) Mlib::Constexpr::strncasecmp(_Str1, _Str2, _Count)
@@ -351,11 +581,15 @@ namespace Mlib::Constexpr
 #define constexpr_strlen(_Str)                      Mlib::Constexpr::strlen(_Str)
 #define constexpr_strncmp(_Str1, _Str2, _Count)     Mlib::Constexpr::strncmp(_Str1, _Str2, _Count)
 #define constexpr_strstr(_Haystack, _Needle)        Mlib::Constexpr::strstr(_Haystack, _Needle)
+#define constexpr_strcasestr(_Haystack, _Needle)    Mlib::Constexpr::strcasestr(_Haystack, _Needle)
+
+#define constexpr_isblank(_Ch)                      Mlib::Constexpr::Chars::isblank(_Ch)
+#define constexpr_wcwidth(_Ucs)                     Mlib::Constexpr::Chars::wcwidth(_Ucs)
 
 //
 //  Compile-time hash function
 //
-constexpr std::size_t
+constexpr u64
 operator"" _constexpr_hash(const s8 *s, u64)
 {
     return Mlib::Constexpr::hash_string(s);

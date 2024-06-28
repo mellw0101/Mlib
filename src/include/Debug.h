@@ -210,7 +210,7 @@ namespace Mlib::Debug
         return buffer;
     }
 
-    CONSTEXPR_STRBITMAP<5> logLevelMap = {
+    CONSTEXPR_MAP<STRING_VIEW, u8, 5> logLevelMap = {
         {{ESC_CODE_GREEN "[INFO]" ESC_CODE_RESET, INFO},
          {ESC_CODE_CYAN "[INFO_PRIORITY]" ESC_CODE_RESET, INFO_PRIORITY},
          {ESC_CODE_YELLOW "[WARNING]" ESC_CODE_RESET, WARNING},
@@ -349,9 +349,9 @@ namespace Mlib::Debug
     };
 
     inline ErrnoMsg
-    Lout_errno_msg(std::string_view str)
+    Lout_errno_msg(STRING_VIEW str)
     {
-        std::string s = std::string(str) + ": " + ERRNO_C_STR + " (errno: " + std::to_string(errno) + ")";
+        STRING      s = STRING(str) + ": " + ERRNO_C_STR + " (errno: " + ERRNO_CODE_STR + ")";
         const char *c = &s[0];
         return {c};
     }

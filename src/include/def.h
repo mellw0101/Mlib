@@ -135,16 +135,20 @@
 using f64 = double;
 using f32 = float;
 
-using s64   = int64_t;
-using s32   = int32_t;
-using s16   = int16_t;
-using s8    = char;
+using s64 = int64_t;
+using s32 = int32_t;
+using s16 = int16_t;
+using s8  = char;
+
 using SigS8 = int8_t;
 
 using u64 = uint64_t;
 using u32 = uint32_t;
 using u16 = uint16_t;
 using u8  = uint8_t;
+
+using c32 = char32_t;
+using c16 = char16_t;
 
 #pragma endregion /** END: Typedefs */
 
@@ -198,17 +202,25 @@ operator"" _KB(unsigned long long value)
     }
 
 #define VISIBILITY(V) __attribute__((__visibility__(#V)))
+#define EXPORT        VISIBILITY(default)
+#define HIDDEN        VISIBILITY(hidden)
 #define ERROR_CODE    std::error_code
 #define _NO_THROW     noexcept
 #define FS            std::filesystem
 #define CHRONO        std::chrono
 
-using C_s8  = const s8;
-using C_s32 = const s32;
 using C_s64 = const s64;
-using C_u8  = const u8;
-using C_u32 = const u32;
+using C_s32 = const s32;
+using C_s8  = const s8;
+
+using C_SigS8 = const SigS8;
+
 using C_u64 = const u64;
+using C_u32 = const u32;
+using C_u8  = const u8;
+
+using C_c32 = const c32;
+using C_c16 = const c16;
 
 using CFuncPtr = void (*)();
 

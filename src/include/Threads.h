@@ -14,9 +14,9 @@ namespace Mlib::Threads
 {
     template <typename ThreadPoolType, typename Func, typename... Args>
     auto
-    enqueueTask(ThreadPoolType &pool, Func &&func, Args &&...args) -> std::future<decltype(func(args...))>
+    enqueueTask(ThreadPoolType &pool, Func &&func, Args &&...args) -> FUTURE<decltype(func(args...))>
     {
-        return pool.enqueue(std::forward<Func>(func), std::forward<Args>(args)...);
+        return pool.enqueue(FORWARD<Func>(func), FORWARD<Args>(args)...);
     }
 
     class ThreadPool
@@ -27,19 +27,19 @@ namespace Mlib::Threads
 
         template <class Callback, class... Args>
         auto
-        enqueue(Callback &&f, Args &&...args) -> std::future<typename std::invoke_result<Callback, Args...>::type>
+        enqueue(Callback &&f, Args &&...args) -> FUTURE<typename INVOKE_RESULT<Callback, Args...>::type>
         {
-            using return_type = typename std::invoke_result<Callback, Args...>::type;
+            using return_type = typename INVOKE_RESULT<Callback, Args...>::type;
 
-            auto task = std::make_shared<std::packaged_task<return_type()>>(
-                bind(std::forward<Callback>(f), std::forward<Args>(args)...));
+            auto task =
+                std::make_shared<PACKAGED_TASK<return_type()>>(bind(P_FORWARD<Callback>(f), P_FORWARD<Args>(args)...));
 
-            std::future<return_type> res = task->get_future();
+            FUTURE<return_type> res = task->get_future();
             {
-                std::unique_lock<std::mutex> lock(queueMutex);
+                UNIQUE_LOCK<MUTEX> lock(queueMutex);
                 if (stop)
                 {
-                    throw std::runtime_error("enqueue on stopped ThreadPool");
+                    throw RUNTIME_ERROR("enqueue on stopped ThreadPool");
                 }
 
                 tasks.emplace(
@@ -54,11 +54,11 @@ namespace Mlib::Threads
         }
 
     private:
-        std::vector<std::thread>          workers;
-        std::queue<std::function<void()>> tasks;
-        std::mutex                        queueMutex;
-        std::condition_variable           condition;
-        bool                              stop;
+        VECTOR<THREAD>               workers;
+        QUEUE<std::function<void()>> tasks;
+        MUTEX                        queueMutex;
+        CONDITION_VARIABLE           condition;
+        bool                         stop;
     };
 
     template <typename... ParamTypes>

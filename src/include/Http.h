@@ -19,13 +19,13 @@ namespace Mlib::Http
     class HttpClient
     {
     public:
-        HttpClient(const string &host, const string &path);
+        HttpClient(C_REF<STRING> host, C_REF<STRING> path);
         string get();
 
     private:
-        string             host_;
-        string             path_;
-        struct sockaddr_in server_;
+        string      host_;
+        string      path_;
+        sockaddr_in server_;
     };
 
     class CurlHttpClient
@@ -36,9 +36,9 @@ namespace Mlib::Http
         string get(const string &url);
 
     private:
-        static size_t writeCallback(void *contents, size_t size, size_t nmemb, void *userp);
+        static u64 writeCallback(PTR<void> contents, u64 size, u64 nmemb, void *userp);
 
-        CURL       *curl_;
-        std::string response_;
+        CURL  *curl_;
+        STRING response_;
     };
 } // namespace Mlib::Http

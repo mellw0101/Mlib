@@ -4,6 +4,19 @@
 
 namespace Mlib::Constexpr
 {
+    constexpr bool
+    is_sorted(C_PTR<s32> arr, u64 size)
+    {
+        for (u64 i = 1; i < size; ++i)
+        {
+            if (arr[i - 1] > arr[i])
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
     template <typename T1, typename T2>
     struct MapEntry
     {
@@ -18,6 +31,28 @@ namespace Mlib::Constexpr
 
     template <typename T1, typename T2, u64 Size>
     using Map = ARRAY<MapEntry<T1, T2>, Size>;
+
+    // template <typename T>
+    // constexpr u64
+    // fnv1a_32(std::span<const T> data)
+    // {
+    //     constexpr u64 fnv_prime    = 16777619u;
+    //     constexpr u64 offset_basis = 2166136261u;
+
+    //     u64 hash = offset_basis;
+    //     for (const auto &byte : data)
+    //     {
+    //         hash ^= byte;
+    //         hash *= fnv_prime;
+    //     }
+    //     return hash;
+    // }
+
+    // constexpr u64
+    // hash_string(const std::string_view &s)
+    // {
+    //     return fnv1a_32(std::as_bytes(std::span {s.data(), s.size()}));
+    // }
 
     constexpr u64
     fnv1a_32(const s8 *s, u64 count)
@@ -89,23 +124,51 @@ namespace Mlib::Constexpr
         return 0;
     }
 
-    template <u64 N>
-    constexpr void
-    strncpy(char (&dest)[N], const s8 *src, u64 count)
+    constexpr s8 *
+    strcpy(s8 *dest, C_s8 *src)
     {
         u64 i = 0;
-        for (; i < count && src[i] != '\0'; ++i)
+        for (; src[i] != '\0'; ++i)
         {
             dest[i] = src[i];
         }
-        for (; i < N; ++i)
+        dest[i] = '\0';
+        return dest;
+    }
+
+    // template <u64 N>
+    // constexpr s8 *
+    // strncpy(char (&dest)[N], const s8 *src, u64 count = N)
+    // {
+    //     u64 i = 0;
+    //     for (; i < count && src[i] != '\0'; ++i)
+    //     {
+    //         dest[i] = src[i];
+    //     }
+    //     for (; i < N; ++i)
+    //     {
+    //         dest[i] = '\0';
+    //     }
+    //     return dest;
+    // }
+
+    constexpr s8 *
+    strncpy(s8 *dest, C_s8 *src, C_u64 n)
+    {
+        u64 i = 0;
+        for (; i < n && src[i] != '\0'; ++i)
+        {
+            dest[i] = src[i];
+        }
+        for (; i < n; ++i)
         {
             dest[i] = '\0';
         }
+        return dest;
     }
 
     constexpr u64
-    strlen(const s8 *str)
+    strlen(C_PTR<s8> str)
     {
         u64 i = 0;
         for (; str[i]; ++i)
@@ -113,40 +176,69 @@ namespace Mlib::Constexpr
         return i;
     }
 
-    template <std::size_t N>
+    // template <u64 N>
+    // class String
+    // {
+    // public:
+    //     constexpr String(C_s8 (&str)[N + 1])
+    //     {
+    //         std::copy_n(str, N + 1, data);
+    //     }
+
+    //     constexpr C_PTR<s8>
+    //     c_str() const
+    //     {
+    //         return data;
+    //     }
+
+    //     constexpr u64
+    //     size() const
+    //     {
+    //         return N;
+    //     }
+
+    // private:
+    //     char data[N + 1] {};
+    // };
+
+    template <u64 N>
     struct String
     {
-        s8 data[N + 1] = {};
+        s8 data[N + 1] {};
 
-        constexpr String(const s8 *str)
+        constexpr String(C_<s8> (&str)[N + 1])
         {
-            constexpr_strncpy(data, str, N);
+            std::copy_n(str, N + 1, data);
         }
 
-        constexpr s8 &
-        operator[](std::size_t i) const
+        constexpr REF<s8>
+        operator[](u64 i) const
         {
-            return data[i];
+            return const_cast<REF<s8>>(data[i]);
         }
 
-        constexpr const s8 *
+        constexpr C_PTR<s8>
         c_str() const
         {
             return data;
         }
+
+        constexpr u64
+        size() const
+        {
+            return N;
+        }
     };
 
-    //
-    //  Deduction guide for CTAD (Class Template Argument Deduction)
-    //
-    template <std::size_t N>
-    String(const s8 (&str)[N]) -> String<N - 1>;
 
-    template <std::size_t N>
+    template <u64 N>
+    String(C_s8 (&)[N]) -> String<N - 1>;
+
+    template <u64 N>
     constexpr bool
     operator==(const String<N> &lhs, const s8 *rhs)
     {
-        return constexpr_strcmp(&lhs[0], rhs);
+        return strcmp(&lhs[0], rhs);
     }
 
     constexpr s32
@@ -574,7 +666,7 @@ namespace Mlib::Constexpr
 #define constexpr_strcasecmp(_Str1, _Str2)          Mlib::Constexpr::strcasecmp(_Str1, _Str2)
 #define constexpr_strncasecmp(_Str1, _Str2, _Count) Mlib::Constexpr::strncasecmp(_Str1, _Str2, _Count)
 #define constexpr_strchr(_Str, _Ch)                 Mlib::Constexpr::strchr(_Str, _Ch)
-#define constexpr_strcpy(_Dest, _Src)               Mlib::Constexpr::strncpy(_Dest, _Src)
+#define constexpr_strcpy(_Dest, _Src)               Mlib::Constexpr::strcpy(_Dest, _Src)
 #define constexpr_strcmp(_Str1, _Str2)              Mlib::Constexpr::strcmp(_Str1, _Str2)
 #define constexpr_tolower(_Ch)                      Mlib::Constexpr::tolower(_Ch)
 #define constexpr_atoi(_Str)                        Mlib::Constexpr::atoi(_Str)
@@ -582,6 +674,7 @@ namespace Mlib::Constexpr
 #define constexpr_strncmp(_Str1, _Str2, _Count)     Mlib::Constexpr::strncmp(_Str1, _Str2, _Count)
 #define constexpr_strstr(_Haystack, _Needle)        Mlib::Constexpr::strstr(_Haystack, _Needle)
 #define constexpr_strcasestr(_Haystack, _Needle)    Mlib::Constexpr::strcasestr(_Haystack, _Needle)
+#define constexpr_strncpy(_Dest, _Src, _N)          Mlib::Constexpr::strncpy(_Dest, _Src, _N)
 
 #define constexpr_isblank(_Ch)                      Mlib::Constexpr::Chars::isblank(_Ch)
 #define constexpr_wcwidth(_Ucs)                     Mlib::Constexpr::Chars::wcwidth(_Ucs)

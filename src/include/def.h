@@ -3,10 +3,13 @@
 #include <algorithm>
 #include <array>
 #include <chrono>
+#include <future>
 #include <map>
+#include <queue>
 #include <set>
 #include <string_view>
 #include <vector>
+
 #pragma region /** @def Macros */
 #pragma region /** @def Color Macros */
 
@@ -91,18 +94,11 @@
 #pragma endregion /** END: ANSI cursor Macros */
 
 
-#define FORCE_INLINE       __attribute__((always_inline)) static __inline__
-#define UNUSED             __attribute__((unused))
-#define NORETURN           __attribute__((noreturn))
+#define FORCE_INLINE  __attribute__((always_inline)) static __inline__
+#define UNUSED        __attribute__((unused))
+#define NORETURN      __attribute__((noreturn))
 
-#define STRLITERAL(x)      #x
-
-#define FLAGMASK(flag)     ((unsigned)1 << ((flag) % (sizeof(unsigned) * 8)))
-#define SET(flag)          FLAGS(flag) |= FLAGMASK(flag)
-#define UNSET(flag)        FLAGS(flag) &= ~FLAGMASK(flag)
-#define ISSET(flag)        ((FLAGS(flag) & FLAGMASK(flag)) != 0)
-#define TOGGLE(flag)       FLAGS(flag) ^= FLAGMASK(flag)
-#define ISBITSET(var, bit) ((var & bit) == true)
+#define STRLITERAL(x) #x
 
 #define DELETE_MOVE_CONSTRUCTORS(class_name)       \
     class_name(class_name &&)            = delete; \
@@ -209,20 +205,32 @@ operator"" _KB(unsigned long long value)
 #define FS            std::filesystem
 #define CHRONO        std::chrono
 
+#define P_FORWARD     std::forward
+#define MOVE          std::move
+#define COPY_N        std::copy_n
+
+template <typename T>
+using C_ = const T;
+
 using C_s64 = const s64;
 using C_s32 = const s32;
+using C_s16 = const s16;
 using C_s8  = const s8;
 
 using C_SigS8 = const SigS8;
 
 using C_u64 = const u64;
 using C_u32 = const u32;
+using C_u16 = const u16;
 using C_u8  = const u8;
 
 using C_c32 = const c32;
 using C_c16 = const c16;
 
 using CFuncPtr = void (*)();
+
+using C_f64 = const f64;
+using C_f32 = const f32;
 
 //  Typedefs for the standard library types.
 //
@@ -261,6 +269,12 @@ using C_STRING = const STRING;
 //  - IT DOES NOT OWN THE DATA IT ONLY HOLDS A 'VIEW' OF IT.
 //
 using STRING_VIEW = class std::basic_string_view<char>;
+//
+//  C++ Standard stringstream.
+//  Should be used for string building.
+//
+using STRINGSTREAM   = class std::basic_stringstream<char>;
+using C_STRINGSTREAM = const STRINGSTREAM;
 template <typename T>
 using VECTOR = std::vector<T>;
 template <typename T>
@@ -281,6 +295,12 @@ template <typename T>
 using SET = std::set<T>;
 template <typename T>
 using C_SET = const SET<T>;
+template <typename T>
+using FUTURE = std::future<T>;
+template <typename _Functor, typename... _ArgTypes>
+using INVOKE_RESULT = struct std::invoke_result<_Functor, _ArgTypes...>;
+template <typename _Signature>
+using PACKAGED_TASK = std::packaged_task<_Signature>;
 //
 //  represents a point in time as measured by a clock
 //
@@ -299,6 +319,39 @@ using TIME_POINT = CHRONO::time_point<T>;
 //  @ingroup chrono
 //
 using HIGH_RES_CLOCK = CHRONO::high_resolution_clock;
+template <typename T>
+using DURATION = CHRONO::duration<T>;
+template <typename T>
+using C_DURATION     = const DURATION<T>;
+using EXCEPTION      = class std::exception;
+using CEXCEPTION     = const EXCEPTION;
+using RUNTIME_ERROR  = class std::runtime_error;
+using CRUNTIME_ERROR = const RUNTIME_ERROR;
+template <typename _Mutex>
+using UNIQUE_LOCK = class std::unique_lock<_Mutex>;
+template <typename _Mutex>
+using LOCK_GUARD         = class std::lock_guard<_Mutex>;
+using CONDITION_VARIABLE = class std::condition_variable;
+using MUTEX              = class std::mutex;
+using THREAD             = class std::thread;
+template <typename T>
+using OPTIONAL = class std::optional<T>;
+template <typename T>
+using C_OPTIONAL = const OPTIONAL<T>;
+template <typename T>
+using REF = T &;
+template <typename T>
+using C_REF = const T &;
+template <typename T>
+using RREF = T &&;
+template <typename T>
+using PTR = T *;
+template <typename T>
+using C_PTR = const T *;
+template <typename T>
+using C_PTR_C = const T *const;
+template <typename _Tp, typename _Sequence = std::deque<_Tp>>
+using QUEUE = class std::queue<_Tp, _Sequence>;
 
 decltype(auto) operator"" _hash(C_s8 *s, u64);
 

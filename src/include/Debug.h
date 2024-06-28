@@ -367,18 +367,18 @@ namespace Mlib::Debug
         bool _CONNECTED = false;
         bool _NET_DEBUG = false;
 
-        std::stringstream _buffer;
+        STRINGSTREAM _buffer;
 
         static NetworkLogger *_NetworkLoggerInstance;
         NetworkLogger();
 
         u16  checksum(void *b, s32 len);
-        bool ping(std::string_view ip);
+        bool ping(STRING_VIEW ip);
 
     public:
-        void init(std::string_view address, s32 port);
+        void init(STRING_VIEW address, s32 port);
         void enable();
-        void send_to_server(std::string_view input);
+        void send_to_server(STRING_VIEW input);
         void destroy();
 
         NetworkLogger &operator<<(const NetworkLoggerEndl &endl);

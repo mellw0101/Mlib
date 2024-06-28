@@ -95,7 +95,7 @@ namespace Mlib::Constexpr
             ++str1;
             ++str2;
         }
-        return (*str1 == *str2);
+        return (*str1 - *str2);
     }
 
     constexpr s32
@@ -194,12 +194,24 @@ namespace Mlib::Constexpr
     }
 
     constexpr s32
-    strcasecmp(const s32 *s1, const s32 *s2)
+    atoi(const s8 *str)
+    {
+        s32 result = 0;
+        while (*str >= '0' && *str <= '9')
+        {
+            result = result * 10 + (*str - '0');
+            ++str;
+        }
+        return result;
+    }
+
+    constexpr s32
+    strcasecmp(const s8 *s1, const s8 *s2)
     {
         while (*s1 && *s2)
         {
-            const s32 c1 = tolower(*s1);
-            const s32 c2 = tolower(*s2);
+            const s32 c1 = tolower(static_cast<u8>(*s1));
+            const s32 c2 = tolower(static_cast<u8>(*s2));
             if (c1 != c2)
             {
                 return c1 - c2;
@@ -207,7 +219,7 @@ namespace Mlib::Constexpr
             ++s1;
             ++s2;
         }
-        return tolower(*s1) - tolower(*s2);
+        return tolower(static_cast<u8>(*s1)) - tolower(static_cast<u8>(*s2));
     }
 
     //
@@ -279,6 +291,35 @@ namespace Mlib::Constexpr
         return nullptr;
     }
 
+    constexpr C_s8 *
+    strstr(C_s8 *haystack, C_s8 *needle)
+    {
+        if (!*needle)
+        {
+            return haystack;
+        }
+
+        for (C_s8 *h = haystack; *h; ++h)
+        {
+            C_s8 *n     = needle;
+            C_s8 *start = h;
+
+            while (*start && *n && *start == *n)
+            {
+                ++start;
+                ++n;
+            }
+
+            if (!*n)
+            {
+                return h;
+            }
+        }
+
+        return nullptr;
+    }
+
+
     namespace Chars
     {
         constexpr bool
@@ -294,11 +335,22 @@ namespace Mlib::Constexpr
 //
 //  Some useful aliases for the Constexpr namespace
 //
-#define CONSTEXPR_STRING     constexpr Mlib::Constexpr::String
-#define CONSTEXPR_ARRAY      constexpr std::array
-#define CONSTEXPR_MAP        constexpr Mlib::Constexpr::ConstexprMap
-#define CONSTEXPR_STRBITMAP  constexpr Mlib::Constexpr::ConstexprStrBitfieldMap
-#define CONSTEXPR_HASHBITMAP constexpr Mlib::Constexpr::ConstexprHashBitfieldMap
+#define CONSTEXPR_STRING                            constexpr Mlib::Constexpr::String
+#define CONSTEXPR_ARRAY                             constexpr std::array
+#define CONSTEXPR_MAP                               constexpr Mlib::Constexpr::ConstexprMap
+#define CONSTEXPR_STRBITMAP                         constexpr Mlib::Constexpr::ConstexprStrBitfieldMap
+#define CONSTEXPR_HASHBITMAP                        constexpr Mlib::Constexpr::ConstexprHashBitfieldMap
+
+#define constexpr_strcasecmp(_Str1, _Str2)          Mlib::Constexpr::strcasecmp(_Str1, _Str2)
+#define constexpr_strncasecmp(_Str1, _Str2, _Count) Mlib::Constexpr::strncasecmp(_Str1, _Str2, _Count)
+#define constexpr_strchr(_Str, _Ch)                 Mlib::Constexpr::strchr(_Str, _Ch)
+#define constexpr_strcpy(_Dest, _Src)               Mlib::Constexpr::strncpy(_Dest, _Src)
+#define constexpr_strcmp(_Str1, _Str2)              Mlib::Constexpr::strcmp(_Str1, _Str2)
+#define constexpr_tolower(_Ch)                      Mlib::Constexpr::tolower(_Ch)
+#define constexpr_atoi(_Str)                        Mlib::Constexpr::atoi(_Str)
+#define constexpr_strlen(_Str)                      Mlib::Constexpr::strlen(_Str)
+#define constexpr_strncmp(_Str1, _Str2, _Count)     Mlib::Constexpr::strncmp(_Str1, _Str2, _Count)
+#define constexpr_strstr(_Haystack, _Needle)        Mlib::Constexpr::strstr(_Haystack, _Needle)
 
 //
 //  Compile-time hash function

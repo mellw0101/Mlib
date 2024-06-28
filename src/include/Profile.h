@@ -29,28 +29,26 @@ namespace Mlib::Profile
     class ProfilerStats
     {
     public:
-        /// @name @c record
-        /// @brief
-        /// - Records the value of the duration
-        /// - of the profiled function.
-        /// @param value
-        /// - The duration of the profiled function.
-        /// @returns void
+        //
+        //  Records the value of the duration of the profiled function.
+        //  @param value ( f64 )
+        //  - The duration of the profiled function.
+        //  @returns void
+        //
         void record(f64 value);
 
         //
-        //  -  Calculates the mean of the recorded
-        //  -  values.
+        //  Calculates the mean of the recorded
+        //  values.
         //
         //  @return f64 ( double )
         //
         f64 mean() const;
 
-        /// @name @c stddev
-        /// @brief
-        /// - Calculates the standard deviation of
-        /// - the recorded values.
-        /// @returns ( double )
+        //
+        //  Calculates the standard deviation of the recorded values.
+        //  @return ( f64 )
+        //
         f64 stddev() const;
 
         /// @name @c min
@@ -71,7 +69,7 @@ namespace Mlib::Profile
         /// @brief
         /// - Returns the number of values recorded.
         /// @returns ( size_t )
-        size_t count() const;
+        u64 count() const;
 
     private:
         /// @name @c values
@@ -79,26 +77,27 @@ namespace Mlib::Profile
         /// @brief
         /// - The vector of values of the duration
         /// - of the profiled function.
-        std::vector<f64> values;
+        VECTOR<f64> values;
     };
 
     class GlobalProfiler
     {
     private:
-        std::map<std::string, ProfilerStats> stats;
-        std::string                          output_file;
-        static GlobalProfiler               *instance;
+        MAP<STRING, ProfilerStats> stats;
+        static GlobalProfiler     *instance;
+
+        STRING output_file;
 
         GlobalProfiler();
 
     public:
-        void record(const std::string &name, double duration);
+        void record(C_STRING &name, f64 duration);
         void report();
         void destroy();
-        void setOutputFile(std::string_view file_path);
+        void setOutputFile(STRING_VIEW file_path);
 
-        std::map<std::string, ProfilerStats> getStatsCopy() const;
-        std::vector<std::string>             retrveFormatedStrVecStats() const;
+        MAP<STRING, ProfilerStats> getStatsCopy() const;
+        VECTOR<STRING>             retrveFormatedStrVecStats() const;
 
         [[__nodiscard__("GlobalProfiler::Instance()")]]
         static GlobalProfiler *Instance();
@@ -113,8 +112,9 @@ namespace Mlib::Profile
         ~AutoTimer();
 
     private:
-        std::string                                                 name;
-        std::chrono::time_point<std::chrono::high_resolution_clock> start;
+        STRING name;
+
+        TIME_POINT<HIGH_RES_CLOCK> start;
     };
 
     //
@@ -125,7 +125,7 @@ namespace Mlib::Profile
     //  @param file_path (std::string_view)
     //  - The path to the file where the report will be generated.
     //
-    void setupReportGeneration(std::string_view file_path);
+    void setupReportGeneration(STRING_VIEW file_path);
 
 } // namespace Mlib::Profile
 

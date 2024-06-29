@@ -1,11 +1,13 @@
 #include "../include/Arm.h"
 
+#define MAP_SIZE 4096UL
+#define MAP_MASK (MAP_SIZE - 1)
+
 uintptr_t
-get_base_mem_addr()
+get_base_mem_addr(uintptr_t physical_addr)
 {
-    int       mem_fd;
-    void     *mapped_base;
-    uintptr_t base_addr = BASE_ADDR;
+    int   mem_fd;
+    void *mapped_base;
 
     mem_fd = open("/dev/mem", O_RDWR | O_SYNC);
     if (mem_fd == -1)
@@ -13,7 +15,7 @@ get_base_mem_addr()
         throw std::runtime_error("Cannot open /dev/mem");
     }
 
-    mapped_base = mmap(0, MAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, mem_fd, base_addr & ~MAP_MASK);
+    mapped_base = mmap(0, MAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, mem_fd, physical_addr & ~MAP_MASK);
     if (mapped_base == MAP_FAILED)
     {
         close(mem_fd);
@@ -22,5 +24,5 @@ get_base_mem_addr()
 
     close(mem_fd);
 
-    return reinterpret_cast<uintptr_t>(mapped_base) + (base_addr & MAP_MASK);
+    return reinterpret_cast<uintptr_t>(mapped_base) + (physical_addr & MAP_MASK);
 }

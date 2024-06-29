@@ -90,6 +90,8 @@
 #define ESC_CODE_CURSOR_COLUMN_ALT       "\033G"
 #define ESC_CODE_CURSOR_POSITION_ALT_ALT "\033H"
 
+constexpr auto ESC_CODE_TURN_ON_BRACKETED_PASTE  = "\x1B[?2004h";
+constexpr auto ESC_CODE_TURN_OFF_BRACKETED_PASTE = "\x1B[?2004l";
 
 #pragma endregion /** END: ANSI cursor Macros */
 
@@ -148,30 +150,37 @@ using c16 = char16_t;
 
 #pragma endregion /** END: Typedefs */
 
+template <typename T>
+using NUMERIC_LIMITS = std::numeric_limits<T>;
+
 //
 //  Constants for the maximum and minimum values of the integer types.
 //
-constexpr f64 f64_MAX = 1.7976931348623157e+308;
-constexpr f64 f64_MIN = 2.2250738585072014e-308;
-constexpr f32 f32_MAX = 3.402823466e+38;
-constexpr f32 f32_MIN = 1.175494351;
+constexpr f64 f64_MAX = NUMERIC_LIMITS<f64>::max();
+constexpr f64 f64_MIN = NUMERIC_LIMITS<f64>::min();
+constexpr f64 f64_EPS = 2.2204460492503131e-16; //
+
+constexpr f32 f32_MAX = NUMERIC_LIMITS<f32>::max();
+constexpr f32 f32_MIN = NUMERIC_LIMITS<f32>::min();
 constexpr f32 f32_EPS = 1.192092896e-07;
-constexpr u64 u64_MAX = 0xFFFFFFFFFFFFFFFF;
-constexpr u64 u64_MIN = 0x0000000000000000;
-constexpr s64 s64_MAX = 0x7FFFFFFFFFFFFFFF;
-constexpr s64 s64_MIN = 0x8000000000000000;
-constexpr u32 u32_MAX = 0xFFFFFFFF;
-constexpr u32 u32_MIN = 0x00000000;
-constexpr s32 s32_MAX = 0x7FFFFFFF;
-constexpr s32 s32_MIN = 0x80000000;
-constexpr u16 u16_MAX = 0xFFFF;
-constexpr u16 u16_MIN = 0x0000;
-constexpr s16 s16_MAX = 0x7FFF;
-constexpr s16 s16_MIN = 0x8000;
-constexpr u8  u8_MAX  = 0xFF;
-constexpr u8  u8_MIN  = 0x00;
-constexpr s8  s8_MAX  = 0x7F;
-constexpr s8  s8_MIN  = 0x80;
+
+constexpr s64 s64_MAX = NUMERIC_LIMITS<s64>::max();
+constexpr s64 s64_MIN = NUMERIC_LIMITS<s64>::min();
+constexpr s32 s32_MAX = NUMERIC_LIMITS<s32>::max();
+constexpr s32 s32_MIN = NUMERIC_LIMITS<s32>::min();
+constexpr s16 s16_MAX = NUMERIC_LIMITS<s16>::max();
+constexpr s16 s16_MIN = NUMERIC_LIMITS<s16>::min();
+constexpr s8  s8_MAX  = NUMERIC_LIMITS<s8>::max();
+constexpr s8  s8_MIN  = NUMERIC_LIMITS<s8>::min();
+
+constexpr u64 u64_MAX = NUMERIC_LIMITS<u64>::max();
+constexpr u64 u64_MIN = NUMERIC_LIMITS<u64>::min();
+constexpr u32 u32_MAX = NUMERIC_LIMITS<u32>::max();
+constexpr u32 u32_MIN = NUMERIC_LIMITS<u32>::min();
+constexpr u16 u16_MAX = NUMERIC_LIMITS<u16>::max();
+constexpr u16 u16_MIN = NUMERIC_LIMITS<u16>::min();
+constexpr u8  u8_MAX  = NUMERIC_LIMITS<u8>::max();
+constexpr u8  u8_MIN  = NUMERIC_LIMITS<u8>::min();
 
 constexpr auto FAILURE = 1;
 constexpr auto SUCCESS = 0;
@@ -319,10 +328,6 @@ using TIME_POINT = CHRONO::time_point<T>;
 //  @ingroup chrono
 //
 using HIGH_RES_CLOCK = CHRONO::high_resolution_clock;
-template <typename T>
-using DURATION = CHRONO::duration<T>;
-template <typename T>
-using C_DURATION     = const DURATION<T>;
 using EXCEPTION      = class std::exception;
 using CEXCEPTION     = const EXCEPTION;
 using RUNTIME_ERROR  = class std::runtime_error;
@@ -334,10 +339,6 @@ using LOCK_GUARD         = class std::lock_guard<_Mutex>;
 using CONDITION_VARIABLE = class std::condition_variable;
 using MUTEX              = class std::mutex;
 using THREAD             = class std::thread;
-template <typename T>
-using OPTIONAL = class std::optional<T>;
-template <typename T>
-using C_OPTIONAL = const OPTIONAL<T>;
 template <typename T>
 using REF = T &;
 template <typename T>

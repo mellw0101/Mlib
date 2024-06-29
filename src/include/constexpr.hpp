@@ -423,6 +423,67 @@ namespace Mlib::Constexpr
         return nullptr;
     }
 
+    constexpr s64
+    strtoll(C_s8 *str, C_s8 **endptr = nullptr, s32 base = 10)
+    {
+        if (base < 2 || base > 36)
+        {
+            return s64_MAX;
+        }
+
+        C_s8 *ptr = str;
+        while (std::isspace(*ptr))
+        {
+            ++ptr;
+        }
+
+        bool negative = false;
+        if (*ptr == '-')
+        {
+            negative = true;
+            ++ptr;
+        }
+        else if (*ptr == '+')
+        {
+            ++ptr;
+        }
+
+        s64   result     = 0;
+        C_s64 maxDivBase = s64_MAX / base;
+        while (*ptr != '\0')
+        {
+            int digit = -1;
+            if (std::isdigit(*ptr))
+            {
+                digit = *ptr - '0';
+            }
+            else if (std::isalpha(*ptr))
+            {
+                digit = Constexpr::tolower(*ptr) - 'a' + 10;
+            }
+
+            if (digit < 0 || digit >= base)
+            {
+                break;
+            }
+
+            if (result > maxDivBase || (result == maxDivBase && digit > s64_MAX % base))
+            {
+                return s64_MAX;
+            }
+
+            result = result * base + digit;
+            ++ptr;
+        }
+
+        if (endptr)
+        {
+            *endptr = ptr;
+        }
+
+        return negative ? -result : result;
+    }
+
     namespace Chars
     {
         constexpr bool

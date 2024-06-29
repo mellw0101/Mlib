@@ -178,12 +178,12 @@ namespace Mlib::Debug
         std::queue<LogMessage> queue_;
     };
 
-    MAKE_CONSTEXPR_WRAPPER(FuncName, std::string_view);
-    MAKE_CONSTEXPR_WRAPPER(FileName, std::string_view);
+    MAKE_CONSTEXPR_WRAPPER(FuncName, STRING_VIEW);
+    MAKE_CONSTEXPR_WRAPPER(FileName, STRING_VIEW);
     MAKE_CONSTEXPR_WRAPPER(Line, u32);
 
-    constexpr std::array<char, 256>
-    make_message(std::string_view str)
+    constexpr ARRAY<char, 256>
+    make_message(STRING_VIEW str)
     {
         std::array<char, 256> buffer     = {};
         auto                  str_len    = str.size();
@@ -351,8 +351,8 @@ namespace Mlib::Debug
     inline ErrnoMsg
     Lout_errno_msg(STRING_VIEW str)
     {
-        STRING      s = STRING(str) + ": " + ERRNO_C_STR + " (errno: " + ERRNO_CODE_STR + ")";
-        const char *c = &s[0];
+        STRING s = STRING(str) + ": " + ERRNO_C_STR + " (errno: " + ERRNO_CODE_STR + ")";
+        C_s8  *c = &s[0];
         return {c};
     }
 

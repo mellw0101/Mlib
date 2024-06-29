@@ -424,7 +424,7 @@ namespace Mlib::Constexpr
     }
 
     constexpr s64
-    strtoll(C_s8 *str, C_s8 **endptr = nullptr, s32 base = 10)
+    strtoll(C_s8 *str, s8 **endptr = nullptr, s32 base = 10)
     {
         if (base < 2 || base > 36)
         {
@@ -478,7 +478,7 @@ namespace Mlib::Constexpr
 
         if (endptr)
         {
-            *endptr = ptr;
+            *endptr = const_cast<s8 *>(ptr);
         }
 
         return negative ? -result : result;
@@ -736,6 +736,7 @@ namespace Mlib::Constexpr
 #define constexpr_strstr(_Haystack, _Needle)        Mlib::Constexpr::strstr(_Haystack, _Needle)
 #define constexpr_strcasestr(_Haystack, _Needle)    Mlib::Constexpr::strcasestr(_Haystack, _Needle)
 #define constexpr_strncpy(_Dest, _Src, _N)          Mlib::Constexpr::strncpy(_Dest, _Src, _N)
+#define constexpr_strtoll(_Str, _End, _Base)        Mlib::Constexpr::strtoll(_Str, _End, _Base)
 
 #define constexpr_isblank(_Ch)                      Mlib::Constexpr::Chars::isblank(_Ch)
 #define constexpr_wcwidth(_Ucs)                     Mlib::Constexpr::Chars::wcwidth(_Ucs)

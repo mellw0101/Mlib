@@ -2,6 +2,18 @@
 
 #include "def.h"
 
+#include <cstdint>
+#include <fcntl.h>
+#include <stdexcept>
+#include <sys/mman.h>
+#include <unistd.h>
+
+#define BASE_ADDR 0x12340000
+#define MAP_SIZE  4096UL
+#define MAP_MASK  (MAP_SIZE - 1)
+
+uintptr_t get_base_mem_addr();
+
 #define RK3399_T_BASE_ADDR      0x40038000
 #define RK3399_T_CLOCK_REG      (RK3399_T_BASE_ADDR + 0x00)
 #define RK3399_T_CTRL_REG       (RK3399_T_BASE_ADDR + 0x04)

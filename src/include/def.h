@@ -96,11 +96,14 @@ constexpr auto ESC_CODE_TURN_OFF_BRACKETED_PASTE = "\x1B[?2004l";
 #pragma endregion /** END: ANSI cursor Macros */
 
 
-#define FORCE_INLINE  __attribute__((always_inline)) static __inline__
-#define UNUSED        __attribute__((unused))
-#define NORETURN      __attribute__((noreturn))
+#define FORCE_INLINE                  __attribute__((always_inline)) static __inline__
+#define UNUSED                        __attribute__((unused))
+#define NORETURN                      __attribute__((noreturn))
 
-#define STRLITERAL(x) #x
+#define STRLITERAL(x)                 #x
+
+#define CONCATENATE(prefix, header)   STRINGIFY(prefix / header)
+#define PREFIX_HEADER(prefix, header) CONCATENATE(prefix, header)
 
 #define DELETE_MOVE_CONSTRUCTORS(class_name)       \
     class_name(class_name &&)            = delete; \

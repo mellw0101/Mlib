@@ -85,7 +85,7 @@ namespace Mlib::Constexpr
     //  Compile-time string comparison function
     //
     constexpr bool
-    strcmp(const s8 *str1, const s8 *str2)
+    strcmp(const s8 *str1, const s8 *str2) _NO_THROW
     {
         while (*str1 && (*str1 == *str2))
         {
@@ -96,7 +96,7 @@ namespace Mlib::Constexpr
     }
 
     constexpr s32
-    strncmp(const s8 *s1, const s8 *s2, u64 n)
+    strncmp(const s8 *s1, const s8 *s2, u64 n) _NO_THROW
     {
         for (std::size_t i = 0; i < n; ++i)
         {
@@ -125,7 +125,7 @@ namespace Mlib::Constexpr
     }
 
     constexpr s8 *
-    strcpy(s8 *dest, C_s8 *src)
+    strcpy(s8 *dest, C_s8 *src) _NO_THROW
     {
         u64 i = 0;
         for (; src[i] != '\0'; ++i)
@@ -136,24 +136,8 @@ namespace Mlib::Constexpr
         return dest;
     }
 
-    // template <u64 N>
-    // constexpr s8 *
-    // strncpy(char (&dest)[N], const s8 *src, u64 count = N)
-    // {
-    //     u64 i = 0;
-    //     for (; i < count && src[i] != '\0'; ++i)
-    //     {
-    //         dest[i] = src[i];
-    //     }
-    //     for (; i < N; ++i)
-    //     {
-    //         dest[i] = '\0';
-    //     }
-    //     return dest;
-    // }
-
     constexpr s8 *
-    strncpy(s8 *dest, C_s8 *src, C_u64 n)
+    strncpy(s8 *dest, C_s8 *src, C_u64 n) _NO_THROW
     {
         u64 i = 0;
         for (; i < n && src[i] != '\0'; ++i)
@@ -168,7 +152,7 @@ namespace Mlib::Constexpr
     }
 
     constexpr u64
-    strlen(C_PTR<s8> str)
+    strlen(C_PTR<s8> str) _NO_THROW
     {
         u64 i = 0;
         for (; str[i]; ++i)
@@ -242,13 +226,13 @@ namespace Mlib::Constexpr
     }
 
     constexpr s32
-    tolower(s32 ch)
+    tolower(s32 ch) _NO_THROW
     {
         return (ch >= 'A' && ch <= 'Z') ? (ch + 'a' - 'A') : ch;
     }
 
     constexpr s32
-    atoi(const s8 *str)
+    atoi(C_s8 *str) _NO_THROW
     {
         s32 result = 0;
         while (*str >= '0' && *str <= '9')
@@ -260,7 +244,7 @@ namespace Mlib::Constexpr
     }
 
     constexpr s32
-    strcasecmp(const s8 *s1, const s8 *s2)
+    strcasecmp(const s8 *s1, const s8 *s2) _NO_THROW
     {
         while (*s1 && *s2)
         {
@@ -282,7 +266,7 @@ namespace Mlib::Constexpr
     //  and a negative number if s1 is less than s2
     //
     constexpr s32
-    strncasecmp(const s8 *s1, const s8 *s2, u64 n)
+    strncasecmp(C_s8 *s1, C_s8 *s2, u64 n) _NO_THROW
     {
         u64 i = 0;
         while (i < n && *s1 && *s2)
@@ -318,7 +302,7 @@ namespace Mlib::Constexpr
     }
 
     constexpr s8 *
-    strchr(s8 *str, s8 ch)
+    strchr(s8 *str, s8 ch) _NO_THROW
     {
         while (*str)
         {
@@ -332,7 +316,7 @@ namespace Mlib::Constexpr
     }
 
     constexpr const s8 *
-    strchr(const s8 *str, s8 ch)
+    strchr(C_s8 *str, s8 ch) _NO_THROW
     {
         while (*str)
         {
@@ -346,7 +330,7 @@ namespace Mlib::Constexpr
     }
 
     constexpr C_s8 *
-    strstr(C_s8 *haystack, C_s8 *needle)
+    strstr(C_s8 *haystack, C_s8 *needle) _NO_THROW
     {
         if (!*needle)
         {
@@ -376,9 +360,9 @@ namespace Mlib::Constexpr
     //
     //  Helper function to compare two characters case-insensitively
     //
-    static constexpr bool char_equal_ignore_case(s8 a, s8 b) HIDDEN;
+    static constexpr bool char_equal_ignore_case(s8 a, s8 b) _NO_THROW HIDDEN;
     static constexpr bool
-    char_equal_ignore_case(s8 a, s8 b)
+    char_equal_ignore_case(s8 a, s8 b) _NO_THROW
     {
         return tolower(a) == tolower(b);
     }
@@ -386,9 +370,9 @@ namespace Mlib::Constexpr
     //
     //  Helper function to check if a string starts with another string, case-insensitively
     //
-    static constexpr bool starts_with_ignore_case(C_s8 *str, C_s8 *prefix) HIDDEN;
+    static constexpr bool starts_with_ignore_case(C_s8 *str, C_s8 *prefix) _NO_THROW HIDDEN;
     static constexpr bool
-    starts_with_ignore_case(C_s8 *str, C_s8 *prefix)
+    starts_with_ignore_case(C_s8 *str, C_s8 *prefix) _NO_THROW
     {
         while (*prefix)
         {
@@ -404,7 +388,7 @@ namespace Mlib::Constexpr
     //  The constexpr version of strcasestr
     //
     constexpr C_s8 *
-    strcasestr(C_s8 *haystack, C_s8 *needle)
+    strcasestr(C_s8 *haystack, C_s8 *needle) _NO_THROW
     {
         if (!*needle)
         {
@@ -424,7 +408,7 @@ namespace Mlib::Constexpr
     }
 
     constexpr s64
-    strtoll(C_s8 *str, s8 **endptr = nullptr, s32 base = 10)
+    strtoll(C_s8 *str, s8 **endptr = nullptr, s32 base = 10) _NO_THROW
     {
         if (base < 2 || base > 36)
         {
@@ -482,6 +466,106 @@ namespace Mlib::Constexpr
         }
 
         return negative ? -result : result;
+    }
+
+    constexpr s8 *
+    strcat(s8 *dest, C_s8 *src) _NO_THROW
+    {
+        s8 *start = dest;
+        while (*dest)
+        {
+            ++dest;
+        }
+        while ((*dest++ = *src++))
+            ;
+        return start;
+    }
+
+    constexpr u64
+    num_digits(s32 num) _NO_THROW
+    {
+        u64 digits = (num <= 0) ? 1 : 0;
+        while (num)
+        {
+            num /= 10;
+            ++digits;
+        }
+        return digits;
+    }
+
+    constexpr void
+    itoa(s32 num, s8 *buffer) _NO_THROW
+    {
+        s8 *p = buffer;
+        if (num < 0)
+        {
+            *p++ = '-';
+            num  = -num;
+        }
+        s8 *start = p;
+        do
+        {
+            *p++ = '0' + (num % 10);
+            num /= 10;
+        }
+        while (num);
+        *p = '\0';
+
+        for (s8 *q = (*buffer == '-') ? buffer + 1 : buffer; q < --p; ++q)
+        {
+            s8 temp = *q;
+            *q      = *p;
+            *p      = temp;
+        }
+    }
+
+    constexpr C_s8 *
+    strrchr(C_s8 *str, C_s8 ch) _NO_THROW
+    {
+        C_s8 *last_occurrence = nullptr;
+        while (*str)
+        {
+            if (*str == ch)
+            {
+                last_occurrence = str;
+            }
+            ++str;
+        }
+        return last_occurrence;
+    }
+
+    constexpr s8 *
+    strrchr(s8 *str, C_s8 ch) _NO_THROW
+    {
+        s8 *last_occurrence = nullptr;
+        while (*str)
+        {
+            if (*str == ch)
+            {
+                last_occurrence = str;
+            }
+            ++str;
+        }
+        return last_occurrence;
+    }
+
+    constexpr C_s8 *
+    strpbrk(C_s8 *str, C_s8 *accept) _NO_THROW
+    {
+        while (*str)
+        {
+            C_s8 *a = accept;
+            while (*a)
+            {
+                if (*str == *a)
+                {
+                    return str;
+                }
+                ++a;
+            }
+            ++str;
+        }
+        return nullptr;
     }
 
     namespace Chars
@@ -737,6 +821,9 @@ namespace Mlib::Constexpr
 #define constexpr_strcasestr(_Haystack, _Needle)    Mlib::Constexpr::strcasestr(_Haystack, _Needle)
 #define constexpr_strncpy(_Dest, _Src, _N)          Mlib::Constexpr::strncpy(_Dest, _Src, _N)
 #define constexpr_strtoll(_Str, _End, _Base)        Mlib::Constexpr::strtoll(_Str, _End, _Base)
+#define constexpr_strcat(_Dest, _Src)               Mlib::Constexpr::strcat(_Dest, _Src)
+#define constexpr_strrchr(_Str, _Ch)                Mlib::Constexpr::strrchr(_Str, _Ch)
+#define constexpr_strpbrk(_Str, _Accept)            Mlib::Constexpr::strpbrk(_Str, _Accept)
 
 #define constexpr_isblank(_Ch)                      Mlib::Constexpr::Chars::isblank(_Ch)
 #define constexpr_wcwidth(_Ucs)                     Mlib::Constexpr::Chars::wcwidth(_Ucs)

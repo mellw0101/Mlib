@@ -62,7 +62,7 @@ uintptr_t get_base_mem_addr(uintptr_t physical_addr);
 #include <sys/mman.h>
 #include <unistd.h>
 
-#define RK3399_T_BASE_ADDR      0x40038000
+#define RK3399_T_BASE_ADDR      0x40000000
 #define RK3399_T_USER_CON       (RK3399_T_BASE_ADDR + 0x0000)
 #define RK3399_T_AUTO_CON       (RK3399_T_BASE_ADDR + 0x0004)
 #define RK3399_T_DATA0          (RK3399_T_BASE_ADDR + 0x0020)
@@ -123,7 +123,7 @@ private:
             throw std::runtime_error("Cannot open /dev/mem");
         }
 
-        mapped_base = mmap(0, MAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, mem_fd, RK3399_T_BASE_ADDR & ~MAP_MASK);
+        mapped_base = mmap(0, MAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, mem_fd, base_addr & ~MAP_MASK);
         if (mapped_base == MAP_FAILED)
         {
             close(mem_fd);

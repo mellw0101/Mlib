@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arm/arch/aarch64/arch.h>
+// #include <Arm/arch/aarch64/arch.h>
 #include <cstdint>
 #include <cstdio>
 #include <fcntl.h>
@@ -8,6 +8,10 @@
 #include <sys/mman.h>
 #include <unistd.h>
 // #include "def.h"
+
+/* Compute the number of elements in the given array */
+#define ARRAY_SIZE(a)                    (sizeof(a) / sizeof((a)[0]))
+#define MPIDR_AFFLVL2                    ULL(0x2)
 
 
 #define SIZE_K(n)                        ((n) * 1024)
@@ -505,7 +509,7 @@
 #define BIT_32(nr)                     (((uint32_t)(1U)) << (nr))
 #define BIT_64(nr)                     (((uint64_t)(1ULL)) << (nr))
 
-// #define BIT                            BIT_64
+#define BIT                            BIT_64
 
 typedef unsigned long u_register_t;
 

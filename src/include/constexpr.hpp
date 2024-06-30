@@ -502,7 +502,6 @@ namespace Mlib::Constexpr
             *p++ = '-';
             num  = -num;
         }
-        s8 *start = p;
         do
         {
             *p++ = '0' + (num % 10);

@@ -3,39 +3,43 @@
 #define MAP_SIZE 4096UL
 #define MAP_MASK (MAP_SIZE - 1)
 
-uintptr_t
-get_base_mem_addr(uintptr_t physical_addr)
+namespace Mlib::Arm
 {
-    int   mem_fd;
-    void *mapped_base;
-
-    mem_fd = open("/dev/mem", O_RDWR | O_SYNC);
-    if (mem_fd == -1)
+    uintptr_t
+    get_base_mem_addr(uintptr_t physical_addr)
     {
-        throw std::runtime_error("Cannot open /dev/mem");
-    }
+        int   mem_fd;
+        void *mapped_base;
 
-    mapped_base = mmap(0, MAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, mem_fd, physical_addr & ~MAP_MASK);
-    if (mapped_base == MAP_FAILED)
-    {
+        mem_fd = open("/dev/mem", O_RDWR | O_SYNC);
+        if (mem_fd == -1)
+        {
+            throw std::runtime_error("Cannot open /dev/mem");
+        }
+
+        mapped_base = mmap(0, MAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, mem_fd, physical_addr & ~MAP_MASK);
+        if (mapped_base == MAP_FAILED)
+        {
+            close(mem_fd);
+            throw std::runtime_error("mmap failed");
+        }
+
         close(mem_fd);
-        throw std::runtime_error("mmap failed");
+
+        return reinterpret_cast<uintptr_t>(mapped_base) + (physical_addr & MAP_MASK);
     }
 
-    close(mem_fd);
+    uint32_t
+    ddr_get_rate(void)
+    {
+        uint32_t refdiv, postdiv1, fbdiv, postdiv2;
 
-    return reinterpret_cast<uintptr_t>(mapped_base) + (physical_addr & MAP_MASK);
-}
+        refdiv   = mmio_read_32(CRU_BASE + CRU_PLL_CON(DPLL_ID, 1)) & 0x3f;
+        fbdiv    = mmio_read_32(CRU_BASE + CRU_PLL_CON(DPLL_ID, 0)) & 0xfff;
+        postdiv1 = (mmio_read_32(CRU_BASE + CRU_PLL_CON(DPLL_ID, 1)) >> 8) & 0x7;
+        postdiv2 = (mmio_read_32(CRU_BASE + CRU_PLL_CON(DPLL_ID, 1)) >> 12) & 0x7;
 
-uint32_t
-ddr_get_rate(void)
-{
-    uint32_t refdiv, postdiv1, fbdiv, postdiv2;
+        return (24 / refdiv * fbdiv / postdiv1 / postdiv2) * 1000 * 1000;
+    }
 
-    refdiv   = mmio_read_32(CRU_BASE + CRU_PLL_CON(DPLL_ID, 1)) & 0x3f;
-    fbdiv    = mmio_read_32(CRU_BASE + CRU_PLL_CON(DPLL_ID, 0)) & 0xfff;
-    postdiv1 = (mmio_read_32(CRU_BASE + CRU_PLL_CON(DPLL_ID, 1)) >> 8) & 0x7;
-    postdiv2 = (mmio_read_32(CRU_BASE + CRU_PLL_CON(DPLL_ID, 1)) >> 12) & 0x7;
-
-    return (24 / refdiv * fbdiv / postdiv1 / postdiv2) * 1000 * 1000;
-}
+} // namespace Mlib::Arm

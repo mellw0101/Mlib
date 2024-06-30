@@ -63,7 +63,9 @@ uintptr_t get_base_mem_addr(uintptr_t physical_addr);
 #include <unistd.h>
 
 /* Registers base address */
-#define MMIO_BASE               0xF8000000
+#define MMIO_BASE 0xF8000000
+
+uintptr_t get_base_mem_addr(uintptr_t physical_addr);
 
 /* Aggregate of all devices in the first GB */
 #define DEV_RNG0_BASE           MMIO_BASE

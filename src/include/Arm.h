@@ -183,7 +183,11 @@ namespace Mlib::Arm
         {
             if (reinterpret_cast<void *>(base_addr) != MAP_FAILED)
             {
-                munmap(reinterpret_cast<void *>(base_addr), MAP_SIZE);
+                s32 result = munmap(reinterpret_cast<void *>(base_addr), MAP_SIZE);
+                if (result == -1)
+                {
+                    printf("Failed to unmap memory\n");
+                }
             }
         }
 
@@ -224,7 +228,8 @@ namespace Mlib::Arm
             if (mapped_base == MAP_FAILED)
             {
                 close(mem_fd);
-                throw std::runtime_error("mmap failed");
+                printf("Failed to map memory\n");
+                return reinterpret_cast<uintptr_t>(MAP_FAILED);
             }
 
             close(mem_fd);

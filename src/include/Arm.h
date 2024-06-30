@@ -37,6 +37,6 @@ namespace Mlib::Arm
         return *(volatile uint32_t *)addr;
     }
 
-    uint32_t ddr_get_rate(void);
+    uint32_t ddr_get_rate();
 
 } // namespace Mlib::Arm

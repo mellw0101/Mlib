@@ -30,7 +30,7 @@ namespace Mlib::Arm
     }
 
     uint32_t
-    ddr_get_rate(void)
+    ddr_get_rate()
     {
         uint32_t refdiv, postdiv1, fbdiv, postdiv2;
 

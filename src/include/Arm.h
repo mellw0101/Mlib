@@ -176,7 +176,7 @@ namespace Mlib::Arm
             //
             //  Set interleave and start conversion.
             //
-            writeRegister(RK3399_T_USER_CON, 0x00000820);
+            // writeRegister(RK3399_T_USER_CON, 0x00000820);
         }
 
         ~RK3399_T()
@@ -190,16 +190,17 @@ namespace Mlib::Arm
         int16_t
         readTemperature()
         {
-            writeRegister(RK3399_T_USER_CON, readRegister(RK3399_T_USER_CON) | (1 << 5)); // Start conversion
-            while (readRegister(RK3399_T_USER_CON) & (1 << 12))
-            {
-                // Wait for conversion to complete
-                ;
-            }
-            // Read 12-bit ADC value
-            int16_t adc_value   = readRegister(RK3399_T_DATA0) & 0xFFF;
-            int16_t temperature = convertToTemperature(adc_value);
-            return temperature;
+            // writeRegister(RK3399_T_USER_CON, readRegister(RK3399_T_USER_CON) | (1 << 5)); // Start conversion
+            // while (readRegister(RK3399_T_USER_CON) & (1 << 12))
+            // {
+            //     // Wait for conversion to complete
+            //     ;
+            // }
+            // // Read 12-bit ADC value
+            // int16_t adc_value   = readRegister(RK3399_T_DATA0) & 0xFFF;
+            // int16_t temperature = convertToTemperature(adc_value);
+            // return temperature;
+            return 0;
         }
 
     private:

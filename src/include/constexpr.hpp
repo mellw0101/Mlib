@@ -570,7 +570,7 @@ namespace Mlib::Constexpr
     namespace Chars
     {
         constexpr bool
-        isblank(s8 ch)
+        isblank(s8 ch) _NO_THROW
         {
             return ch == ' ' || ch == '\t';
         }

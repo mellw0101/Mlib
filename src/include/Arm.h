@@ -45,7 +45,7 @@
 #define GPIO0_BASE                 (MMIO_BASE + 0x07720000)
 #define GPIO1_BASE                 (MMIO_BASE + 0x07730000)
 #define PMUCRU_BASE                (MMIO_BASE + 0x07750000)
-#define CRU_BASE                   (MMIO_BASE + 0x07760000)
+// #define CRU_BASE                   (MMIO_BASE + 0x07760000)
 #define GRF_BASE                   (MMIO_BASE + 0x07770000)
 #define GPIO2_BASE                 (MMIO_BASE + 0x07780000)
 #define GPIO3_BASE                 (MMIO_BASE + 0x07788000)
@@ -135,13 +135,16 @@
 #define TSADC_ENABLE               0x00000200
 #define TSADC_CLOCK_DIV            0x00000003
 
+#define assert(e)                  ((void)0)
+
 namespace Mlib::Arm
 {
-/* Registers base address */
-#define MMIO_BASE              0xF8000000
 
 #define CRU_PLL_CON(pll_id, n) ((pll_id) * 0x20 + (n) * 4)
-#define CRU_BASE               (MMIO_BASE + 0x07760000)
+
+#define GET_GPIO_PORT(pin)     (pin / 32)
+#define GET_GPIO_NUM(pin)      (pin % 32)
+#define CRU_PMU_CLKGATE_CON(n) (0x100 + n * 4)
 
     enum plls_id
     {
@@ -158,21 +161,51 @@ namespace Mlib::Arm
 
     uintptr_t get_base_mem_addr(uintptr_t physical_addr);
 
-    static inline uint32_t
+    static inline u32
     mmio_read_32(uintptr_t addr)
     {
-        return *(volatile uint32_t *)addr;
+        return *(volatile u32 *)addr;
+    }
+
+    static inline void
+    mmio_write_32(uintptr_t addr, u32 value)
+    {
+        *(volatile u32 *)addr = value;
+    }
+
+    static inline uintptr_t
+    mapMemory(uintptr_t base_addr, u64 MAP_SIZE, u64 MAP_MASK)
+    {
+        int   mem_fd;
+        void *mapped_base;
+
+        mem_fd = open("/dev/mem", O_RDWR | O_SYNC);
+        if (mem_fd == -1)
+        {
+            throw std::runtime_error("Cannot open /dev/mem");
+        }
+
+        mapped_base = mmap(0, MAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, mem_fd, base_addr & ~MAP_MASK);
+        if (mapped_base == MAP_FAILED)
+        {
+            close(mem_fd);
+            printf("Failed to map memory\n");
+            return reinterpret_cast<uintptr_t>(MAP_FAILED);
+        }
+
+        close(mem_fd);
+
+        return reinterpret_cast<uintptr_t>(mapped_base);
     }
 
     uint32_t ddr_get_rate();
-
 
     class RK3399_T
     {
     public:
         RK3399_T()
         {
-            base_addr = mapMemory(MMIO_BASE);
+            base_addr = mapMemory(MMIO_BASE, MAP_SIZE, MAP_MASK);
             //
             //  Set interleave and start conversion.
             //
@@ -209,89 +242,188 @@ namespace Mlib::Arm
 
     private:
         uintptr_t                 base_addr;
-        static constexpr uint64_t MAP_SIZE = 4096UL;
-        static constexpr uint64_t MAP_MASK = MAP_SIZE - 1;
-
-        uintptr_t
-        mapMemory(uintptr_t base_addr)
-        {
-            int   mem_fd;
-            void *mapped_base;
-
-            mem_fd = open("/dev/mem", O_RDWR | O_SYNC);
-            if (mem_fd == -1)
-            {
-                throw std::runtime_error("Cannot open /dev/mem");
-            }
-
-            mapped_base = mmap(0, MAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, mem_fd, base_addr & ~MAP_MASK);
-            if (mapped_base == MAP_FAILED)
-            {
-                close(mem_fd);
-                printf("Failed to map memory\n");
-                return reinterpret_cast<uintptr_t>(MAP_FAILED);
-            }
-
-            close(mem_fd);
-
-            return reinterpret_cast<uintptr_t>(mapped_base);
-        }
-
-        void
-        writeRegister(uint32_t reg, uint32_t value)
-        {
-            *(volatile uint32_t *)(base_addr + (reg & MAP_MASK)) = value;
-        }
-
-        uint32_t
-        readRegister(uint32_t reg)
-        {
-            return *(volatile uint32_t *)(base_addr + (reg & MAP_MASK));
-        }
+        static constexpr uint64_t MAP_SIZE    = 4096UL;
+        static constexpr uint64_t MAP_MASK    = MAP_SIZE - 1;
+        static constexpr u16      CTL_REG_NUM = 332;
+        static constexpr u8       PI_REG_NUM  = 200;
+        static constexpr u32      MMIO_BASE   = 0xF8000000;
+        static constexpr u32      CRU_BASE    = (MMIO_BASE + 0x07760000);
 
         int16_t
         convertToTemperature(int16_t adc_value)
         {
             return adc_value * 5 / 1024 - 40;
         }
+
+        struct rk3399_ddr_pctl_regs
+        {
+            u32 denali_ctl[CTL_REG_NUM];
+        };
+
+        struct rk3399_ddr_publ_regs
+        {
+            /*
+             * PHY registers from 0 to 90 for slice1.
+             * These are used to restore slice1-4 on resume.
+             */
+            uint32_t phy0[91];
+            /*
+             * PHY registers from 512 to 895.
+             * Only registers 0-37 of each 128 register range are used.
+             */
+            uint32_t phy512[3][38];
+            uint32_t phy896[63];
+        };
+
+        struct rk3399_ddr_pi_regs
+        {
+            uint32_t denali_pi[PI_REG_NUM];
+        };
+
+        union noc_ddrtiminga0
+        {
+            u32 d32;
+            struct
+            {
+                u32 acttoact : 6;
+                u32 reserved0 : 2;
+                u32 rdtomiss : 6;
+                u32 reserved1 : 2;
+                u32 wrtomiss : 6;
+                u32 reserved2 : 2;
+                u32 readlatency : 8;
+            } b;
+        };
+
+        union noc_ddrtimingb0
+        {
+            uint32_t d32;
+            struct
+            {
+                unsigned rdtowr : 5;
+                unsigned reserved0 : 3;
+                unsigned wrtord : 5;
+                unsigned reserved1 : 3;
+                unsigned rrd : 4;
+                unsigned reserved2 : 4;
+                unsigned faw : 6;
+                unsigned reserved3 : 2;
+            } b;
+        };
+
+        union noc_ddrtimingc0
+        {
+            uint32_t d32;
+            struct
+            {
+                unsigned burstpenalty : 4;
+                unsigned reserved0 : 4;
+                unsigned wrtomwr : 6;
+                unsigned reserved1 : 18;
+            } b;
+        };
+
+        union noc_devtodev0
+        {
+            uint32_t d32;
+            struct
+            {
+                unsigned busrdtord : 3;
+                unsigned reserved0 : 1;
+                unsigned busrdtowr : 3;
+                unsigned reserved1 : 1;
+                unsigned buswrtord : 3;
+                unsigned reserved2 : 1;
+                unsigned buswrtowr : 3;
+                unsigned reserved3 : 17;
+            } b;
+        };
+
+        union noc_ddrmode
+        {
+            uint32_t d32;
+            struct
+            {
+                unsigned autoprecharge : 1;
+                unsigned bypassfiltering : 1;
+                unsigned fawbank : 1;
+                unsigned burstsize : 2;
+                unsigned mwrsize : 2;
+                unsigned reserved2 : 1;
+                unsigned forceorder : 8;
+                unsigned forceorderstate : 8;
+                unsigned reserved3 : 8;
+            } b;
+        };
+
+        struct rk3399_msch_timings
+        {
+            union noc_ddrtiminga0 ddrtiminga0;
+            union noc_ddrtimingb0 ddrtimingb0;
+            union noc_ddrtimingc0 ddrtimingc0;
+            union noc_devtodev0   devtodev0;
+            union noc_ddrmode     ddrmode;
+            uint32_t              agingx0;
+        };
+
+        struct rk3399_sdram_channel
+        {
+            unsigned char rank;
+            /* col = 0, means this channel is invalid */
+            unsigned char col;
+            /* 3:8bank, 2:4bank */
+            unsigned char bk;
+            /* channel buswidth, 2:32bit, 1:16bit, 0:8bit */
+            unsigned char bw;
+            /* die buswidth, 2:32bit, 1:16bit, 0:8bit */
+            unsigned char dbw;
+            /* row_3_4 = 1: 6Gb or 12Gb die
+             * row_3_4 = 0: normal die, power of 2
+             */
+            unsigned char       row_3_4;
+            unsigned char       cs0_row;
+            unsigned char       cs1_row;
+            uint32_t            ddrconfig;
+            rk3399_msch_timings noc_timings;
+        };
+
+        struct rk3399_sdram_params
+        {
+            rk3399_sdram_channel        ch[2];
+            uint32_t                    ddr_freq;
+            unsigned char               dramtype;
+            unsigned char               num_channels;
+            unsigned char               stride;
+            unsigned char               odt;
+            struct rk3399_ddr_pctl_regs pctl_regs;
+            struct rk3399_ddr_pi_regs   pi_regs;
+            struct rk3399_ddr_publ_regs phy_regs;
+            uint32_t                    rx_cal_dqs[2][4];
+        };
+
+        static u32
+        get_cs_die_capability(rk3399_sdram_params *ram_config, u8 channel, u8 cs)
+        {
+            rk3399_sdram_channel *ch = &ram_config->ch[channel];
+
+            u32 bandwidth;
+            u32 die_bandwidth;
+            u32 die;
+            u32 cs_cap;
+            u32 row;
+
+            row           = cs == 0 ? ch->cs0_row : ch->cs1_row;
+            bandwidth     = 8 * (1 << ch->bw);
+            die_bandwidth = 8 * (1 << ch->dbw);
+            die           = bandwidth / die_bandwidth;
+            cs_cap        = (1 << (row + ((1 << ch->bk) / 4 + 1) + ch->col + (bandwidth / 16)));
+            if (ch->row_3_4)
+            {
+                cs_cap = cs_cap * 3 / 4;
+            }
+
+            return (cs_cap / die);
+        }
     };
-
-    class TSADC
-    {
-    public:
-        TSADC()
-        {
-            writeRegister(TSADC_USER_CON, TSADC_ENABLE);
-            writeRegister(TSADC_AUTO_CON, TSADC_CLOCK_DIV);
-        }
-
-        int16_t
-        readTemperature()
-        {
-            int16_t adc_value   = readRegister(TSADC_DATA0);
-            int16_t temperature = convertToTemperature(adc_value);
-            return temperature;
-        }
-
-    private:
-        void
-        writeRegister(uint32_t reg, uint32_t value)
-        {
-            *(volatile uint32_t *)(uintptr_t)reg = value;
-        }
-
-        uint32_t
-        readRegister(uint32_t reg)
-        {
-            return *(volatile uint32_t *)(uintptr_t)reg;
-        }
-
-        int16_t
-        convertToTemperature(int16_t adc_value)
-        {
-            return adc_value * 5 / 1024 - 40;
-        }
-    };
-
 
 } // namespace Mlib::Arm

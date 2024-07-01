@@ -2855,16 +2855,16 @@ struct rk3399_sdram_channel
     /* row_3_4 = 1: 6Gb or 12Gb die
      * row_3_4 = 0: normal die, power of 2
      */
-    unsigned char              row_3_4;
-    unsigned char              cs0_row;
-    unsigned char              cs1_row;
-    uint32_t                   ddrconfig;
-    struct rk3399_msch_timings noc_timings;
+    unsigned char       row_3_4;
+    unsigned char       cs0_row;
+    unsigned char       cs1_row;
+    uint32_t            ddrconfig;
+    rk3399_msch_timings noc_timings;
 };
 
 struct rk3399_sdram_params
 {
-    struct rk3399_sdram_channel ch[2];
+    rk3399_sdram_channel        ch[2];
     uint32_t                    ddr_freq;
     unsigned char               dramtype;
     unsigned char               num_channels;

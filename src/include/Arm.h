@@ -207,10 +207,8 @@ namespace Mlib::Arm
         {
             base_addr = mapMemory(MMIO_BASE, MAP_SIZE, MAP_MASK);
             printf("Base address: %p\n", reinterpret_cast<void *>(base_addr));
-            //
-            //  Set interleave and start conversion.
-            //
-            // writeRegister(RK3399_T_USER_CON, 0x00000820);
+            u32 base_addr_data = mmio_read_32(base_addr);
+            printf("Base address data: %u\n", base_addr_data);
         }
 
         ~RK3399_T()

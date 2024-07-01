@@ -206,6 +206,7 @@ namespace Mlib::Arm
         RK3399_T()
         {
             base_addr = mapMemory(MMIO_BASE, MAP_SIZE, MAP_MASK);
+            printf("Base address: %p\n", reinterpret_cast<void *>(base_addr));
             //
             //  Set interleave and start conversion.
             //

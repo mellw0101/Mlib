@@ -2,6 +2,7 @@
 #pragma once
 
 #include <cstring>
+#include <fstream>
 #include <iostream>
 #include <spawn.h>
 #include <sstream>
@@ -15,17 +16,16 @@
 
 namespace Mlib::Sys
 {
-    s8 run_binary(const std::string &binary_path, const std::vector<std::string> &args,
-                  const std::vector<std::string> &env_vars = {});
+    s8 run_binary(C_STRING &binary_path, C_VECTOR<STRING> &args, C_VECTOR<STRING> &env_vars = {});
 
     class Prompt
     {
     public:
-        Prompt(const std::string &prompt);
-        operator std::string() const;
+        Prompt(C_STRING &prompt);
+        operator STRING() const;
 
     private:
-        std::stringstream ss;
+        STRINGSTREAM ss;
     };
 
     template <typename T>
@@ -50,11 +50,14 @@ namespace Mlib::Sys
             return instance;
         }
 
-        static void
-        deleteInstance()
+        void
+        destroy()
         {
-            delete instance;
-            instance = nullptr;
+            if (instance != nullptr)
+            {
+                delete instance;
+                instance = nullptr;
+            }
         }
 
         T
@@ -68,13 +71,34 @@ namespace Mlib::Sys
         {
             value = val;
         }
-
-        ~Singleton()
-        {
-            std::cout << "Singleton destructor called" << std::endl;
-        }
     };
 
-    s32 launch_child_process(const s8 *command);
+    namespace CpuMsrAddr
+    {
+        struct RYZEN_3900_X
+        {
+            static constexpr u32 prf_lmt_r    = 0xC001029A; // (Core Performance Limit Reasons)
+            static constexpr u32 pwr_rep      = 0xC0010293; // (Power Reporting)
+            static constexpr u32 pwr_lmt_stat = 0xC0010295; // (Power Limit Status)
+        };
+    }                                                       // namespace CpuMsrAddr
+
+    class MSRReader
+    {
+        IFSTREAM msr_file;
+
+    public:
+        MSRReader(unsigned int cpu);
+
+        ~MSRReader();
+
+        uint64_t read(uint32_t msr);
+    };
+
+    s32 launch_child_process(C_s8 *command);
+
+    u64 retriveSysLogicCores();
+
+    u64 read_msr_value_to_watts(MSRReader *msr_reader, u32 msr_address);
 
 } // namespace Mlib::Sys

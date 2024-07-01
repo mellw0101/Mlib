@@ -31,8 +31,8 @@
 // #define UART2_BASE                 (MMIO_BASE + 0x071A0000)
 #define UART3_BASE                 (MMIO_BASE + 0x071B0000)
 
-#define PMU_BASE                   (MMIO_BASE + 0x07310000)
-#define PMUGRF_BASE                (MMIO_BASE + 0x07320000)
+// #define PMU_BASE                   (MMIO_BASE + 0x07310000)
+// #define PMUGRF_BASE                (MMIO_BASE + 0x07320000)
 #define SGRF_BASE                  (MMIO_BASE + 0x07330000)
 #define PMUSRAM_BASE               (MMIO_BASE + 0x073B0000)
 #define PWM_BASE                   (MMIO_BASE + 0x07420000)
@@ -218,6 +218,11 @@ namespace Mlib::Arm
 #define GET_GPIO_NUM(pin)      (pin % 32)
 #define CRU_PMU_CLKGATE_CON(n) (0x100 + n * 4)
 
+/* Compute the number of elements in the given array */
+#define ARRAY_SIZE(a)          (sizeof(a) / sizeof((a)[0]))
+#define MPIDR_AFFLVL2          ULL(0x2)
+
+
     enum plls_id
     {
         ALPLL_ID = 0,
@@ -230,8 +235,6 @@ namespace Mlib::Arm
         PPLL_ID,
         END_PLL_ID,
     };
-
-    uintptr_t get_base_mem_addr(uintptr_t physical_addr);
 
     static inline u32
     mmio_read_32(uintptr_t addr)
@@ -353,6 +356,8 @@ namespace Mlib::Arm
         static constexpr u32      MMIO_BASE       = 0xF8000000;
         static constexpr u32      CRU_BASE        = (MMIO_BASE + 0x07760000);
         static constexpr u32      UART2_BASE      = (MMIO_BASE + 0x071A0000);
+        static constexpr u32      PMU_BASE        = (MMIO_BASE + 0x07310000);
+        static constexpr u32      PMUGRF_BASE     = (MMIO_BASE + 0x07320000);
         static constexpr u32      SRAM_TEXT_LIMIT = (4 * 1024);
         static constexpr u32      SRAM_DATA_LIMIT = (4 * 1024);
         static constexpr u32      SRAM_BIN_LIMIT  = (4 * 1024);
@@ -610,6 +615,56 @@ namespace Mlib::Arm
             }
 
             return (cs_cap / die);
+        }
+
+        struct lat_adj_pair
+        {
+            uint32_t cl;
+            uint32_t rdlat_adj;
+            uint32_t cwl;
+            uint32_t wrlat_adj;
+        };
+
+        enum
+        {
+            DDR3   = 3,
+            LPDDR2 = 5,
+            LPDDR3 = 6,
+            LPDDR4 = 7,
+            FAIL   = 0xff
+        };
+
+        static constexpr struct lat_adj_pair lpddr4_lat_adj[] = {
+            { 6,    5,    4,    2},
+            {10,    9,    6,    4},
+            {14,  0xc,    8,    6},
+            {20, 0x11,  0xa,    8},
+            {24, 0x15,  0xc,  0xa},
+            {28, 0x18,  0xe,  0xc},
+            {32, 0x1b, 0x10,  0xe},
+            {36, 0x1e, 0x12, 0x10}
+        };
+
+        static u32
+        get_rdlat_adj(u32 dram_type, u32 cl)
+        {
+            const lat_adj_pair *p;
+
+            u32 cnt;
+            u32 i;
+
+            p   = lpddr4_lat_adj;
+            cnt = ARRAY_SIZE(lpddr4_lat_adj);
+
+            for (i = 0; i < cnt; i++)
+            {
+                if (cl == p[i].cl)
+                {
+                    return p[i].rdlat_adj;
+                }
+            }
+            /* fail */
+            return FAIL;
         }
     };
 

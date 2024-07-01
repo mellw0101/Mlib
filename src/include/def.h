@@ -287,6 +287,14 @@ using STRING_VIEW = class std::basic_string_view<char>;
 //
 using STRINGSTREAM   = class std::basic_stringstream<char>;
 using C_STRINGSTREAM = const STRINGSTREAM;
+
+using FILEBUF   = class std::basic_filebuf<char>;
+using C_FILEBUF = const FILEBUF;
+
+using IFSTREAM = class std::basic_ifstream<char>;
+
+using IOS = class std::basic_ios<char>;
+
 template <typename T>
 using VECTOR = std::vector<T>;
 template <typename T>
@@ -356,6 +364,7 @@ template <typename T>
 using C_PTR_C = const T *const;
 template <typename _Tp, typename _Sequence = std::deque<_Tp>>
 using QUEUE = class std::queue<_Tp, _Sequence>;
+
 
 decltype(auto) operator"" _hash(C_s8 *s, u64);
 

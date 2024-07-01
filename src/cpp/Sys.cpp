@@ -102,13 +102,52 @@ namespace Mlib::Sys
     template <typename T>
     Singleton<T> *Singleton<T>::instance = nullptr;
 
+
+    MSRReader ::MSRReader(u32 cpu)
+    {
+        STRING path = "/dev/cpu/" + std::to_string(cpu) + "/msr";
+        msr_file.open(path, IOS::in | IOS::binary);
+        if (!msr_file.is_open())
+        {
+            throw std::runtime_error("Failed to open MSR file");
+        }
+    }
+
+    MSRReader ::~MSRReader()
+    {
+        if (msr_file.is_open())
+        {
+            msr_file.close();
+        }
+    }
+
+    u64
+    MSRReader ::read(u32 msr)
+    {
+        if (!msr_file.is_open())
+        {
+            throw std::runtime_error("MSR file is not open");
+        }
+
+        msr_file.seekg(msr, IOS::beg);
+        u64 value = 0;
+        msr_file.read(reinterpret_cast<s8 *>(&value), sizeof(value));
+
+        if (msr_file.fail())
+        {
+            throw std::runtime_error("Failed to read MSR");
+        }
+
+        return value;
+    }
+
     s32
-    launch_child_process(const s8 *command)
+    launch_child_process(C_s8 *command)
     {
         pid_t             pid;
         posix_spawnattr_t attr;
 
-        std::string command_path = "/bin/" + std::string(command);
+        STRING command_path = "/bin/" + STRING(command);
 
         char *argv[] = {const_cast<char *>(command_path.c_str()), NULL};
 
@@ -137,6 +176,23 @@ namespace Mlib::Sys
             throw std::runtime_error("Failed to retrieve system logic cores" + ERRNO_STR);
         }
         return sys_cores;
+    }
+
+    u64
+    read_msr_value_to_watts(MSRReader *msr_reader, u32 msr_address)
+    {
+        u64 raw_value = msr_reader->read(msr_address);
+        //
+        //  Assuming the raw value is in milliwatts, convert to watts
+        //
+        f64 power_in_watts = raw_value / 1000.0;
+
+        if (power_in_watts <= 0)
+        {
+            throw std::runtime_error("Failed to read MSR value to watts");
+        }
+
+        return power_in_watts;
     }
 
 } // namespace Mlib::Sys

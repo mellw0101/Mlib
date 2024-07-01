@@ -5,41 +5,68 @@
 
 namespace Mlib::Arm
 {
-    uintptr_t
-    get_base_mem_addr(uintptr_t physical_addr)
+    void
+    initialize()
     {
-        int   mem_fd;
-        void *mapped_base;
-
-        mem_fd = open("/dev/mem", O_RDWR | O_SYNC);
-        if (mem_fd == -1)
+        // Open /proc/self/maps to read the memory map of the current process
+        FILE *maps = fopen("/proc/self/maps", "r");
+        if (maps == nullptr)
         {
-            throw std::runtime_error("Cannot open /dev/mem");
+            perror("fopen");
+            exit(EXIT_FAILURE);
         }
 
-        mapped_base = mmap(0, MAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, mem_fd, physical_addr & ~MAP_MASK);
-        if (mapped_base == MAP_FAILED)
+        // Read the memory map line by line
+        char  *line = nullptr;
+        size_t len  = 0;
+        while (getline(&line, &len, maps) != -1)
         {
-            close(mem_fd);
-            throw std::runtime_error("mmap failed");
+            // Parse the line to get the start and end addresses of the mapped region
+            unsigned long start, end;
+            sscanf(line, "%lx-%lx", &start, &end);
+
+            // Check if the mapped region contains the address of the function
+            if (start <= (unsigned long)Arm::initialize && (unsigned long)Arm::initialize <= end)
+            {
+                // Get the page size of the system
+                long page_size = sysconf(_SC_PAGESIZE);
+                if (page_size == -1)
+                {
+                    perror("sysconf");
+                    exit(EXIT_FAILURE);
+                }
+
+                // Calculate the start of the page containing the function
+                unsigned long page_start = start + (((unsigned long)Arm::initialize - start) & ~MAP_MASK);
+
+                // Get the protection flags of the page
+                unsigned long prot;
+                if (mincore((void *)page_start, 1, (u8 *)&prot) == -1)
+                {
+                    perror("mincore");
+                    exit(EXIT_FAILURE);
+                }
+
+                // Check if the page is executable
+                if (prot & PROT_EXEC)
+                {
+                    printf("The function is in an executable page\n");
+                }
+                else
+                {
+                    printf("The function is not in an executable page\n");
+                }
+
+                break;
+            }
         }
 
-        close(mem_fd);
+        // Free the line buffer
+        free(line);
 
-        return reinterpret_cast<uintptr_t>(mapped_base) + (physical_addr & MAP_MASK);
+        // Close /proc/self/maps
+        fclose(maps);
     }
 
-    // uint32_t
-    // ddr_get_rate()
-    // {
-    //     uint32_t refdiv, postdiv1, fbdiv, postdiv2;
-
-    //     refdiv   = mmio_read_32(CRU_BASE + CRU_PLL_CON(DPLL_ID, 1)) & 0x3f;
-    //     fbdiv    = mmio_read_32(CRU_BASE + CRU_PLL_CON(DPLL_ID, 0)) & 0xfff;
-    //     postdiv1 = (mmio_read_32(CRU_BASE + CRU_PLL_CON(DPLL_ID, 1)) >> 8) & 0x7;
-    //     postdiv2 = (mmio_read_32(CRU_BASE + CRU_PLL_CON(DPLL_ID, 1)) >> 12) & 0x7;
-
-    //     return (24 / refdiv * fbdiv / postdiv1 / postdiv2) * 1000 * 1000;
-    // }
 
 } // namespace Mlib::Arm

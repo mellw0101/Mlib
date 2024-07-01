@@ -19,9 +19,7 @@
 
 #define SIZE_K(n)                  ((n) * 1024)
 #define SIZE_M(n)                  ((n) * 1024 * 1024)
-#define SRAM_TEXT_LIMIT            (4 * 1024)
-#define SRAM_DATA_LIMIT            (4 * 1024)
-#define SRAM_BIN_LIMIT             (4 * 1024)
+
 
 /*
  * The parts of the shared defined registers address with AP and M0,
@@ -30,7 +28,7 @@
 #define GIC500_BASE                (MMIO_BASE + 0x06E00000)
 #define UART0_BASE                 (MMIO_BASE + 0x07180000)
 #define UART1_BASE                 (MMIO_BASE + 0x07190000)
-#define UART2_BASE                 (MMIO_BASE + 0x071A0000)
+// #define UART2_BASE                 (MMIO_BASE + 0x071A0000)
 #define UART3_BASE                 (MMIO_BASE + 0x071B0000)
 
 #define PMU_BASE                   (MMIO_BASE + 0x07310000)
@@ -111,6 +109,80 @@
 
 #define MSCH_BASE(ch)              (SERVICE_NOC_1_BASE + (ch) * 0x8000)
 
+/**************************************************
+ * pmugrf reg, offset
+ **************************************************/
+#define PMUGRF_OSREG(n)            (0x300 + (n) * 4)
+#define PMUGRF_GPIO0A_P            0x040
+#define PMUGRF_GPIO1A_P            0x050
+
+#define CIC_CTRL0                  0x0
+#define CIC_CTRL1                  0x4
+#define CIC_IDLE_TH                0x8
+#define CIC_CG_WAIT_TH             0xc
+#define CIC_STATUS0                0x10
+#define CIC_STATUS1                0x14
+#define CIC_CTRL2                  0x18
+#define CIC_CTRL3                  0x1c
+#define CIC_CTRL4                  0x20
+
+#define PMU_WKUP_CFG0              0x00
+#define PMU_WKUP_CFG1              0x04
+#define PMU_WKUP_CFG2              0x08
+#define PMU_WKUP_CFG3              0x0c
+#define PMU_WKUP_CFG4              0x10
+#define PMU_PWRDN_CON              0x14
+#define PMU_PWRDN_ST               0x18
+#define PMU_PLL_CON                0x1c
+#define PMU_PWRMODE_CON            0x20
+#define PMU_SFT_CON                0x24
+#define PMU_INT_CON                0x28
+#define PMU_INT_ST                 0x2c
+#define PMU_GPIO0_POS_INT_CON      0x30
+#define PMU_GPIO0_NEG_INT_CON      0x34
+#define PMU_GPIO1_POS_INT_CON      0x38
+#define PMU_GPIO1_NEG_INT_CON      0x3c
+#define PMU_GPIO0_POS_INT_ST       0x40
+#define PMU_GPIO0_NEG_INT_ST       0x44
+#define PMU_GPIO1_POS_INT_ST       0x48
+#define PMU_GPIO1_NEG_INT_ST       0x4c
+#define PMU_PWRDN_INTEN            0x50
+#define PMU_PWRDN_STATUS           0x54
+#define PMU_WAKEUP_STATUS          0x58
+#define PMU_BUS_CLR                0x5c
+#define PMU_BUS_IDLE_REQ           0x60
+#define PMU_BUS_IDLE_ST            0x64
+#define PMU_BUS_IDLE_ACK           0x68
+#define PMU_CCI500_CON             0x6c
+#define PMU_ADB400_CON             0x70
+#define PMU_ADB400_ST              0x74
+#define PMU_POWER_ST               0x78
+#define PMU_CORE_PWR_ST            0x7c
+#define PMU_OSC_CNT                0x80
+#define PMU_PLLLOCK_CNT            0x84
+#define PMU_PLLRST_CNT             0x88
+#define PMU_STABLE_CNT             0x8c
+#define PMU_DDRIO_PWRON_CNT        0x90
+#define PMU_WAKEUP_RST_CLR_CNT     0x94
+#define PMU_DDR_SREF_ST            0x98
+#define PMU_SCU_L_PWRDN_CNT        0x9c
+#define PMU_SCU_L_PWRUP_CNT        0xa0
+#define PMU_SCU_B_PWRDN_CNT        0xa4
+#define PMU_SCU_B_PWRUP_CNT        0xa8
+#define PMU_GPU_PWRDN_CNT          0xac
+#define PMU_GPU_PWRUP_CNT          0xb0
+#define PMU_CENTER_PWRDN_CNT       0xb4
+#define PMU_CENTER_PWRUP_CNT       0xb8
+#define PMU_TIMEOUT_CNT            0xbc
+#define PMU_CPU0APM_CON            0xc0
+#define PMU_CPU1APM_CON            0xc4
+#define PMU_CPU2APM_CON            0xc8
+#define PMU_CPU3APM_CON            0xcc
+#define PMU_CPU0BPM_CON            0xd0
+#define PMU_CPU1BPM_CON            0xd4
+#define PMU_NOC_AUTO_ENA           0xd8
+#define PMU_PWRDN_CON1             0xdc
+
 
 // TSADC base address and register offsets
 #define TSADC_BASE_ADDR            (MMIO_BASE + 0x0E600)
@@ -173,6 +245,37 @@ namespace Mlib::Arm
         *(volatile u32 *)addr = value;
     }
 
+    static inline void
+    mmio_write_64(uintptr_t addr, uint64_t value)
+    {
+        *(volatile uint64_t *)addr = value;
+    }
+
+    static inline uint64_t
+    mmio_read_64(uintptr_t addr)
+    {
+        return *(volatile uint64_t *)addr;
+    }
+
+    static inline void
+    mmio_clrbits_32(uintptr_t addr, uint32_t clear)
+    {
+        mmio_write_32(addr, mmio_read_32(addr) & ~clear);
+    }
+
+    static inline void
+    mmio_setbits_32(uintptr_t addr, uint32_t set)
+    {
+        mmio_write_32(addr, mmio_read_32(addr) | set);
+    }
+
+
+    static inline void
+    mmio_clrsetbits_32(uintptr_t addr, uint32_t clear, uint32_t set)
+    {
+        mmio_write_32(addr, (mmio_read_32(addr) & ~clear) | set);
+    }
+
     static inline uintptr_t
     mapMemory(uintptr_t base_addr, u64 MAP_SIZE, u64 MAP_MASK)
     {
@@ -207,8 +310,10 @@ namespace Mlib::Arm
         {
             base_addr = mapMemory(MMIO_BASE, MAP_SIZE, MAP_MASK);
             printf("Base address: %p\n", reinterpret_cast<void *>(base_addr));
-            u32 base_addr_data = mmio_read_32(base_addr);
-            printf("Base address data: %u\n", base_addr_data);
+            u32 exit_low_power_status = exit_low_power();
+            printLowPowerStatus(exit_low_power_status);
+            // u32 base_addr_data = mmio_read_32(base_addr);
+            // printf("Base address data: %u\n", base_addr_data);
         }
 
         ~RK3399_T()
@@ -241,17 +346,100 @@ namespace Mlib::Arm
 
     private:
         uintptr_t                 base_addr;
-        static constexpr uint64_t MAP_SIZE    = 4096UL;
-        static constexpr uint64_t MAP_MASK    = MAP_SIZE - 1;
-        static constexpr u16      CTL_REG_NUM = 332;
-        static constexpr u8       PI_REG_NUM  = 200;
-        static constexpr u32      MMIO_BASE   = 0xF8000000;
-        static constexpr u32      CRU_BASE    = (MMIO_BASE + 0x07760000);
+        static constexpr uint64_t MAP_SIZE        = 4096UL;
+        static constexpr uint64_t MAP_MASK        = MAP_SIZE - 1;
+        static constexpr u16      CTL_REG_NUM     = 332;
+        static constexpr u8       PI_REG_NUM      = 200;
+        static constexpr u32      MMIO_BASE       = 0xF8000000;
+        static constexpr u32      CRU_BASE        = (MMIO_BASE + 0x07760000);
+        static constexpr u32      UART2_BASE      = (MMIO_BASE + 0x071A0000);
+        static constexpr u32      SRAM_TEXT_LIMIT = (4 * 1024);
+        static constexpr u32      SRAM_DATA_LIMIT = (4 * 1024);
+        static constexpr u32      SRAM_BIN_LIMIT  = (4 * 1024);
 
         int16_t
         convertToTemperature(int16_t adc_value)
         {
             return adc_value * 5 / 1024 - 40;
+        }
+
+        void
+        printLowPowerStatus(u32 status)
+        {
+            printf("Low Power Status:\n");
+            printf("Channel 1:\n");
+            printf("External Self-Refresh: %s\n", (status & (1 << 12)) ? "Enabled" : "Disabled");
+            printf("Stdby Mode: %s\n", (status & (1 << 11)) ? "Enabled" : "Disabled");
+            printf("Self-Refresh with Controller and Memory Clock Gate: %s\n",
+                   (status & (1 << 10)) ? "Enabled" : "Disabled");
+            printf("Self-Refresh: %s\n", (status & (1 << 9)) ? "Enabled" : "Disabled");
+            printf("Power-Down: %s\n", (status & (1 << 8)) ? "Enabled" : "Disabled");
+            printf("Channel 0:\n");
+            printf("External Self-Refresh: %s\n", (status & (1 << 4)) ? "Enabled" : "Disabled");
+            printf("Stdby Mode: %s\n", (status & (1 << 3)) ? "Enabled" : "Disabled");
+            printf("Self-Refresh with Controller and Memory Clock Gate: %s\n",
+                   (status & (1 << 2)) ? "Enabled" : "Disabled");
+            printf("Self-Refresh: %s\n", (status & (1 << 1)) ? "Enabled" : "Disabled");
+            printf("Power-Down: %s\n", (status & (1 << 0)) ? "Enabled" : "Disabled");
+        }
+
+        /*
+         * return: bit12: channel 1, external self-refresh
+         *         bit11: channel 1, stdby_mode
+         *         bit10: channel 1, self-refresh with controller and memory clock gate
+         *         bit9: channel 1, self-refresh
+         *         bit8: channel 1, power-down
+         *
+         *         bit4: channel 1, external self-refresh
+         *         bit3: channel 0, stdby_mode
+         *         bit2: channel 0, self-refresh with controller and memory clock gate
+         *         bit1: channel 0, self-refresh
+         *         bit0: channel 0, power-down
+         */
+        uint32_t
+        exit_low_power()
+        {
+            uint32_t low_power = 0;
+            uint32_t channel_mask;
+            uint32_t tmp, i;
+
+            channel_mask = (mmio_read_32(PMUGRF_BASE + PMUGRF_OSREG(2)) >> 28) & 0x3;
+            for (i = 0; i < 2; i++)
+            {
+                if (!(channel_mask & (1 << i)))
+                {
+                    continue;
+                }
+
+                //
+                //  exit stdby mode
+                //
+                mmio_write_32(CIC_BASE + CIC_CTRL1, (1 << (i + 16)) | (0 << i));
+                //
+                //  exit external self-refresh
+                //
+                tmp = i ? 12 : 8;
+                low_power |= ((mmio_read_32(PMU_BASE + PMU_SFT_CON) >> tmp) & 0x1) << (4 + 8 * i);
+                mmio_clrbits_32(PMU_BASE + PMU_SFT_CON, 1 << tmp);
+                while (!(mmio_read_32(PMU_BASE + PMU_DDR_SREF_ST) & (1 << i)))
+                    ;
+                //
+                //  exit auto low-power
+                //
+                mmio_clrbits_32(CTL_REG(i, 101), 0x7);
+                //
+                //  lp_cmd to exit
+                //
+                if (((mmio_read_32(CTL_REG(i, 100)) >> 24) & 0x7f) != 0x40)
+                {
+                    while (mmio_read_32(CTL_REG(i, 200)) & 0x1)
+                        ;
+                    mmio_clrsetbits_32(CTL_REG(i, 93), 0xffu << 24, 0x69 << 24);
+                    while (((mmio_read_32(CTL_REG(i, 100)) >> 24) & 0x7f) != 0x40)
+                        ;
+                }
+            }
+            return low_power;
         }
 
         struct rk3399_ddr_pctl_regs

@@ -1762,15 +1762,7 @@ void zeromem(void *mem, u_register_t length);
 /* MR11 (ODT Control) */
 #define LPDDR3_ODT_60          (1)
 #define LPDDR3_ODT_120         (2)
-#define LPDDR3_ODT_240         (3)
-#define LPDDR3_ODT_DIS         (0)
 
-/* MR2 (Device Feature 2) */
-/* RL & nRTP for DBI-RD Disabled */
-#define LPDDR4_RL6_NRTP8       (0x0)
-#define LPDDR4_RL10_NRTP8      (0x1)
-#define LPDDR4_RL14_NRTP8      (0x2)
-#define LPDDR4_RL20_NRTP8      (0x3)
 #define LPDDR4_RL24_NRTP10     (0x4)
 #define LPDDR4_RL28_NRTP12     (0x5)
 #define LPDDR4_RL32_NRTP14     (0x6)

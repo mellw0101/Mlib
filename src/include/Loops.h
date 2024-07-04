@@ -21,7 +21,7 @@ iterate_through(Container &container, Action action)
     }
 }
 
-void
+inline void
 vectorized_addition(std::vector<float> &a, std::vector<float> &b, std::vector<float> &result)
 {
     size_t size = a.size();

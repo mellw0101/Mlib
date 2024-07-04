@@ -97,8 +97,8 @@ constexpr auto ESC_CODE_TURN_OFF_BRACKETED_PASTE = "\x1B[?2004l";
 
 
 #define FORCE_INLINE                  __attribute__((always_inline)) static __inline__
-#define UNUSED                        __attribute__((unused))
-#define NORETURN                      __attribute__((noreturn))
+#define _UNUSED                       __attribute__((unused))
+#define _NORETURN                     __attribute__((noreturn))
 
 #define STRLITERAL(x)                 #x
 
@@ -210,15 +210,14 @@ operator"" _KB(unsigned long long value)
     }
 
 #define VISIBILITY(V) __attribute__((__visibility__(#V)))
-#define EXPORT        VISIBILITY(default)
-#define HIDDEN        VISIBILITY(hidden)
+#define _EXPORT       VISIBILITY(default)
+#define _HIDDEN       VISIBILITY(hidden)
 #define ERROR_CODE    std::error_code
 #define _NO_THROW     noexcept
 #define FS            std::filesystem
 #define CHRONO        std::chrono
 
 #define P_FORWARD     std::forward
-#define MOVE          std::move
 #define COPY_N        std::copy_n
 
 template <typename T>
@@ -350,18 +349,7 @@ using LOCK_GUARD         = class std::lock_guard<_Mutex>;
 using CONDITION_VARIABLE = class std::condition_variable;
 using MUTEX              = class std::mutex;
 using THREAD             = class std::thread;
-template <typename T>
-using REF = T &;
-template <typename T>
-using C_REF = const T &;
-template <typename T>
-using RREF = T &&;
-template <typename T>
-using PTR = T *;
-template <typename T>
-using C_PTR = const T *;
-template <typename T>
-using C_PTR_C = const T *const;
+
 template <typename _Tp, typename _Sequence = std::deque<_Tp>>
 using QUEUE = class std::queue<_Tp, _Sequence>;
 

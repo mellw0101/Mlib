@@ -43,4 +43,5 @@ namespace Mlib::Math
     /// @param restitutionCoefficient  The coefficient of restitution of the object.
     /// @returns ( f64 ) The velocity of the object after the bounce.
     f64 calculateBounceVelocity(f64 initialVelocity, f64 restitutionCoefficient);
+
 } // namespace Mlib::Math

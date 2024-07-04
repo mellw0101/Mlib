@@ -27,7 +27,7 @@ namespace Mlib ::Threads
                                 return;
                             }
 
-                            task = MOVE(this->tasks.front());
+                            task = std::move(this->tasks.front());
                             this->tasks.pop();
                         }
                         task();

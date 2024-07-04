@@ -6,6 +6,7 @@ using namespace std;
 namespace Mlib::Http
 {
     /// @class @c HttpClient
+    ///
     HttpClient ::HttpClient(const string &host, const string &path)
         : host_(host)
         , path_(path)
@@ -57,6 +58,7 @@ namespace Mlib::Http
     }
 
     /// @class @c CurlHttpClient
+    ///
     CurlHttpClient ::CurlHttpClient()
     {
         curl_global_init(CURL_GLOBAL_DEFAULT);

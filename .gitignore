@@ -1,3 +1,5 @@
+/.amake/
+/.amake/cppSizes
 /build/
 /build/bin/
 /build/lib/

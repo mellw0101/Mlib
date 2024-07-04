@@ -5,7 +5,7 @@
 namespace Mlib::Constexpr
 {
     constexpr bool
-    is_sorted(C_PTR<s32> arr, u64 size)
+    is_sorted(C_s32 *arr, u64 size)
     {
         for (u64 i = 1; i < size; ++i)
         {
@@ -152,7 +152,7 @@ namespace Mlib::Constexpr
     }
 
     constexpr u64
-    strlen(C_PTR<s8> str) _NO_THROW
+    strlen(C_s8 *str) _NO_THROW
     {
         u64 i = 0;
         for (; str[i]; ++i)
@@ -195,13 +195,13 @@ namespace Mlib::Constexpr
             std::copy_n(str, N + 1, data);
         }
 
-        constexpr REF<s8>
+        constexpr s8 &
         operator[](u64 i) const
         {
-            return const_cast<REF<s8>>(data[i]);
+            return const_cast<s8 &>(data[i]);
         }
 
-        constexpr C_PTR<s8>
+        constexpr C_s8 *
         c_str() const
         {
             return data;
@@ -360,7 +360,7 @@ namespace Mlib::Constexpr
     //
     //  Helper function to compare two characters case-insensitively
     //
-    static constexpr bool char_equal_ignore_case(s8 a, s8 b) _NO_THROW HIDDEN;
+    static constexpr bool char_equal_ignore_case(s8 a, s8 b) _NO_THROW _HIDDEN;
     static constexpr bool
     char_equal_ignore_case(s8 a, s8 b) _NO_THROW
     {
@@ -370,7 +370,7 @@ namespace Mlib::Constexpr
     //
     //  Helper function to check if a string starts with another string, case-insensitively
     //
-    static constexpr bool starts_with_ignore_case(C_s8 *str, C_s8 *prefix) _NO_THROW HIDDEN;
+    static constexpr bool starts_with_ignore_case(C_s8 *str, C_s8 *prefix) _NO_THROW _HIDDEN;
     static constexpr bool
     starts_with_ignore_case(C_s8 *str, C_s8 *prefix) _NO_THROW
     {
@@ -578,7 +578,7 @@ namespace Mlib::Constexpr
         //
         //  Helper function to check if a character is a combining character
         //
-        static constexpr bool is_combining_character(c32 ucs) HIDDEN;
+        static constexpr bool is_combining_character(c32 ucs) _HIDDEN;
         static constexpr bool
         is_combining_character(c32 ucs)
         {

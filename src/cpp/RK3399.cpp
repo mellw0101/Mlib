@@ -793,13 +793,13 @@ lpddr3_get_parameter(struct timing_related_config *timing_config, struct dram_ti
                 break;
             case 240 :
             default :
-                pdram_timing->mr11 = LPDDR3_ODT_240;
+                // pdram_timing->mr11 = LPDDR3_ODT_240;
                 break;
         }
     }
     else
     {
-        pdram_timing->mr11 = LPDDR3_ODT_DIS;
+        // pdram_timing->mr11 = LPDDR3_ODT_DIS;
     }
 
     pdram_timing->tinit1 = (LPDDR3_TINIT1 * nmhz + 999) / 1000;
@@ -1038,11 +1038,11 @@ lpddr4_get_parameter(struct timing_related_config *timing_config, struct dram_ti
     tmp |= (1 << 2);
     if (nmhz <= 266)
     {
-        pdram_timing->cl    = 6;
-        pdram_timing->cwl   = 4;
-        pdram_timing->twr   = 6;
-        pdram_timing->trtp  = 8;
-        pdram_timing->mr[2] = LPDDR4_RL6_NRTP8 | LPDDR4_A_WL4;
+        pdram_timing->cl   = 6;
+        pdram_timing->cwl  = 4;
+        pdram_timing->twr  = 6;
+        pdram_timing->trtp = 8;
+        // pdram_timing->mr[2] = LPDDR4_RL6_NRTP8 | LPDDR4_A_WL4;
     }
     else if (nmhz <= 533)
     {
@@ -1053,8 +1053,8 @@ lpddr4_get_parameter(struct timing_related_config *timing_config, struct dram_ti
         }
         else
         {
-            pdram_timing->cl    = 10;
-            pdram_timing->mr[2] = LPDDR4_RL10_NRTP8 | LPDDR4_A_WL6;
+            pdram_timing->cl = 10;
+            // pdram_timing->mr[2] = LPDDR4_RL10_NRTP8 | LPDDR4_A_WL6;
         }
         pdram_timing->cwl  = 6;
         pdram_timing->twr  = 10;
@@ -1070,8 +1070,8 @@ lpddr4_get_parameter(struct timing_related_config *timing_config, struct dram_ti
         }
         else
         {
-            pdram_timing->cl    = 14;
-            pdram_timing->mr[2] = LPDDR4_RL14_NRTP8 | LPDDR4_A_WL8;
+            pdram_timing->cl = 14;
+            // pdram_timing->mr[2] = LPDDR4_RL14_NRTP8 | LPDDR4_A_WL8;
         }
         pdram_timing->cwl  = 8;
         pdram_timing->twr  = 16;
@@ -1087,8 +1087,8 @@ lpddr4_get_parameter(struct timing_related_config *timing_config, struct dram_ti
         }
         else
         {
-            pdram_timing->cl    = 20;
-            pdram_timing->mr[2] = LPDDR4_RL20_NRTP8 | LPDDR4_A_WL10;
+            pdram_timing->cl = 20;
+            // pdram_timing->mr[2] = LPDDR4_RL20_NRTP8 | LPDDR4_A_WL10;
         }
         pdram_timing->cwl  = 10;
         pdram_timing->twr  = 20;

@@ -81,7 +81,7 @@ namespace Mlib::Sys
             static constexpr u32 pwr_rep      = 0xC0010293; // (Power Reporting)
             static constexpr u32 pwr_lmt_stat = 0xC0010295; // (Power Limit Status)
         };
-    }                                                       // namespace CpuMsrAddr
+    } // namespace CpuMsrAddr
 
     class MSRReader
     {
@@ -100,5 +100,7 @@ namespace Mlib::Sys
     u64 retriveSysLogicCores();
 
     u64 read_msr_value_to_watts(MSRReader *msr_reader, u32 msr_address);
+
+    bool prompt_yes_no(const char *str);
 
 } // namespace Mlib::Sys

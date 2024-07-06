@@ -195,4 +195,38 @@ namespace Mlib::Sys
         return power_in_watts;
     }
 
+    bool
+    prompt_yes_no(const char *str, bool default_response = true)
+    {
+        const char *yes_no_prompt = default_response ? "Y/n" : "y/N";
+        printf("%s [%s]: ", str, yes_no_prompt);
+
+        char c;
+        while (read(STDIN_FILENO, &c, 1) > 0)
+        {
+            switch (c)
+            {
+                case 'Y' :
+                case 'y' :
+                {
+                    return true;
+                }
+                case 'N' :
+                case 'n' :
+                {
+                    return false;
+                }
+                case '\n' :
+                {
+                    return default_response;
+                }
+                default :
+                {
+                    printf("\nOnly %s is allowed.\n%s", yes_no_prompt, str);
+                }
+            }
+        }
+        return default_response;
+    }
+
 } // namespace Mlib::Sys

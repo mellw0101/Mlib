@@ -196,15 +196,28 @@ namespace Mlib::Sys
     }
 
     bool
-    prompt_yes_no(const char *str, bool default_response = true)
+    prompt_yes_no(const char *str, bool default_response, bool verbose_prompt)
     {
-        const char *yes_no_prompt = default_response ? "Y/n" : "y/N";
-        printf("%s [%s]: ", str, yes_no_prompt);
-
-        char c;
-        while (read(STDIN_FILENO, &c, 1) > 0)
+        while (true)
         {
-            switch (c)
+            const char *yes_no_prompt = default_response ? "Y/n" : "y/N";
+            printf("%s [%s]%s: ", str, yes_no_prompt,
+                   verbose_prompt ? (default_response ? " Press enter to answer 'Yes'" : " Press enter to answer 'No'")
+                                  : "");
+            fflush(stdout);
+
+            char input[3];
+            if (fgets(input, 3, stdin) == nullptr)
+            {
+                return default_response;
+            }
+
+            if (*input == '\n')
+            {
+                return default_response;
+            }
+
+            switch (*input)
             {
                 case 'Y' :
                 case 'y' :
@@ -216,17 +229,20 @@ namespace Mlib::Sys
                 {
                     return false;
                 }
-                case '\n' :
-                {
-                    return default_response;
-                }
                 default :
                 {
-                    printf("\nOnly %s is allowed.\n%s", yes_no_prompt, str);
+                    printf("Only [%s] is allowed.\n", yes_no_prompt);
+                    fflush(stdout);
+
+                    if (input[1] != '\n')
+                    {
+                        for (int c; (c = fgetc(stdin)) != '\n' && c != EOF;)
+                            ;
+                    }
                 }
             }
         }
-        return default_response;
     }
+
 
 } // namespace Mlib::Sys

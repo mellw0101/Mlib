@@ -12,7 +12,7 @@ namespace Mlib::Profile
     /// @class @c ProfilerStats
 
     void
-    ProfilerStats ::record(f64 const value)
+    ProfilerStats ::record(const f64 value)
     {
         values.push_back(value);
     }

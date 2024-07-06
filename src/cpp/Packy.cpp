@@ -55,8 +55,8 @@ packy ::find_package(const char *package)
     std::string    repo = curlhttp.get(url);
 
     const char *found       = repo.c_str();
-    size_t      package_len = strlen(package);
     const char *ext         = ".pkg.tar.zst";
+    size_t      package_len = strlen(package);
     size_t      ext_len     = strlen(ext);
 
     while ((found = strstr(found, package)) != nullptr)
@@ -82,8 +82,6 @@ packy ::find_package(const char *package)
 int
 packy ::download(const char *package)
 {
-    CURLcode res;
-
     char url[256];
     char filename[256];
 
@@ -104,17 +102,16 @@ packy ::download(const char *package)
         return 1;
     }
 
-    curl = curl_easy_init();
     if (!curl)
     {
-        fprintf(stderr, "Failed to init curl.");
+        fprintf(stderr, "Curl has not been initialized something has gone wrong.\nAborting.\n");
         return 1;
     }
     curl_easy_setopt(curl, CURLOPT_URL, url);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-    res = curl_easy_perform(curl);
+    CURLcode res = curl_easy_perform(curl);
     if (res != CURLE_OK)
     {
         fprintf(stderr, "curl Error: %s.\n", curl_easy_strerror(res));

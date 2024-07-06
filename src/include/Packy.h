@@ -12,8 +12,7 @@ class packy
 {
 private:
     static packy *packyInstance;
-
-    CURL *curl = nullptr;
+    CURL         *curl = nullptr;
 
     static size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream);
     static size_t write_data_to_str(void *ptr, size_t size, size_t nmemb, void *stream);

@@ -18,7 +18,6 @@
 
 #include "def.h"
 
-
 namespace Mlib::FileSys
 {
     enum Mode : u8
@@ -32,6 +31,7 @@ namespace Mlib::FileSys
     VECTOR<STRING> fileContentToStrVec(const STRING &filename, const u8 mode = NONE);
     auto           fileContentToFile(const STRING &sourcePath, const STRING &destinationPath) -> void;
 
+    //
     /// @name dirContentToStrVec
     /// @brief
     /// - Retrieve the content of a directory as a vector of strings.
@@ -45,6 +45,7 @@ namespace Mlib::FileSys
 
     void cd(const STRING &path);
 
+    //
     /// @name mkdir
     /// @brief
     ///  - Create a directory.
@@ -74,6 +75,7 @@ namespace Mlib::FileSys
     STRING fileLastWriteTimeStr(const STRING &path, const STRING &format);
     size_t fileSize(const STRING &path);
 
+    //
     /// @name strVecToFile
     /// @brief
     ///  - Write a vector of strings to a file.
@@ -97,5 +99,7 @@ namespace Mlib::FileSys
     {
         return FS::is_regular_file(p, ec);
     }
+
+    bool file_size(size_t *size, FILE *file);
 
 } // namespace Mlib::FileSys

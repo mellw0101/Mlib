@@ -15,7 +15,7 @@ namespace Mlib ::Threads
                     {
                         std::function<void()> task;
                         {
-                            UNIQUE_LOCK<MUTEX> lock(this->queueMutex);
+                            std::unique_lock<std::mutex> lock(this->queueMutex);
                             this->condition.wait(lock,
                                                  [this]
                                                  {

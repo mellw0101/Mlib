@@ -102,7 +102,6 @@ namespace Mlib::Sys
     template <typename T>
     Singleton<T> *Singleton<T>::instance = nullptr;
 
-
     MSRReader ::MSRReader(u32 cpu)
     {
         STRING path = "/dev/cpu/" + std::to_string(cpu) + "/msr";
@@ -244,5 +243,32 @@ namespace Mlib::Sys
         }
     }
 
+    const char *
+    itoa(int num) _NO_THROW
+    {
+        static thread_local char buffer[20];
+        char                    *p = buffer;
+        if (num < 0)
+        {
+            *p++ = '-';
+            num  = -num;
+        }
+        do
+        {
+            *p++ = '0' + (num % 10);
+            num /= 10;
+        }
+        while (num);
+        *p = '\0';
+
+        for (char *q = (*buffer == '-') ? buffer + 1 : buffer; q < --p; ++q)
+        {
+            char temp = *q;
+            *q        = *p;
+            *p        = temp;
+        }
+
+        return buffer;
+    }
 
 } // namespace Mlib::Sys

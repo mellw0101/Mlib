@@ -13,7 +13,6 @@
 #pragma region /** @def Macros */
 #pragma region /** @def Color Macros */
 
-
 #define ESC_CODE_RED     "\033[31m"
 #define ESC_CODE_GREEN   "\033[32m"
 #define ESC_CODE_YELLOW  "\033[33m"
@@ -25,10 +24,8 @@
 #define ESC_CODE_GRAY    "\033[90m"
 #define ESC_CODE_BOLD    "\033[1m"
 
-
 #pragma endregion /** END: Color Macros */
 #pragma region    /** @def ANSI cursor Macros */
-
 
 #define ESC_CODE_UNDERLINE               "\033[4m"
 #define ESC_CODE_BLINK                   "\033[5m"
@@ -94,7 +91,6 @@ constexpr auto ESC_CODE_TURN_ON_BRACKETED_PASTE  = "\x1B[?2004h";
 constexpr auto ESC_CODE_TURN_OFF_BRACKETED_PASTE = "\x1B[?2004l";
 
 #pragma endregion /** END: ANSI cursor Macros */
-
 
 #define FORCE_INLINE                  __attribute__((always_inline)) static __inline__
 #define _UNUSED                       __attribute__((unused))
@@ -208,6 +204,14 @@ operator"" _KB(unsigned long long value)
     {                                            \
         return _name {value};                    \
     }
+
+#define DIE(_Msg)           \
+    do                      \
+    {                       \
+        perror(_Msg);       \
+        exit(EXIT_FAILURE); \
+    }                       \
+    while (false)
 
 #define VISIBILITY(V) __attribute__((__visibility__(#V)))
 #define _EXPORT       VISIBILITY(default)
@@ -352,7 +356,6 @@ using THREAD             = class std::thread;
 
 template <typename _Tp, typename _Sequence = std::deque<_Tp>>
 using QUEUE = class std::queue<_Tp, _Sequence>;
-
 
 decltype(auto) operator"" _hash(C_s8 *s, u64);
 

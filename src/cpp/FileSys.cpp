@@ -366,4 +366,23 @@ namespace Mlib ::FileSys
         }
         return false;
     }
+
+    bool
+    file_size(size_t *size, FILE *file)
+    {
+        int prev = ftell(file);
+        if (prev == -1)
+        {
+            return false;
+        }
+        fseek(file, 0L, SEEK_END);
+        *size = ftell(file);
+        if (*size == -1)
+        {
+            return false;
+        }
+        fseek(file, prev, SEEK_SET);
+        return true;
+    }
+
 } // namespace Mlib::FileSys

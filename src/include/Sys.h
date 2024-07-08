@@ -111,4 +111,6 @@ namespace Mlib::Sys
     //
     bool prompt_yes_no(const char *str, bool default_response = true, bool verbose_prompt = false);
 
+    const char *itoa(int num) _NO_THROW;
+
 } // namespace Mlib::Sys

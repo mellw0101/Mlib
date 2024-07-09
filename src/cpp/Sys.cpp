@@ -197,9 +197,9 @@ namespace Mlib::Sys
     bool
     prompt_yes_no(const char *str, bool default_response, bool verbose_prompt)
     {
+        const char *yes_no_prompt = default_response ? "Y/n" : "y/N";
         while (true)
         {
-            const char *yes_no_prompt = default_response ? "Y/n" : "y/N";
             printf("%s [%s]%s: ", str, yes_no_prompt,
                    verbose_prompt ? (default_response ? " Press enter to answer 'Yes'" : " Press enter to answer 'No'")
                                   : "");

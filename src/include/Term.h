@@ -27,7 +27,7 @@ namespace Mlib::Term
         {}
     };
 
-    void        writef(int fd, const char *format, ...);
+    void        fwritef(int fd, const char *format, ...);
     void        retrieve_current_row_colum_position(int fd, unsigned short *row, unsigned short *colum,
                                                     bool in_raw_mode = true);
     void        clear_screen();

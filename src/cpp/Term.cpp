@@ -13,10 +13,23 @@
 namespace Mlib::Term
 {
     void
-    fwritef(int fd, const char *format, ...)
+    fatal_error(const char *from_function, const char *when_calling, const char *format, ...)
     {
         char    buf[1024];
         va_list ap;
+        va_start(ap, format);
+        vsnprintf(buf, sizeof(buf), format, ap);
+        va_end(ap);
+        fwritef(STDERR_FILENO, "%s: from_function: [%s], when_calling: [%s], %s, %s", __func__, from_function,
+                when_calling, strerror(errno), buf);
+        exit(1);
+    }
+
+    void
+    fwritef(int fd, const char *format, ...)
+    {
+        static char buf[1024];
+        va_list     ap;
         va_start(ap, format);
         vsnprintf(buf, sizeof(buf), format, ap);
         va_end(ap);
@@ -38,6 +51,26 @@ namespace Mlib::Term
         {
             fprintf(stderr, "%s: 'write' Failed, ERROR: [%s].\n", __func__, strerror(errno));
             exit(1);
+        }
+    }
+
+    void
+    cwrite(const char c)
+    {
+        ssize_t len = write(STDOUT_FILENO, &c, 1);
+        if (len != 1 || len == -1)
+        {
+            fatal_err("write", "%zi (len), was not == 1", len);
+        }
+    }
+
+    void
+    fcwrite(int fd, const char c)
+    {
+        ssize_t len = write(fd, &c, 1);
+        if (len != 1 || len == -1)
+        {
+            fatal_err("write", "%zi (len), was not == 1", len);
         }
     }
 
@@ -121,16 +154,16 @@ namespace Mlib::Term
     }
 
     void
-    move_cursor(const unsigned short x, const unsigned short y)
+    move_cursor(const unsigned short row, const unsigned short colum)
     {
-        printf("\033[%u;%uH", y, x);
+        printf("\033[%u;%uH", row, colum);
         fflush(stdout);
     }
 
     void
-    printf_xy(const unsigned short x, const unsigned short y, const char *fmt, ...)
+    printf_xy(const unsigned short row, const unsigned short colum, const char *fmt, ...)
     {
-        move_cursor(x, y);
+        move_cursor(row, colum);
         char    msg[1024];
         va_list ap;
         va_start(ap, fmt);
@@ -146,20 +179,19 @@ namespace Mlib::Term
         size_t colums, rows;
         if (!term_size(&colums, &rows))
         {
-            fprintf(stderr, "term_size: Could not retrive term size, ERROR: [%s].\n", ERRNO_C_STR);
+            fprintf(stderr, "%s: 'term_size' Failed, Could not retrive term size, ERROR: [%s].\n", __func__,
+                    strerror(errno));
             return;
         }
-
         char    buf[1024];
         va_list ap;
         va_start(ap, fmt);
         vsnprintf(buf, sizeof(buf), fmt, ap);
         va_end(ap);
-        size_t x_pos = ((colums - strlen(buf)) / 2);
-        size_t y_pos = (rows / 2);
-        move_cursor(x_pos, y_pos);
-        fprintf(stdout, "%s", buf);
-        fflush(stdout);
+        size_t row   = (rows / 2);
+        size_t colum = ((colums - strlen(buf)) / 2);
+        move_cursor(row, colum);
+        writef("%s", buf);
     }
 
     int
@@ -173,13 +205,10 @@ namespace Mlib::Term
     {
         if (hide)
         {
-            printf(ESC_CODE_CURSOR_HIDE);
+            writef(ESC_CODE_CURSOR_HIDE);
+            return;
         }
-        else
-        {
-            printf(ESC_CODE_CURSOR_SHOW);
-        }
-        fflush(stdout);
+        writef(ESC_CODE_CURSOR_SHOW);
     }
 
     void
@@ -278,17 +307,14 @@ namespace Mlib::Term
     }
 
     void
-    set_color_rgb(bool bg, unsigned short r, unsigned short g, unsigned short b)
+    set_color_rgb(bool bg, const unsigned short r, const unsigned short g, const unsigned short b)
     {
         if (bg)
         {
-            printf("\033[48;2;%u;%u;%um", r, g, b);
+            writef("\033[48;2;%u;%u;%um", r, g, b);
+            return;
         }
-        else
-        {
-            printf("\033[38;2;%u;%u;%um", r, g, b);
-        }
-        fflush(stdout);
+        writef("\033[38;2;%u;%u;%um", r, g, b);
     }
 
     void
@@ -305,8 +331,7 @@ namespace Mlib::Term
         ssize_t len = read(fd, &c, 1);
         if (len != 1 && len == -1)
         {
-            fprintf(stderr, "%s: 'read' Failed, the read length was not 1.\n", __func__);
-            exit(EXIT_FAILURE);
+            fatal_err("read", "%zi (len) != 1");
         }
         return c;
     }
@@ -359,8 +384,8 @@ namespace Mlib::Term
     }
 
     const char *
-    prompt_raw(int fd, const char **wanted_answers, rgb_code_t fg, rgb_code_t bg, const unsigned short x,
-               const unsigned short y, const char *format, ...)
+    prompt_raw(int fd, const char **wanted_answers, const rgb_code_t fg, const rgb_code_t bg, const unsigned short row,
+               const unsigned short colum, const char *format, ...)
     {
         char    prompt_str[1024], read_buf[1024];
         int     c, i, prompt_len;
@@ -371,7 +396,7 @@ namespace Mlib::Term
         prompt_len = strlen(prompt_str) + 3;
         while (true)
         {
-            move_cursor(x, y);
+            move_cursor(row, colum);
             set_color_rgb(false, fg.r, fg.g, fg.b);
             set_color_rgb(true, bg.r, bg.g, bg.b);
             fwritef(fd, "%s: ", prompt_str);
@@ -385,9 +410,9 @@ namespace Mlib::Term
                         continue;
                     }
                     i--;
-                    move_cursor(x + prompt_len + i, y);
+                    move_cursor(row, colum + prompt_len + i);
                     write(fd, " ", 1);
-                    move_cursor(x + prompt_len + i, y);
+                    move_cursor(row, colum + prompt_len + i);
                     continue;
                 }
                 write(fd, &c, 1);
@@ -407,13 +432,37 @@ namespace Mlib::Term
                     return answer;
                 }
             }
-            move_cursor(x + prompt_len, y);
+            move_cursor(row, colum + prompt_len);
             for (int j = 0; answer[j]; j++)
             {
-                printf(" ");
-                fflush(stdout);
+                cwrite(' ');
             }
         }
+    }
+
+    int
+    fork_function(pid_t *pid, function_t *function)
+    {
+        int fd[2];
+        if (pipe(fd) == -1)
+        {
+            fatal_err("pipe");
+        }
+        if ((*pid = fork()) == 0)
+        {
+            close(fd[PIPE_READ]);
+            if (dup2(fd[PIPE_WRITE], STDOUT_FILENO) < 0)
+            {
+                fatal_err("dup2");
+            }
+            if (dup2(fd[PIPE_WRITE], STDERR_FILENO) < 0)
+            {
+                fatal_err("dup2");
+            }
+            function->action();
+        }
+        close(fd[PIPE_WRITE]);
+        return (fd[PIPE_READ]);
     }
 
 } // namespace Mlib::Term

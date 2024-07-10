@@ -29,19 +29,16 @@ namespace Mlib::Threads
         auto
         enqueue(Callback &&f, Args &&...args) -> FUTURE<typename INVOKE_RESULT<Callback, Args...>::type>
         {
-            using return_type = typename INVOKE_RESULT<Callback, Args...>::type;
-
-            auto task =
-                std::make_shared<PACKAGED_TASK<return_type()>>(bind(P_FORWARD<Callback>(f), P_FORWARD<Args>(args)...));
-
-            FUTURE<return_type> res = task->get_future();
+            using namespace std;
+            using return_type = typename invoke_result<Callback, Args...>::type;
+            auto task = make_shared<packaged_task<return_type()>>(bind(forward<Callback>(f), forward<Args>(args)...));
+            future<return_type> res = task->get_future();
             {
-                UNIQUE_LOCK<MUTEX> lock(queueMutex);
+                unique_lock<mutex> lock(queueMutex);
                 if (stop)
                 {
-                    throw RUNTIME_ERROR("enqueue on stopped ThreadPool");
+                    throw runtime_error("enqueue on stopped ThreadPool");
                 }
-
                 tasks.emplace(
                     [task]()
                     {
@@ -49,7 +46,6 @@ namespace Mlib::Threads
                     });
             }
             condition.notify_one();
-
             return res;
         }
 
@@ -129,6 +125,5 @@ namespace Mlib::Threads
     };
 
 } // namespace Mlib::Threads
-
 
 #define enqueueT(__Name, __Pool, ...) std::future<void> __Name = __Pool.enqueue(__VA_ARGS__)

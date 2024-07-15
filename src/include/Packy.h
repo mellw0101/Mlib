@@ -28,10 +28,8 @@ private:
     int verbose_lvl = 0;
 
     static size_t write_data(void *, size_t, size_t, FILE *);
-    static size_t write_data_to_str(void *, size_t, size_t, void *);
 
-    void decompress_zst(const char *, char **, size_t *);
-    void extract_tar(const char *, size_t, const char *);
+    // void extract_tar(const char *, size_t, const char *);
 
     const char *retrieve_url(const char *package);
 

@@ -1,7 +1,19 @@
+/**
+    @file Term.cpp
+    @author Melwin Svensson [https://github.com/mellw0101]
+    @version 0.1
+    @date 2024-07-14 18:18:29
+
+    @copyright Copyright (c) 2024
+
+ */
 #include "../include/Term.h"
+#include "../include/Error.h"
+#include "../include/Io.h"
 #include "../include/def.h"
 
 #include <cerrno>
+#include <cmath>
 #include <cstdarg>
 #include <cstdio>
 #include <cstring>
@@ -12,66 +24,29 @@
 
 namespace Mlib::Term
 {
-    void
-    fatal_error(const char *from_function, const char *when_calling, const char *format, ...)
-    {
-        char    buf[1024];
-        va_list ap;
-        va_start(ap, format);
-        vsnprintf(buf, sizeof(buf), format, ap);
-        va_end(ap);
-        fwritef(STDERR_FILENO, "%s: from_function: [%s], when_calling: [%s], %s, %s", __func__, from_function,
-                when_calling, strerror(errno), buf);
-        exit(1);
-    }
+    using namespace Io;
 
-    void
-    fwritef(int fd, const char *format, ...)
+    int
+    hex_sti(const char *str)
     {
-        static char buf[1024];
-        va_list     ap;
-        va_start(ap, format);
-        vsnprintf(buf, sizeof(buf), format, ap);
-        va_end(ap);
-        unsigned long length = strlen(buf);
-        write(fd, &buf, length);
-    }
-
-    void
-    writef(const char *format, ...)
-    {
-        static char buf[4096];
-        va_list     ap;
-        va_start(ap, format);
-        vsnprintf(buf, sizeof(buf), format, ap);
-        va_end(ap);
-        const size_t  len    = strlen(buf);
-        const ssize_t wr_len = write(STDOUT_FILENO, &buf, len);
-        if (wr_len != len || wr_len == -1)
+        int r = 0, value = 0;
+        for (int i = 0; *str; str++, i++)
         {
-            fprintf(stderr, "%s: 'write' Failed, ERROR: [%s].\n", __func__, strerror(errno));
-            exit(1);
+            if (*str >= '0' && *str <= '9')
+            {
+                value = (int)(*str - '0');
+            }
+            else if (*str >= 'a' && *str <= 'f')
+            {
+                value = (int)(*str - 'a' + 10);
+            }
+            else if (*str >= 'A' && *str <= 'F')
+            {
+                value = (int)(*str - 'A' + 10);
+            }
+            r += value * pow(16, i);
         }
-    }
-
-    void
-    cwrite(const char c)
-    {
-        ssize_t len = write(STDOUT_FILENO, &c, 1);
-        if (len != 1 || len == -1)
-        {
-            fatal_err("write", "%zi (len), was not == 1", len);
-        }
-    }
-
-    void
-    fcwrite(int fd, const char c)
-    {
-        ssize_t len = write(fd, &c, 1);
-        if (len != 1 || len == -1)
-        {
-            fatal_err("write", "%zi (len), was not == 1", len);
-        }
+        return r;
     }
 
     void
@@ -128,6 +103,51 @@ namespace Mlib::Term
             fprintf(stderr, "%s: 'sscanf' Failed, ERROR: [%s].\n", __func__, strerror(errno));
             exit(1);
         }
+    }
+
+    const char *
+    retrieve_current_rgb_colors(bool bg)
+    {
+        int         temp_fd, stdout_fd;
+        static char buf[50];
+        const char *tmp_file = "/tmp/termcolor.tmp";
+        if ((temp_fd = open(tmp_file, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR)) == -1)
+        {
+            non_fatal_err_with_errno_str("open");
+            return nullptr;
+        }
+        if ((stdout_fd = dup(STDOUT_FILENO)) == -1)
+        {
+            close(temp_fd);
+            non_fatal_err_with_errno_str("dup");
+            return nullptr;
+        }
+        if (dup2(temp_fd, STDOUT_FILENO) == -1)
+        {
+            close(temp_fd);
+            close(stdout_fd);
+            non_fatal_err_with_errno_str("dup2");
+            return nullptr;
+        }
+        write(STDOUT_FILENO, (!bg) ? "\033]10;?\007" : "\033]11;?\007", 7);
+        if (dup2(stdout_fd, STDOUT_FILENO) == -1)
+        {
+            close(temp_fd);
+            close(stdout_fd);
+            non_fatal_err_with_errno_str("dup2");
+            return nullptr;
+        }
+        close(stdout_fd);
+        lseek(temp_fd, 0, SEEK_SET);
+        ssize_t r_len = read(temp_fd, buf, sizeof(buf) - 1);
+        close(temp_fd);
+        if (r_len < 1)
+        {
+            non_fatal_err_with_errno_str("read");
+            return nullptr;
+        }
+        buf[r_len] = '\0';
+        return buf;
     }
 
     void
@@ -318,6 +338,32 @@ namespace Mlib::Term
     }
 
     void
+    make_entire_line_color(const unsigned short r, const unsigned short g, const unsigned short b)
+    {
+        unsigned long colums;
+        if (!term_size(&colums, nullptr))
+        {
+            non_fatal_err("term_size");
+        }
+        set_color_rgb(true, r, g, b);
+        writef("\r%*s", colums, " ");
+        reset_color();
+    }
+
+    void
+    clear_line(bool from_start_of_line)
+    {
+        if (from_start_of_line)
+        {
+            writef("\033[2K");
+        }
+        else
+        {
+            writef("\033[0K");
+        }
+    }
+
+    void
     reset_color()
     {
         printf(ESC_CODE_RESET);
@@ -384,8 +430,8 @@ namespace Mlib::Term
     }
 
     const char *
-    prompt_raw(int fd, const char **wanted_answers, const rgb_code_t fg, const rgb_code_t bg, const unsigned short row,
-               const unsigned short colum, const char *format, ...)
+    prompt_raw(int fd, const char **wanted_answers, const rgb_code_t *fg, const rgb_code_t *bg,
+               const unsigned short row, const unsigned short colum, const char *format, ...)
     {
         char    prompt_str[1024], read_buf[1024];
         int     c, i, prompt_len;
@@ -393,17 +439,18 @@ namespace Mlib::Term
         va_start(ap, format);
         vsnprintf(prompt_str, sizeof(prompt_str), format, ap);
         va_end(ap);
-        prompt_len = strlen(prompt_str) + 3;
+        const char *const prompt = prompt_str;
+        prompt_len               = strlen(prompt) + 2;
         while (true)
         {
             move_cursor(row, colum);
-            set_color_rgb(false, fg.r, fg.g, fg.b);
-            set_color_rgb(true, bg.r, bg.g, bg.b);
-            fwritef(fd, "%s: ", prompt_str);
+            set_color_rgb(false, fg->r, fg->g, fg->b);
+            set_color_rgb(true, bg->r, bg->g, bg->b);
+            fwritef(fd, "%s: ", prompt);
             i = 0;
-            while ((c = read_char_from_fd(fd)) != '\r')
+            while ((char)(c = read_char_from_fd(fd)) != '\r')
             {
-                if (c == 127)
+                if ((char)c == 127)
                 {
                     if (i == 0)
                     {
@@ -463,6 +510,25 @@ namespace Mlib::Term
         }
         close(fd[PIPE_WRITE]);
         return (fd[PIPE_READ]);
+    }
+
+    termios
+    setup_raw_term(int fd)
+    {
+        termios new_term, old_term;
+        if (tcgetattr(fd, &old_term))
+        {
+            close(fd);
+            fatal_err("tcgetattr", "Failed to get current term attributes");
+        }
+        new_term = old_term;
+        cfmakeraw(&new_term);
+        if (tcsetattr(fd, TCSANOW, &new_term))
+        {
+            close(fd);
+            fatal_err("tcsetattr", "Failed to set raw mode");
+        }
+        return old_term;
     }
 
 } // namespace Mlib::Term

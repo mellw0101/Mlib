@@ -27,6 +27,13 @@ namespace Mlib::FileSys
         NO_THROW        = (1 << 1),
     };
 
+    enum opt
+    {
+        RETRIEVE_SIZE   = 0,
+        DELETE_IF_EXIST = (1 << 0),
+        RETURN_FD       = (1 << 1),
+    };
+
     auto           fileContentToStr(const STRING &filename) -> STRING;
     VECTOR<STRING> fileContentToStrVec(const STRING &filename, const u8 mode = NONE);
     auto           fileContentToFile(const STRING &sourcePath, const STRING &destinationPath) -> void;
@@ -101,5 +108,13 @@ namespace Mlib::FileSys
     }
 
     bool file_size(size_t *size, FILE *file);
+
+    size_t retrieve_file_size_from_path(const char *file_path);
+
+    [[nodiscard]]
+    FILE *write_to_tmp_file(const void *buf __attribute__((nonnull)), unsigned long *bytes);
+
+    int write_to_file(const void *buf __attribute__((nonnull)), unsigned long *bytes,
+                      const char *file __attribute__((nonnull)), const int flags);
 
 } // namespace Mlib::FileSys

@@ -214,7 +214,6 @@ namespace Mlib::Constexpr
         }
     };
 
-
     template <u64 N>
     String(C_s8 (&)[N]) -> String<N - 1>;
 
@@ -231,10 +230,10 @@ namespace Mlib::Constexpr
         return (ch >= 'A' && ch <= 'Z') ? (ch + 'a' - 'A') : ch;
     }
 
-    constexpr s32
-    atoi(C_s8 *str) _NO_THROW
+    constexpr int
+    atoi(const char *str) _NO_THROW
     {
-        s32 result = 0;
+        int result = 0;
         while (*str >= '0' && *str <= '9')
         {
             result = result * 10 + (*str - '0');
@@ -301,8 +300,8 @@ namespace Mlib::Constexpr
         return 0;
     }
 
-    constexpr s8 *
-    strchr(s8 *str, s8 ch) _NO_THROW
+    constexpr char *
+    strchr(char *str, char ch) _NO_THROW
     {
         while (*str)
         {
@@ -329,31 +328,27 @@ namespace Mlib::Constexpr
         return nullptr;
     }
 
-    constexpr C_s8 *
-    strstr(C_s8 *haystack, C_s8 *needle) _NO_THROW
+    constexpr const char *
+    strstr(const char *haystack, const char *needle) _NO_THROW
     {
         if (!*needle)
         {
             return haystack;
         }
-
-        for (C_s8 *h = haystack; *h; ++h)
+        for (const char *h = haystack; *h; ++h)
         {
-            C_s8 *n     = needle;
-            C_s8 *start = h;
-
+            const char *n     = needle;
+            const char *start = h;
             while (*start && *n && *start == *n)
             {
                 ++start;
                 ++n;
             }
-
             if (!*n)
             {
                 return h;
             }
         }
-
         return nullptr;
     }
 
@@ -394,7 +389,6 @@ namespace Mlib::Constexpr
         {
             return haystack;
         }
-
         while (*haystack)
         {
             if (starts_with_ignore_case(haystack, needle))
@@ -403,7 +397,6 @@ namespace Mlib::Constexpr
             }
             ++haystack;
         }
-
         return nullptr;
     }
 

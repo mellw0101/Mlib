@@ -1,5 +1,9 @@
 #include "../include/FileSys.h"
 #include "../include/Args.h"
+#include "../include/Error.h"
+
+#include <fcntl.h>
+#include <unistd.h>
 
 using namespace std;
 
@@ -368,7 +372,7 @@ namespace Mlib ::FileSys
     }
 
     bool
-    file_size(size_t *size, FILE *file)
+    file_size(unsigned long *size, FILE *file)
     {
         int prev = ftell(file);
         if (prev == -1)
@@ -383,6 +387,62 @@ namespace Mlib ::FileSys
         }
         fseek(file, prev, SEEK_SET);
         return true;
+    }
+
+    size_t
+    retrieve_file_size_from_path(const char *file_path)
+    {
+        FILE  *file = fopen(file_path, "rb");
+        size_t size;
+        if (!file_size(&size, file))
+        {
+            fprintf(stderr, "%s: Failed to retrieve file size for file: [%s].\n", __func__, file_path);
+            return (size_t)-1;
+        }
+        return size;
+    }
+
+    FILE *
+    write_to_tmp_file(const void *buf, unsigned long *bytes)
+    {
+        unsigned long data_len, written_len;
+        FILE         *file;
+        if ((file = tmpfile64()) == nullptr)
+        {
+            fatal_err("tmpfile64");
+        }
+        data_len = bytes ? *bytes == RETRIEVE_SIZE ? strlen((const char *)buf) : *bytes : strlen((const char *)buf);
+        if ((written_len = fwrite(buf, 1, data_len, file)) != data_len)
+        {
+            fatal_err("fwrite");
+        }
+        bytes ? *bytes = written_len : 0;
+        return file;
+    }
+
+    int
+    write_to_file(const void *buf, unsigned long *bytes, const char *file, const int flags)
+    {
+        int           file_fd;
+        long          written_bytes;
+        unsigned long data_len;
+        if ((file_fd = open(file, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR)) == -1)
+        {
+            fatal_err("open");
+        }
+        data_len = bytes ? *bytes == RETRIEVE_SIZE ? strlen((const char *)buf) : *bytes : strlen((const char *)buf);
+        if ((written_bytes = write(file_fd, buf, data_len)) != data_len)
+        {
+            close(file_fd);
+            fatal_err("write");
+        }
+        bytes ? *bytes = written_bytes : 0;
+        if (flags & RETURN_FD)
+        {
+            return file_fd;
+        }
+        close(file_fd);
+        return 0;
     }
 
 } // namespace Mlib::FileSys

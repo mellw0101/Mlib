@@ -29,8 +29,6 @@ private:
 
     static size_t write_data(void *, size_t, size_t, FILE *);
 
-    // void extract_tar(const char *, size_t, const char *);
-
     const char *retrieve_url(const char *package);
 
     packy();

@@ -9,8 +9,6 @@
  */
 #pragma once
 
-#include "../include/Types.h"
-
 #include <cstdio>
 
 namespace Mlib::Compress

@@ -13,8 +13,9 @@
 #include <openssl/err.h>
 #include <openssl/ssl.h>
 
-void parse_url(const char *url, char *host, char *subdomain);
-int  create_local_unix_socket_fd();
+void        parse_url(const char *url, char *host, char *subdomain);
+const char *remove_header(const char *data, unsigned long *size);
+int         create_local_unix_socket_fd();
 
 void        ssl_init();
 void        ssl_cleanup(SSL *ssl, int fd, SSL_CTX *ctx);
@@ -24,3 +25,4 @@ SSL        *ssl_connect(SSL_CTX *ctx, int fd);
 void        ssl_https_request(SSL *ssl, const char *hostname, const char *subdomain = nullptr);
 const char *ssl_retrieve_response(SSL *ssl, unsigned long *size = nullptr);
 const char *ssl_retrieve_url_data(const char *url, unsigned long *size = nullptr);
+const char *ssl_download(const char *url);

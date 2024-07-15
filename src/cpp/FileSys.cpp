@@ -445,4 +445,16 @@ namespace Mlib ::FileSys
         return 0;
     }
 
+    void
+    write_to_ffile(char *buf, const char *file)
+    {
+        FILE *f;
+        if (!(f = fopen(file, "wb")))
+        {
+            ferr("fopen");
+        }
+        fwrite(buf, sizeof(char), strlen(buf), f);
+        fclose(f);
+    }
+
 } // namespace Mlib::FileSys

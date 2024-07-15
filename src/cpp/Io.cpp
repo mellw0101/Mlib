@@ -58,4 +58,5 @@ namespace Mlib::Io
             fatal_err("write", "%zi (len), was not == 1", len);
         }
     }
+
 } // namespace Mlib::Io

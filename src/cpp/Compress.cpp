@@ -105,7 +105,7 @@ namespace Mlib::Compress
                     free(*buf);
                     *buf = nullptr;
                     ZSTD_freeDStream(d_stream);
-                    fatal_err("realloc");
+                    fatal_err("realloc", "total sise: %lu, out.pos: %lu", t_size, out.pos);
                 }
                 memcpy(*buf + t_size, o_buf, out.pos);
                 t_size += out.pos;

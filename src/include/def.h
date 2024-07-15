@@ -370,3 +370,60 @@ decltype(auto) operator"" _hash(C_s8 *s, u64);
 #define CLAMBDA_RET_CREF(T)  [](auto &&...args) _NO_THROW -> T const &
 #define CLAMBDA_RET_RREF(T)  [](auto &&...args) _NO_THROW -> T &&
 #define CLAMBDA_RET_CRREF(T) [](auto &&...args) _NO_THROW -> T const &&
+
+#define TRI_PARAM_T_ENUM   \
+    enum type_t            \
+    {                      \
+        TYPE_1 = (1 << 0), \
+        TYPE_2 = (1 << 1), \
+        TYPE_3 = (1 << 2), \
+                           \
+    } type
+
+#define TRI_PARAM_T_UNION(T1, T2, T3) \
+    union                             \
+    {                                 \
+        T1 union_1;                   \
+        T2 union_2;                   \
+        T3 union_3;                   \
+    }
+
+#define PARAM_T_CONSTRUCT(OBJ, T, N, NAME) \
+    OBJ(T NAME)                            \
+        : type(TYPE_##N)                   \
+        , union_##N(NAME)                  \
+    {}
+
+#define TRI_PARAM_T_MAKE_ALL_CONSTRUCTS(OBJ, NAME_1, NAME_2, NAME_3) \
+    PARAM_T_CONSTRUCT(OBJ, T1, 1, NAME_1)                            \
+    PARAM_T_CONSTRUCT(OBJ, T2, 2, NAME_2)                            \
+    PARAM_T_CONSTRUCT(OBJ, T3, 3, NAME_3)
+
+#define DOUBLE_PARAM_T_ENUM \
+    enum type_t             \
+    {                       \
+        TYPE_1 = (1 << 0),  \
+        TYPE_2 = (1 << 1),  \
+                            \
+    } type
+
+#define DOUBLE_PARAM_T_UNION(T1, T2) \
+    union                            \
+    {                                \
+        T1 union_1;                  \
+        T2 union_2;                  \
+    }
+
+#define DOUBLE_PARAM_T_MAKE_ALL_CONSTRUCTS           \
+    PARAM_T_CONSTRUCT(double_param_t, T1, 1, type_1) \
+    PARAM_T_CONSTRUCT(double_param_t, T2, 2, type_2)
+
+#define OUTPUT_OBJ_3WAY(name, T1, T2, T3, n1, n2, n3) \
+    struct name                                       \
+    {                                                 \
+        TRI_PARAM_T_ENUM;                             \
+        TRI_PARAM_T_UNION(T1, T2, T3);                \
+        PARAM_T_CONSTRUCT(name, T1, 1, type_1)        \
+        PARAM_T_CONSTRUCT(name, T2, 2, type_2)        \
+        PARAM_T_CONSTRUCT(name, T3, 3, type_3)        \
+    }

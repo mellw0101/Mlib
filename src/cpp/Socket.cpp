@@ -25,6 +25,19 @@ parse_url(const char *url, char *host, char *subdomain)
     }
 }
 
+const char *
+remove_header(const char *data, unsigned long *size)
+{
+    const char *delimiter = "\r\n\r\n";
+    const char *pos       = strstr(data, delimiter);
+    if (pos != nullptr)
+    {
+        *size = *size - (pos + strlen(delimiter) - data);
+        return pos + strlen(delimiter);
+    }
+    return data;
+}
+
 int
 create_local_unix_socket_fd(int socket_domain, int socket_type, int socket_protocol)
 {
@@ -184,26 +197,23 @@ ssl_retrieve_response(SSL *ssl, unsigned long *size)
 {
     int         bytes, error, total_bytes_read = 0;
     static char buf[4096];
-    char       *storage_buf = (char *)malloc(1);
-    if (storage_buf == nullptr)
+    char       *storage_buf;
+    if ((storage_buf = (char *)malloc(1)) == nullptr)
     {
-        fatal_err("malloc");
+        ferr("malloc");
     }
-    storage_buf[0] = '\0';
-    while ((bytes = SSL_read(ssl, buf, sizeof(buf) - 1)) > 0)
+    while ((bytes = SSL_read(ssl, buf, sizeof(buf))) > 0)
     {
-        storage_buf = (char *)realloc(storage_buf, total_bytes_read + sizeof(buf));
-        if (storage_buf == nullptr)
+        if ((storage_buf = (char *)realloc(storage_buf, total_bytes_read + sizeof(buf))) == nullptr)
         {
-            fatal_err("realloc");
+            ferr("realloc");
         }
-        buf[bytes] = '\0';
-        strcat(storage_buf, buf);
+        memcpy(storage_buf + total_bytes_read, buf, bytes);
         total_bytes_read += bytes;
     }
     if (total_bytes_read == 0)
     {
-        non_fatal_err("SSL_read", "'0' bytes were read.");
+        nerr("SSL_read", "'0' bytes were read.");
         return nullptr;
     }
     if (bytes == 0)
@@ -216,35 +226,35 @@ ssl_retrieve_response(SSL *ssl, unsigned long *size)
     {
         case SSL_ERROR_WANT_READ :
         {
-            non_fatal_err("SSL_read", "Call SSL_read again.");
+            nerr("SSL_read", "Call SSL_read again.");
             break;
         }
         case SSL_ERROR_WANT_WRITE :
         {
-            non_fatal_err("SSL_read", "Call SSL_write again.");
+            nerr("SSL_read", "Call SSL_write again.");
             break;
         }
         case SSL_ERROR_SYSCALL :
         {
             if (errno == 0)
             {
-                non_fatal_err("SSL_read", "Syscall failed abruptly, unknown reason.");
+                nerr("SSL_read", "Syscall failed abruptly, unknown reason.");
             }
             else
             {
-                non_fatal_err_with_errno_str("SSL_read", "Syscall failed.");
+                nerr("SSL_read", "Syscall failed.");
             }
             break;
         }
         case SSL_ERROR_SSL :
         {
             ERR_print_errors_fp(stdout);
-            non_fatal_err("SSL_read", "SSL library error.");
+            nerr("SSL_read", "SSL library error.");
             break;
         }
         default :
         {
-            non_fatal_err("SSL_read", "Unknown error");
+            nerr("SSL_read", "Unknown error");
             break;
         }
     }
@@ -260,14 +270,28 @@ ssl_retrieve_url_data(const char *url, unsigned long *size)
     SSL_CTX         *ssl_ctx;
     static const int port = 443;
     static char      hostname[1024], subdomain[1024];
+    const char      *response;
     ssl_init();
     ssl_ctx = ssl_create_ctx();
     parse_url(url, hostname, subdomain);
     fd  = ssl_create_socket_fd(hostname, port);
     ssl = ssl_connect(ssl_ctx, fd);
     ssl_https_request(ssl, hostname, subdomain);
-    const char *response = ssl_retrieve_response(ssl, &total_size);
+    response = ssl_retrieve_response(ssl, &total_size);
     (size) ? *size = total_size : 0;
     ssl_cleanup(ssl, fd, ssl_ctx);
     return response;
+}
+
+const char *
+ssl_download(const char *url, unsigned long *size)
+{
+    const char *data;
+    data = ssl_retrieve_url_data(url, size);
+    if (!data)
+    {
+        return nullptr;
+    }
+    data = remove_header(data, size);
+    return data;
 }

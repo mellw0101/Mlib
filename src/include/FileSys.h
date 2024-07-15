@@ -117,4 +117,6 @@ namespace Mlib::FileSys
     int write_to_file(const void *buf __attribute__((nonnull)), unsigned long *bytes,
                       const char *file __attribute__((nonnull)), const int flags);
 
+    void write_to_ffile(char *buf, const char *file);
+
 } // namespace Mlib::FileSys

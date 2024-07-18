@@ -1,4 +1,5 @@
 #include "../include/String.h"
+
 using namespace std;
 
 namespace Mlib::String
@@ -49,4 +50,5 @@ namespace Mlib::String
         }
         return result;
     }
+
 } // namespace Mlib::String

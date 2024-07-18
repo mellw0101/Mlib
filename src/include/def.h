@@ -10,22 +10,16 @@
 #include <string_view>
 #include <vector>
 
-#pragma region /** @def Macros */
-#pragma region /** @def Color Macros */
-
-#define ESC_CODE_RED     "\033[31m"
-#define ESC_CODE_GREEN   "\033[32m"
-#define ESC_CODE_YELLOW  "\033[33m"
-#define ESC_CODE_BLUE    "\033[34m"
-#define ESC_CODE_MAGENTA "\033[35m"
-#define ESC_CODE_CYAN    "\033[36m"
-#define ESC_CODE_WHITE   "\033[37m"
-#define ESC_CODE_RESET   "\033[0m"
-#define ESC_CODE_GRAY    "\033[90m"
-#define ESC_CODE_BOLD    "\033[1m"
-
-#pragma endregion /** END: Color Macros */
-#pragma region    /** @def ANSI cursor Macros */
+#define ESC_CODE_RED                     "\033[31m"
+#define ESC_CODE_GREEN                   "\033[32m"
+#define ESC_CODE_YELLOW                  "\033[33m"
+#define ESC_CODE_BLUE                    "\033[34m"
+#define ESC_CODE_MAGENTA                 "\033[35m"
+#define ESC_CODE_CYAN                    "\033[36m"
+#define ESC_CODE_WHITE                   "\033[37m"
+#define ESC_CODE_RESET                   "\033[0m"
+#define ESC_CODE_GRAY                    "\033[90m"
+#define ESC_CODE_BOLD                    "\033[1m"
 
 #define ESC_CODE_UNDERLINE               "\033[4m"
 #define ESC_CODE_BLINK                   "\033[5m"
@@ -90,8 +84,6 @@
 constexpr auto ESC_CODE_TURN_ON_BRACKETED_PASTE  = "\x1B[?2004h";
 constexpr auto ESC_CODE_TURN_OFF_BRACKETED_PASTE = "\x1B[?2004l";
 
-#pragma endregion /** END: ANSI cursor Macros */
-
 #define FORCE_INLINE                  __attribute__((always_inline)) static __inline__
 #define _UNUSED                       __attribute__((unused))
 #define _NORETURN                     __attribute__((noreturn))
@@ -116,6 +108,21 @@ constexpr auto ESC_CODE_TURN_OFF_BRACKETED_PASTE = "\x1B[?2004l";
 #define DEPRECATED(msg)      [[deprecated(#msg)]]
 
 #define RE_CAST(type, value) reinterpret_cast<type>(value)
+
+// Macro to enforce that a parameter is a compile-time constant
+#define __ENFORCE_CONSTANT_PARAM(param)   \
+    do                                    \
+    {                                     \
+        if (!__builtin_constant_p(param)) \
+        {                                 \
+            __builtin_trap();             \
+        }                                 \
+    }                                     \
+    while (0)
+
+#define __COMPILE_ERROR(msg) __attribute__((__error__(msg)))
+
+#define __notnull(...)       __attribute__(__nonnull__(__VA_ARGS__))
 
 //
 //  Some macros for ease of use for errno handling.
@@ -146,8 +153,6 @@ using u8  = uint8_t;
 
 using c32 = char32_t;
 using c16 = char16_t;
-
-#pragma endregion /** END: Typedefs */
 
 template <typename T>
 using NUMERIC_LIMITS = std::numeric_limits<T>;

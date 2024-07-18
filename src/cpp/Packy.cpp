@@ -1,35 +1,36 @@
 #include "../include/Packy.h"
+#include <cassert>
 #include "../include/Compress.h"
+#include "../include/Error.h"
 #include "../include/Socket.h"
+#include "../include/def.h"
 
 using namespace Mlib;
 using namespace FileSys;
 using namespace Compress;
 
-CONSTEXPR_MAP<unsigned int, STRING_VIEW, 3> PackyUrlMap = {
-    {{PACKY_REPO_CORE, "mirror.pkgbuild.com/core/os/x86_64/"},
+#define PROG_PREFIX "packy"
+
+constexpr_map<unsigned int, STRING_VIEW, 5> PackyUrlMap = {
+    {{PACKY_REPO_CORE, "ftp.lysator.liu.se/pub/archlinux/core/os/x86_64/"},
+     /* {PACKY_REPO_EXTRA, "ftp.lysator.liu.se/pub/archlinux/extra/os/x86_64/"}, */
+     {PACKY_REPO_MULTILIB, "ftp.lysator.liu.se/pub/archlinux/multilib/os/x86_64/"},
+     {PACKY_REPO_CORE, "mirror.pkgbuild.com/core/os/x86_64/"},
      {PACKY_REPO_EXTRA, "mirror.pkgbuild.com/extra/os/x86_64/"},
      {PACKY_REPO_MULTILIB, "mirror.pkgbuild.com/multilib/os/x86_64/"}}
 };
 
 packy *packy::packyInstance = nullptr;
 
-size_t
-packy ::write_data(void *ptr, size_t size, size_t nmemb, FILE *stream)
-{
-    size_t written = fwrite(ptr, size, nmemb, stream);
-    return written;
-}
-
 const char *
 packy ::retrieve_url(const char *package)
 {
-    static char  url[256];
+    static char  url[PATH_MAX];
     unsigned int repo_index;
-    const char  *found = find_package(package, PACKY_REPO_ALL, &repo_index);
-    if (found == nullptr)
+    const char  *found;
+    if ((found = this->find_package(package, PACKY_REPO_ALL, &repo_index)) == nullptr)
     {
-        fprintf(stderr, "packy: Could not find package: [%s].\n", package);
+        prog_err("find_package", "Could not find package: ['%s'].", package);
         return nullptr;
     }
     snprintf(url, sizeof(url), "%s%s", &PackyUrlMap[repo_index].value[0], found);
@@ -37,22 +38,14 @@ packy ::retrieve_url(const char *package)
 }
 
 packy ::packy()
-{
-    curl_global_init(CURL_GLOBAL_DEFAULT);
-    curl = curl_easy_init();
-}
+{}
 
 packy ::~packy()
 {
-    if (curl)
+    if (this->packyInstance != nullptr)
     {
-        curl_easy_cleanup(curl);
-    }
-    curl_global_cleanup();
-    if (packyInstance != nullptr)
-    {
-        delete packyInstance;
-        packyInstance = nullptr;
+        delete this->packyInstance;
+        this->packyInstance = nullptr;
     }
 }
 
@@ -69,36 +62,34 @@ packy ::Instance()
 char *
 packy ::find_package(const char *package, unsigned repo_mask, unsigned *repo_index)
 {
-    int i = 0;
-    for (const auto PackyUrlMapEntry : PackyUrlMap)
+    int           i = 0;
+    unsigned long package_len, ext_len;
+    const char   *found, *ext, *end;
+    static char   full_package_name[PATH_MAX];
+    ext         = ".pkg.tar.zst";
+    package_len = strlen(package);
+    ext_len     = strlen(ext);
+    for (const auto Entry : PackyUrlMap)
     {
-        if ((repo_mask & PackyUrlMapEntry.key) == false)
+        if ((repo_mask & Entry.key) == false)
         {
             continue;
         }
-        const char *found = ssl_retrieve_url_data(&PackyUrlMapEntry.value[0]);
-        if (!found)
+        if ((found = ssl_retrieve_url_data(&Entry.value[0])) == nullptr)
         {
+            prog_err("ssl_retrieve_url_data", "Failed to get data from: ['%s']", &Entry.value[0]);
             return nullptr;
         }
-        const char *ext         = ".pkg.tar.zst";
-        size_t      package_len = strlen(package);
-        size_t      ext_len     = strlen(ext);
         while ((found = strstr(found, package)) != nullptr)
         {
             if (*(found - 1) == '"')
             {
-                const char *end = strstr(found, ext);
-                if (end)
+                if ((end = strstr(found, ext)) != nullptr)
                 {
                     end += ext_len;
-                    static char full_package_name[256];
-                    strncpy(full_package_name, found, end - found);
+                    memmove(full_package_name, found, end - found);
                     full_package_name[end - found] = '\0';
-                    if (repo_index != nullptr)
-                    {
-                        *repo_index = i;
-                    }
+                    repo_index ? *repo_index = i : 0;
                     return full_package_name;
                 }
             }
@@ -112,59 +103,31 @@ packy ::find_package(const char *package, unsigned repo_mask, unsigned *repo_ind
 int
 packy ::download(const char *package)
 {
-    const char *url = retrieve_url(package);
-    if (url == nullptr)
+    unsigned long size, new_size;
+    char         *buf;
+    static char   file[PATH_MAX];
+    const char   *url, *response, *ext;
+    if ((url = this->retrieve_url(package)) == nullptr)
     {
-        fprintf(stderr, "packy: ERROR: Failed to find package: [%s].\n", package);
+        prog_err("retrieve_url");
         return 1;
     }
-    char filename[256];
-    snprintf(filename, sizeof(filename), "%s.pkg.tar.zst", package);
-    FILE *fp = fopen(filename, "wb");
-    if (!fp)
+    if ((response = ssl_retrieve_url_data(url, &size)) == nullptr)
     {
-        fprintf(stderr, "packy: ERROR: Failed to create output file [%s].\n", filename);
+        prog_err("ssl_retrieve_url_data");
         return 1;
     }
-    if (!curl)
-    {
-        fprintf(stderr, "packy: ERROR: Curl has not been initialized something has gone wrong.\nAborting.\n");
-        return 1;
-    }
-    curl_easy_setopt(curl, CURLOPT_URL, url);
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
-    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-    CURLcode res = curl_easy_perform(curl);
-    if (res != CURLE_OK)
-    {
-        fprintf(stderr, "curl Error: %s.\n", curl_easy_strerror(res));
-        curl_easy_cleanup(curl);
-        fclose(fp);
-        return 1;
-    }
-    curl_easy_cleanup(curl);
-    fclose(fp);
-
-    char  *decompress_data;
-    size_t decompress_size;
-
-    decompress_zst(filename, &decompress_data, &decompress_size);
-    extract_tar(decompress_data, decompress_size, package, this->verbose_lvl);
-
+    response = remove_header(response, &size);
+    ext      = ".pkg.tar.zst";
+    snprintf(file, sizeof(file), "%s%s", package, ext);
+    write_to_file(response, &size, file);
+    decompress_zst(file, &buf, &new_size);
+    extract_tar(buf, new_size, package, this->verbose_lvl);
     return 0;
 }
 
 void
 packy ::set_verbose_lvl(int lvl)
 {
-    if (lvl < 0)
-    {
-        lvl = 0;
-    }
-    else if (lvl > 1)
-    {
-        lvl = 1;
-    }
-    this->verbose_lvl = lvl;
+    this->verbose_lvl = (lvl < 0) ? 0 : (lvl > 1) ? 1 : lvl;
 }

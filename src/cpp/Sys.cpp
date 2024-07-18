@@ -1,8 +1,13 @@
 /// @file Sys.cpp
 #include "../include/Sys.h"
+#include "../include/Io.h"
+
+#include <sys/statfs.h>
 
 namespace Mlib::Sys
 {
+    using namespace Io;
+
     s8
     run_binary(const std::string &binary_path, const std::vector<std::string> &args,
                const std::vector<std::string> &env_vars)
@@ -269,6 +274,57 @@ namespace Mlib::Sys
         }
 
         return buffer;
+    }
+
+    void
+    run_bin(const char *bin, char *const *arg_arry, char *const *env_arry)
+    {
+        pid_t pid;
+        int   status;
+        if ((pid = fork()) == -1)
+        {
+            ferr("fork");
+        }
+        else if (pid == 0)
+        {
+            if (env_arry == nullptr)
+            {
+                printf("execvp");
+                execvp(bin, arg_arry);
+            }
+            else
+            {
+                printf("execvpe");
+                execvpe(bin, arg_arry, env_arry);
+            }
+            exit(1);
+        }
+        else
+        {
+            if (waitpid(pid, &status, 0); WIFEXITED(status))
+            {
+                if (WEXITSTATUS(status) != 0)
+                {
+                    nerr(__PRETTY_FUNCTION__, "Prosses exited with status: ['%i']", status);
+                }
+            }
+            else
+            {
+                nerr(__PRETTY_FUNCTION__, "Prosses exited with unexpexted status: ['%i']", status);
+            }
+        }
+    }
+
+    void
+    get_dev_info(const char *path, unsigned long *b_size)
+    {
+        struct statfs s;
+        if (statfs(path, &s) == 0)
+        {
+            writef(" bsize : %lu\n"
+                   "blocks : %lu\n",
+                   s.f_bsize, s.f_blocks);
+        }
     }
 
 } // namespace Mlib::Sys

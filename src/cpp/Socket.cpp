@@ -1,5 +1,6 @@
 #include "../include/Socket.h"
 #include "../include/Error.h"
+#include "../include/constexpr.hpp"
 
 #include <arpa/inet.h>
 #include <cstdio>
@@ -28,12 +29,12 @@ parse_url(const char *url, char *host, char *subdomain)
 const char *
 remove_header(const char *data, unsigned long *size)
 {
-    const char *delimiter = "\r\n\r\n";
-    const char *pos       = strstr(data, delimiter);
-    if (pos != nullptr)
+    const char *delimiter, *pos;
+    delimiter = "\r\n\r\n";
+    if ((pos = strstr(data, delimiter)) != nullptr)
     {
-        *size = *size - (pos + strlen(delimiter) - data);
-        return pos + strlen(delimiter);
+        *size = *size - (pos + "\r\n\r\n"_sllen - data);
+        return pos + "\r\n\r\n"_sllen;
     }
     return data;
 }
@@ -44,7 +45,7 @@ create_local_unix_socket_fd(int socket_domain, int socket_type, int socket_proto
     int fd;
     if ((fd = socket(socket_domain, socket_type, socket_protocol)) == -1)
     {
-        fatal_err("socket");
+        ferr("socket");
     }
     return fd;
 }
@@ -71,12 +72,11 @@ ssl_create_ctx()
 {
     const SSL_METHOD *method;
     SSL_CTX          *ssl_ctx;
-    method  = SSLv23_client_method();
-    ssl_ctx = SSL_CTX_new(method);
-    if (ssl_ctx == nullptr)
+    method = SSLv23_client_method();
+    if ((ssl_ctx = SSL_CTX_new(method)) == nullptr)
     {
         ERR_print_errors_fp(stderr);
-        fatal_err("SSL_CTX_new");
+        ferr("SSL_CTX_new");
     }
     return ssl_ctx;
 }
@@ -94,7 +94,7 @@ ssl_create_socket_fd(const char *hostname, int port)
     if (getaddrinfo(hostname, port_str, &hints, &res) != 0)
     {
         ERR_print_errors_fp(stderr);
-        fatal_err("getaddrinfo");
+        ferr("getaddrinfo");
     }
     for (p = res; p != nullptr; p = p->ai_next)
     {
@@ -112,7 +112,7 @@ ssl_create_socket_fd(const char *hostname, int port)
     if (p == nullptr)
     {
         ERR_print_errors_fp(stderr);
-        fatal_err("ssl_create_socket_fd", "Failed to connect");
+        ferr("ssl_create_socket_fd", "Failed to connect");
     }
     freeaddrinfo(res);
     return socket_fd;
@@ -127,7 +127,7 @@ ssl_connect(SSL_CTX *ctx, int fd)
     if (SSL_connect(ssl) < 1)
     {
         ERR_print_errors_fp(stderr);
-        fatal_err("SSL_connect");
+        ferr("SSL_connect");
     }
     return ssl;
 }
@@ -153,40 +153,40 @@ ssl_https_request(SSL *ssl, const char *hostname, const char *subdomain)
     {
         case SSL_ERROR_ZERO_RETURN :
         {
-            non_fatal_err("SSL_write", "Connection closed cleanly, but no bytes were sent");
+            nerr("SSL_write", "Connection closed cleanly, but no bytes were sent");
             break;
         }
         case SSL_ERROR_WANT_WRITE :
         {
-            non_fatal_err("SSL_write", "Needs to be run again");
+            nerr("SSL_write", "Needs to be run again");
             break;
         }
         case SSL_ERROR_WANT_READ :
         {
-            non_fatal_err("SSL_write", "Needs to read data");
+            nerr("SSL_write", "Needs to read data");
             break;
         }
         case SSL_ERROR_SYSCALL :
         {
             if (errno == 0)
             {
-                non_fatal_err("SSL_write", "Syscall failed abruptly, unknown reason");
+                nerr("SSL_write", "Syscall failed abruptly, unknown reason");
             }
             else
             {
-                non_fatal_err_with_errno_str("SSL_write", "Syscall failed.");
+                nerr("SSL_write", "Syscall failed.");
             }
             break;
         }
         case SSL_ERROR_SSL :
         {
-            non_fatal_err("SSL_write", "OpenSSL library error");
+            nerr("SSL_write", "OpenSSL library error");
             ERR_print_errors_fp(stderr);
             break;
         }
         default :
         {
-            non_fatal_err("SSL_write", "Unknown error");
+            nerr("SSL_write", "Unknown error");
             break;
         }
     }

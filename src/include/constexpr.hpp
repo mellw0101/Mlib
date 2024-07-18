@@ -382,8 +382,8 @@ namespace Mlib::Constexpr
     //
     //  The constexpr version of strcasestr
     //
-    constexpr C_s8 *
-    strcasestr(C_s8 *haystack, C_s8 *needle) _NO_THROW
+    constexpr const char *
+    strcasestr(const char *haystack, const char *needle) _NO_THROW
     {
         if (!*needle)
         {
@@ -461,10 +461,10 @@ namespace Mlib::Constexpr
         return negative ? -result : result;
     }
 
-    constexpr s8 *
-    strcat(s8 *dest, C_s8 *src) _NO_THROW
+    constexpr char *
+    strcat(char *dest, const char *src) _NO_THROW
     {
-        s8 *start = dest;
+        char *start = dest;
         while (*dest)
         {
             ++dest;
@@ -489,7 +489,7 @@ namespace Mlib::Constexpr
     constexpr void
     itoa(s32 num, s8 *buffer) _NO_THROW
     {
-        s8 *p = buffer;
+        char *p = buffer;
         if (num < 0)
         {
             *p++ = '-';
@@ -502,19 +502,18 @@ namespace Mlib::Constexpr
         }
         while (num);
         *p = '\0';
-
-        for (s8 *q = (*buffer == '-') ? buffer + 1 : buffer; q < --p; ++q)
+        for (char *q = (*buffer == '-') ? buffer + 1 : buffer; q < --p; ++q)
         {
-            s8 temp = *q;
-            *q      = *p;
-            *p      = temp;
+            char temp = *q;
+            *q        = *p;
+            *p        = temp;
         }
     }
 
-    constexpr C_s8 *
-    strrchr(C_s8 *str, C_s8 ch) _NO_THROW
+    constexpr const char *
+    strrchr(const char *str, const char ch) _NO_THROW
     {
-        C_s8 *last_occurrence = nullptr;
+        const char *last_occurrence = nullptr;
         while (*str)
         {
             if (*str == ch)
@@ -526,10 +525,10 @@ namespace Mlib::Constexpr
         return last_occurrence;
     }
 
-    constexpr s8 *
-    strrchr(s8 *str, C_s8 ch) _NO_THROW
+    constexpr char *
+    strrchr(char *str, const char ch) _NO_THROW
     {
-        s8 *last_occurrence = nullptr;
+        char *last_occurrence = nullptr;
         while (*str)
         {
             if (*str == ch)
@@ -541,12 +540,13 @@ namespace Mlib::Constexpr
         return last_occurrence;
     }
 
-    constexpr C_s8 *
-    strpbrk(C_s8 *str, C_s8 *accept) _NO_THROW
+    constexpr const char *
+    strpbrk(const char *str, const char *accept) _NO_THROW
     {
+        const char *a;
         while (*str)
         {
-            C_s8 *a = accept;
+            a = accept;
             while (*a)
             {
                 if (*str == *a)
@@ -799,6 +799,7 @@ namespace Mlib::Constexpr
 #define CONSTEXPR_STRING                            constexpr Mlib::Constexpr::String
 #define CONSTEXPR_ARRAY                             constexpr std::array
 #define CONSTEXPR_MAP                               constexpr Mlib::Constexpr::Map
+#define constexpr_map                               CONSTEXPR_MAP
 
 #define constexpr_strcasecmp(_Str1, _Str2)          Mlib::Constexpr::strcasecmp(_Str1, _Str2)
 #define constexpr_strncasecmp(_Str1, _Str2, _Count) Mlib::Constexpr::strncasecmp(_Str1, _Str2, _Count)
@@ -827,4 +828,31 @@ constexpr u64
 operator"" _constexpr_hash(const s8 *s, u64)
 {
     return Mlib::Constexpr::hash_string(s);
+}
+
+struct clen_t
+{
+    constexpr clen_t(const char *str)
+        : len(constexpr_strlen(str))
+    {}
+    operator unsigned long()
+    {
+        return len;
+    }
+
+private:
+    unsigned long len;
+};
+
+template <unsigned long N>
+unsigned long
+sllen(const char (&str)[N])
+{
+    return N - 1;
+}
+
+constexpr unsigned long
+operator"" _sllen(const char *str, unsigned long)
+{
+    return constexpr_strlen(str);
 }

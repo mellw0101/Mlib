@@ -34,54 +34,54 @@ namespace Mlib::Compress
         ZSTD_outBuffer out;
         if ((f = fopen(file, "rb")) == nullptr)
         {
-            fatal_err("fopen");
+            ferr("fopen");
         }
         if (file_size(&c_size, f) == false)
         {
             fclose(f);
-            fatal_err("file_size");
+            ferr("file_size");
         }
         if ((tmp_buf = (char *)malloc(c_size)) == nullptr)
         {
             fclose(f);
-            fatal_err("malloc");
+            ferr("malloc");
         }
         if ((fread(tmp_buf, 1, c_size, f)) != c_size)
         {
             fclose(f);
             free(tmp_buf);
-            fatal_err("fread");
+            ferr("fread");
         }
         fclose(f);
         if ((*size = ZSTD_getFrameContentSize((const void *)tmp_buf, c_size)) == ZSTD_CONTENTSIZE_ERROR)
         {
             free(tmp_buf);
-            fatal_err("ZSTD_getFrameContentSize");
+            ferr("ZSTD_getFrameContentSize");
         }
         if (o_size = ZSTD_DStreamOutSize(); (o_buf = (char *)malloc(o_size)) == nullptr)
         {
             free(tmp_buf);
-            fatal_err("malloc");
+            ferr("malloc");
         }
         if ((d_stream = ZSTD_createDStream()) == nullptr)
         {
             free(tmp_buf);
             free(o_buf);
-            fatal_err("ZSTD_createDStream");
+            ferr("ZSTD_createDStream");
         }
         if (r = ZSTD_initDStream(d_stream); ZSTD_isError(r))
         {
             free(tmp_buf);
             free(o_buf);
             ZSTD_freeDStream(d_stream);
-            fatal_err("ZSTD_initDStream");
+            ferr("ZSTD_initDStream");
         }
         if ((*buf = (char *)malloc(1)) == nullptr)
         {
             free(tmp_buf);
             free(o_buf);
             ZSTD_freeDStream(d_stream);
-            fatal_err("malloc");
+            ferr("malloc");
         }
         while (r_pos < c_size)
         {
@@ -96,7 +96,7 @@ namespace Mlib::Compress
                     free(*buf);
                     *buf = nullptr;
                     ZSTD_freeDStream(d_stream);
-                    fatal_err("ZSTD_decompressStream");
+                    ferr("ZSTD_decompressStream");
                 }
                 if ((*buf = (char *)realloc(*buf, t_size + out.pos)) == nullptr)
                 {
@@ -105,7 +105,7 @@ namespace Mlib::Compress
                     free(*buf);
                     *buf = nullptr;
                     ZSTD_freeDStream(d_stream);
-                    fatal_err("realloc", "total sise: %lu, out.pos: %lu", t_size, out.pos);
+                    ferr("realloc", "total sise: %lu, out.pos: %lu", t_size, out.pos);
                 }
                 memcpy(*buf + t_size, o_buf, out.pos);
                 t_size += out.pos;
@@ -116,6 +116,59 @@ namespace Mlib::Compress
         free(tmp_buf);
         free(o_buf);
         ZSTD_freeDStream(d_stream);
+    }
+
+    void
+    compress_zst(const char *in_file, const char *out_file)
+    {
+        FILE         *in_f, *out_f;
+        char         *in_buf, *c_buf;
+        unsigned long in_size, c_buf_size, c_size;
+        if ((in_f = fopen(in_file, "rb")) == nullptr)
+        {
+            ferr("fopen", "Could not open file: ['%s'].", in_file);
+        }
+        fseek(in_f, 0, SEEK_END);
+        in_size = ftell(in_f);
+        fseek(in_f, 0, SEEK_SET);
+        if ((in_buf = (char *)malloc(in_size)) == nullptr)
+        {
+            fclose(in_f);
+            ferr("malloc");
+        }
+        if ((fread(in_buf, 1, in_size, in_f)) != in_size)
+        {
+            free(in_buf);
+            fclose(in_f);
+            ferr("fread");
+        }
+        fclose(in_f);
+        c_buf_size = ZSTD_compressBound(in_size);
+        if ((c_buf = (char *)malloc(c_buf_size)) == nullptr)
+        {
+            free(in_buf);
+            ferr("malloc");
+        }
+        if (c_size = ZSTD_compress(c_buf, c_buf_size, in_buf, in_size, 1); ZSTD_isError(c_size))
+        {
+            free(in_buf);
+            free(c_buf);
+            ferr("ZSTD_compress", "Error: ['%s'].", ZSTD_getErrorName(c_size));
+        }
+        free(in_buf);
+        if ((out_f = fopen(out_file, "wb")) == nullptr)
+        {
+            free(c_buf);
+            ferr("fopen");
+        }
+        if ((fwrite(c_buf, 1, c_size, out_f)) != c_size)
+        {
+            free(c_buf);
+            fclose(out_f);
+            ferr("fwrite");
+        }
+        fclose(out_f);
+        free(c_buf);
     }
 
     void

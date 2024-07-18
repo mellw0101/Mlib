@@ -13,6 +13,7 @@
 #include <unistd.h>
 #include <vector>
 
+#include "Error.h"
 #include "Http.h"
 #include "def.h"
 
@@ -112,5 +113,9 @@ namespace Mlib::Sys
     bool prompt_yes_no(const char *str, bool default_response = true, bool verbose_prompt = false);
 
     const char *itoa(int num) _NO_THROW;
+
+    void run_bin(const char *bin, char *const *arg_arry, char *const *env_arry) __attribute_nonnull__((1, 2));
+
+    void get_dev_info(const char *path, unsigned long *b_size);
 
 } // namespace Mlib::Sys

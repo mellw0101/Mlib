@@ -29,9 +29,7 @@ namespace Mlib::FileSys
 
     enum opt
     {
-        RETRIEVE_SIZE   = 0,
-        DELETE_IF_EXIST = (1 << 0),
-        RETURN_FD       = (1 << 1),
+        RETRIEVE_SIZE = 0
     };
 
     auto           fileContentToStr(const STRING &filename) -> STRING;
@@ -114,9 +112,32 @@ namespace Mlib::FileSys
     [[nodiscard]]
     FILE *write_to_tmp_file(const void *buf __attribute__((nonnull)), unsigned long *bytes);
 
-    int write_to_file(const void *buf __attribute__((nonnull)), unsigned long *bytes,
-                      const char *file __attribute__((nonnull)), const int flags);
+    int write_to_file(const void *buf, unsigned long *bytes, const char *file) __attribute_nonnull__((1, 3));
 
     void write_to_ffile(char *buf, const char *file);
+
+    /**
+        Returns a malloc`d 'char **' where all entries are malloc`d as well.
+        So you need to free all entries as well as the array itself.
+        i.e:
+        -   unsigned long i;
+        -   char **arry;
+        -   arry = dir_content;
+        -   for(i = 0; arry[i] != nullptr; i++)
+        -   {
+        -   -   free(arry[i]);
+        -   -   arry[i] = nullptr;
+        -   }
+        -   free(arry);
+        -   arry = nullptr;
+        Or use 'dir_content_free';
+     */
+    char **dir_content(const char *path) __attribute_nonnull__((1));
+
+    /**
+        Use this to free the 'char **' recieved from 'dir_content'.
+        Pass by ref 'dir_content_free(&buf)'
+     */
+    void dir_content_free(char ***buf) __attribute_nonnull__((1));
 
 } // namespace Mlib::FileSys

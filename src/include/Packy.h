@@ -22,23 +22,17 @@ using namespace Mlib::Http;
 class packy
 {
 private:
+    DELETE_COPY_AND_MOVE_CONSTRUCTORS(packy);
     static packy *packyInstance;
-    CURL         *curl = nullptr;
-
-    int verbose_lvl = 0;
-
-    static size_t write_data(void *, size_t, size_t, FILE *);
-
-    const char *retrieve_url(const char *package);
-
+    int           verbose_lvl = 0;
     packy();
     ~packy();
 
 public:
     static packy *Instance();
-
-    char *find_package(const char *package, u32 repo_mask = PACKY_REPO_ALL, u32 *repo_index = nullptr);
-    int   download(const char *package);
+    const char   *retrieve_url(const char *package);
+    char *find_package(const char *package, unsigned repo_mask = PACKY_REPO_ALL, unsigned *repo_index = nullptr);
+    int   download(const char *p);
     void  set_verbose_lvl(int lvl);
 };
 

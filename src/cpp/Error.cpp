@@ -38,4 +38,17 @@ namespace Mlib::Error
                 when_calling, (include_errno_str) ? " ERROR: " : "", (include_errno_str) ? strerror(errno) : "", buf);
     }
 
+    void
+    program_error(const char *prefix, const char *from_func, unsigned at_line, const char *when_calling,
+                  const char *format, ...)
+    {
+        static char buf[4096];
+        va_list     ap;
+        va_start(ap, format);
+        vsnprintf(buf, sizeof(buf), format, ap);
+        va_end(ap);
+        fwritef(STDERR_FILENO, "%s: func: ['%s'], line: ['%u'], calling: ['%s'] %s\n", prefix, from_func, at_line,
+                when_calling, buf);
+    }
+
 } // namespace Mlib::Error

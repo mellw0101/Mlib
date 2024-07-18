@@ -2,7 +2,9 @@
 #include "../include/Args.h"
 #include "../include/Error.h"
 
+#include <dirent.h>
 #include <fcntl.h>
+#include <sys/stat.h>
 #include <unistd.h>
 
 using namespace std;
@@ -421,26 +423,22 @@ namespace Mlib ::FileSys
     }
 
     int
-    write_to_file(const void *buf, unsigned long *bytes, const char *file, const int flags)
+    write_to_file(const void *buf, unsigned long *bytes, const char *file)
     {
         int           file_fd;
         long          written_bytes;
         unsigned long data_len;
         if ((file_fd = open(file, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR)) == -1)
         {
-            fatal_err("open");
+            ferr("open");
         }
         data_len = bytes ? *bytes == RETRIEVE_SIZE ? strlen((const char *)buf) : *bytes : strlen((const char *)buf);
         if ((written_bytes = write(file_fd, buf, data_len)) != data_len)
         {
             close(file_fd);
-            fatal_err("write");
+            ferr("write");
         }
         bytes ? *bytes = written_bytes : 0;
-        if (flags & RETURN_FD)
-        {
-            return file_fd;
-        }
         close(file_fd);
         return 0;
     }
@@ -455,6 +453,77 @@ namespace Mlib ::FileSys
         }
         fwrite(buf, sizeof(char), strlen(buf), f);
         fclose(f);
+    }
+
+    char **
+    dir_content(const char *path)
+    {
+        int     i, j, c_size, e_len;
+        DIR    *d;
+        dirent *entry;
+        char  **buf, **t_buf;
+        if ((d = opendir(path)) == nullptr)
+        {
+            nerre("opendir", "Failed to retrieve dir entrys in: ['%s'].\n", path);
+            return nullptr;
+        }
+        c_size = 10;
+        if ((buf = (char **)malloc(sizeof(char *) * c_size)) == nullptr)
+        {
+            closedir(d);
+            ferr("malloc");
+        }
+        for (i = 0; (entry = readdir(d)) != nullptr; i++)
+        {
+            if (i == c_size)
+            {
+                c_size *= 2;
+                if ((t_buf = (char **)realloc(buf, sizeof(char *) * c_size)) == nullptr)
+                {
+                    for (j = 0; j < i - 1; j++)
+                    {
+                        free(buf[i]);
+                        buf[i] = nullptr;
+                    }
+                    free(buf);
+                    buf = nullptr;
+                    closedir(d);
+                    ferr("realloc");
+                }
+                buf = t_buf;
+            }
+            e_len = strlen(entry->d_name);
+            if ((buf[i] = (char *)malloc(e_len + 1)) == nullptr)
+            {
+                for (j = 0; j < i - 1; j++)
+                {
+                    free(buf[j]);
+                    buf[j] = nullptr;
+                }
+                free(buf);
+                buf = nullptr;
+                closedir(d);
+                ferr("malloc");
+            }
+            memcpy(buf[i], entry->d_name, e_len);
+            buf[i][e_len] = '\0';
+        }
+        buf[i] = nullptr;
+        closedir(d);
+        return buf;
+    }
+
+    void
+    dir_content_free(char ***buf)
+    {
+        unsigned long i;
+        for (i = 0; *buf[i] != nullptr; i++)
+        {
+            free(*buf[i]);
+            *buf[i] = nullptr;
+        }
+        free(*buf);
+        *buf = nullptr;
     }
 
 } // namespace Mlib::FileSys

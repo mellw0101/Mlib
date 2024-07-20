@@ -128,9 +128,7 @@ namespace Mlib::Compress
         {
             ferr("fopen", "Could not open file: ['%s'].", in_file);
         }
-        fseek(in_f, 0, SEEK_END);
-        in_size = ftell(in_f);
-        fseek(in_f, 0, SEEK_SET);
+        g_fsize(in_f, &in_size);
         if ((in_buf = (char *)malloc(in_size)) == nullptr)
         {
             fclose(in_f);
@@ -159,7 +157,7 @@ namespace Mlib::Compress
         if ((out_f = fopen(out_file, "wb")) == nullptr)
         {
             free(c_buf);
-            ferr("fopen");
+            ferr("fopen", "Could not open file: ['%s'].", out_file);
         }
         if ((fwrite(c_buf, 1, c_size, out_f)) != c_size)
         {
@@ -199,14 +197,14 @@ namespace Mlib::Compress
             archive_entry_set_pathname(entry, full_path);
             if ((r = archive_write_header(ext, entry)) == ARCHIVE_FATAL)
             {
-                non_fatal_err("archive_write_header", "archive_error_string: [%s]", archive_error_string(a));
+                non_fatal_err("archive_write_header", "archive_error_string: ['%s']", archive_error_string(a));
                 break;
             }
             while ((r = archive_read_data_block(a, &t_buf, &t_size, &offset)) == ARCHIVE_OK)
             {
                 if ((r = archive_write_data_block(ext, t_buf, t_size, offset)) != 0)
                 {
-                    non_fatal_err("archive_write_data_block", "archive_error_string: [%s]", archive_error_string(a));
+                    nerr("archive_write_data_block", "archive_error_string: [%s]", archive_error_string(a));
                     break;
                 }
             }

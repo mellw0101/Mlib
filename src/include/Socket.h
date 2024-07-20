@@ -13,15 +13,15 @@
 #include <openssl/err.h>
 #include <openssl/ssl.h>
 
-void        parse_url(const char *url, char *host, char *subdomain) __attribute_nonnull__((1, 2, 3));
-const char *remove_header(const char *data, unsigned long *size) __attribute_nonnull__((1, 2)) __returns_nonnull;
+void        parse_url(const char *url, char *host, char *subdomain) __nonnull((1, 2, 3));
+const char *remove_header(const char *data, unsigned long *size) __nonnull((1, 2)) __returns_nonnull;
 int         create_local_unix_socket_fd();
 
 void        ssl_init();
-void        ssl_cleanup(SSL *ssl, int fd, SSL_CTX *ctx) __attribute_nonnull__((1, 3));
+void        ssl_cleanup(SSL *ssl, int fd, SSL_CTX *ctx) __nonnull((1, 3));
 SSL_CTX    *ssl_create_ctx();
-int         ssl_create_socket_fd(const char *host, int port) __attribute_nonnull__((1));
-SSL        *ssl_connect(SSL_CTX *ctx, int fd) __attribute_nonnull__((1));
+int         ssl_create_socket_fd(const char *host, int port) __nonnull((1));
+SSL        *ssl_connect(SSL_CTX *ctx, int fd) __nonnull((1));
 void        ssl_https_request(SSL *ssl, const char *hostname, const char *subdomain = nullptr);
 const char *ssl_retrieve_response(SSL *ssl, unsigned long *size = nullptr);
 const char *ssl_retrieve_url_data(const char *url, unsigned long *size = nullptr);

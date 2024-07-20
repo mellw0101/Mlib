@@ -161,14 +161,7 @@ namespace Mlib::Sys
         int result = posix_spawn(&pid, command_path.c_str(), NULL, &attr, argv, environ);
         posix_spawnattr_destroy(&attr);
 
-        if (result == 0)
-        {
-            return 0;
-        }
-        else
-        {
-            return result;
-        }
+        return result;
     }
 
     u64
@@ -312,6 +305,20 @@ namespace Mlib::Sys
             {
                 nerr(__PRETTY_FUNCTION__, "Prosses exited with unexpexted status: ['%i']", status);
             }
+        }
+    }
+
+    void
+    posix_run_bin(const char *bin, char **argv, char **envv)
+    {
+        pid_t             pid;
+        int               r;
+        posix_spawnattr_t attr;
+        posix_spawnattr_init(&attr);
+        posix_spawnattr_setpgroup(&attr, 0);
+        if ((r = posix_spawn(&pid, bin, nullptr, &attr, argv, envv)) != 0)
+        {
+            ferr("posix_spawn", "Exit status: ['%i']", r);
         }
     }
 

@@ -493,23 +493,23 @@ namespace Mlib::Term
         int fd[2];
         if (pipe(fd) == -1)
         {
-            fatal_err("pipe");
+            ferr("pipe");
         }
         if ((*pid = fork()) == 0)
         {
             close(fd[PIPE_READ]);
             if (dup2(fd[PIPE_WRITE], STDOUT_FILENO) < 0)
             {
-                fatal_err("dup2");
+                ferr("dup2");
             }
             if (dup2(fd[PIPE_WRITE], STDERR_FILENO) < 0)
             {
-                fatal_err("dup2");
+                ferr("dup2");
             }
             function->action();
         }
         close(fd[PIPE_WRITE]);
-        return (fd[PIPE_READ]);
+        return fd[PIPE_READ];
     }
 
     termios

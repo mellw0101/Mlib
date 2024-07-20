@@ -118,4 +118,6 @@ namespace Mlib::Sys
 
     void get_dev_info(const char *path, unsigned long *b_size);
 
+    void posix_run_bin(const char *bin, char **argv, char **envv);
+
 } // namespace Mlib::Sys

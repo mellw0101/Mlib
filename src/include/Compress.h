@@ -18,6 +18,6 @@ namespace Mlib::Compress
     void compress_zst(const char *in_file, const char *out_file);
 
     void extract_tar(const char *data, const unsigned long size, const char *output, int verbose = 0)
-        __attribute_nonnull__((1));
+        __nonnull((1));
 
 } // namespace Mlib::Compress

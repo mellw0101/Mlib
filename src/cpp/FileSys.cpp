@@ -526,4 +526,12 @@ namespace Mlib ::FileSys
         *buf = nullptr;
     }
 
+    void
+    g_fsize(FILE *f, unsigned long *size)
+    {
+        fseek(f, 0, SEEK_END);
+        *size = ftell(f);
+        fseek(f, 0, SEEK_SET);
+    }
+
 } // namespace Mlib::FileSys

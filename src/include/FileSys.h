@@ -132,12 +132,14 @@ namespace Mlib::FileSys
         -   arry = nullptr;
         Or use 'dir_content_free';
      */
-    char **dir_content(const char *path) __attribute_nonnull__((1));
+    char **dir_content(const char *path) __nonnull((1));
 
     /**
         Use this to free the 'char **' recieved from 'dir_content'.
         Pass by ref 'dir_content_free(&buf)'
      */
-    void dir_content_free(char ***buf) __attribute_nonnull__((1));
+    void dir_content_free(char ***buf) __nonnull((1));
+
+    void g_fsize(FILE *f, unsigned long *size) __nonnull((1));
 
 } // namespace Mlib::FileSys

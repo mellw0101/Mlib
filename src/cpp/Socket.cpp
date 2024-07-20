@@ -11,11 +11,11 @@
 void
 parse_url(const char *url, char *host, char *subdomain)
 {
-    const char *p = strchr(url, '/');
-    if (p != nullptr)
+    const char *p;
+    if ((p = strchr(url, '/')) != nullptr)
     {
         size_t host_len = p - url;
-        strncpy(host, url, host_len);
+        memcpy(host, url, host_len);
         host[host_len] = '\0';
         strcpy(subdomain, p);
     }

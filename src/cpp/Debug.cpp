@@ -1,5 +1,5 @@
 #include "../include/Debug.h"
-
+#include <cstdarg>
 
 namespace Mlib::Debug
 {
@@ -38,19 +38,17 @@ namespace Mlib::Debug
     static constexpr u8 TIMEOUT     = 1;
 
     u16
-    NetworkLogger ::checksum(void *b, s32 len)
+    NetworkLogger ::checksum(void *b, int len)
     {
-        u16 *buf = static_cast<u16 *>(b);
-        u16  result;
-        u32  sum = 0;
-
+        unsigned short result, *buf = static_cast<unsigned short *>(b);
+        unsigned int   sum = 0;
         for (sum = 0; len > 1; len -= 2)
         {
             sum += *buf++;
         }
         if (len == 1)
         {
-            sum += *(u8 *)buf;
+            sum += *(unsigned char *)buf;
         }
         sum = (sum >> 16) + (sum & 0xFFFF);
         sum += (sum >> 16);
@@ -138,7 +136,7 @@ namespace Mlib::Debug
     }
 
     void
-    NetworkLogger ::init(std::string_view address, s32 port)
+    NetworkLogger ::init(std::string_view address, int port)
     {
         if (!_NET_DEBUG)
         {
@@ -182,11 +180,27 @@ namespace Mlib::Debug
         {
             return;
         }
-
         if (send(_socket, input.data(), input.length(), 0) < 0)
         {
             _CONNECTED = false;
+        }
+    }
+
+    void
+    NetworkLogger ::log(const char *format, ...)
+    {
+        if (!_NET_DEBUG || !_CONNECTED)
+        {
             return;
+        }
+        static char buf[4096];
+        va_list     ap;
+        va_start(ap, format);
+        vsnprintf(buf, sizeof(buf), format, ap);
+        va_end(ap);
+        if (send(_socket, buf, sizeof(buf), 0) < 0)
+        {
+            _CONNECTED = false;
         }
     }
 

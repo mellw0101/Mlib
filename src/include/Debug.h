@@ -119,7 +119,6 @@ namespace Mlib::Debug
         }
     };
 
-
     typedef struct
     {
         LogLevel    level;
@@ -180,7 +179,7 @@ namespace Mlib::Debug
 
     MAKE_CONSTEXPR_WRAPPER(FuncName, STRING_VIEW);
     MAKE_CONSTEXPR_WRAPPER(FileName, STRING_VIEW);
-    MAKE_CONSTEXPR_WRAPPER(Line, u32);
+    MAKE_CONSTEXPR_WRAPPER(Line, unsigned int);
 
     constexpr ARRAY<char, 256>
     make_message(STRING_VIEW str)
@@ -210,7 +209,7 @@ namespace Mlib::Debug
         return buffer;
     }
 
-    CONSTEXPR_MAP<STRING_VIEW, u8, 5> logLevelMap = {
+    CONSTEXPR_MAP<STRING_VIEW, unsigned char, 5> logLevelMap = {
         {{ESC_CODE_GREEN "[INFO]" ESC_CODE_RESET, INFO},
          {ESC_CODE_CYAN "[INFO_PRIORITY]" ESC_CODE_RESET, INFO_PRIORITY},
          {ESC_CODE_YELLOW "[WARNING]" ESC_CODE_RESET, WARNING},
@@ -252,7 +251,6 @@ namespace Mlib::Debug
                      << ": " << _buffer.str() << "\n";
             }
         }
-
 
         Lout()
         {}
@@ -356,29 +354,28 @@ namespace Mlib::Debug
         return {c};
     }
 
-    MAKE_CONSTEXPR_WRAPPER(NetworkLoggerEndl, s8)
+    MAKE_CONSTEXPR_WRAPPER(NetworkLoggerEndl, char)
 
     class NetworkLogger
     {
     private:
-        s64         _socket;
-        sockaddr_in _socket_address;
-
-        bool _CONNECTED = false;
-        bool _NET_DEBUG = false;
-
+        long         _socket;
+        sockaddr_in  _socket_address;
+        bool         _CONNECTED = false;
+        bool         _NET_DEBUG = false;
         STRINGSTREAM _buffer;
 
         static NetworkLogger *_NetworkLoggerInstance;
+        u16                   checksum(void *b, int len);
+        bool                  ping(std::string_view ip);
+
         NetworkLogger();
 
-        u16  checksum(void *b, s32 len);
-        bool ping(STRING_VIEW ip);
-
     public:
-        void init(STRING_VIEW address, s32 port);
+        void init(std::string_view address, int port);
         void enable();
-        void send_to_server(STRING_VIEW input);
+        void send_to_server(std::string_view input);
+        void log(const char *format, ...);
         void destroy();
 
         NetworkLogger &operator<<(const NetworkLoggerEndl &endl);

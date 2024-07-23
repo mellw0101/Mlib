@@ -109,24 +109,25 @@ namespace Mlib::Term
     retrieve_current_rgb_colors(bool bg)
     {
         int         temp_fd, stdout_fd;
+        long        r_len;
         static char buf[50];
         const char *tmp_file = "/tmp/termcolor.tmp";
         if ((temp_fd = open(tmp_file, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR)) == -1)
         {
-            non_fatal_err_with_errno_str("open");
+            nerre("open");
             return nullptr;
         }
         if ((stdout_fd = dup(STDOUT_FILENO)) == -1)
         {
             close(temp_fd);
-            non_fatal_err_with_errno_str("dup");
+            nerre("dup");
             return nullptr;
         }
         if (dup2(temp_fd, STDOUT_FILENO) == -1)
         {
             close(temp_fd);
             close(stdout_fd);
-            non_fatal_err_with_errno_str("dup2");
+            nerre("dup2");
             return nullptr;
         }
         write(STDOUT_FILENO, (!bg) ? "\033]10;?\007" : "\033]11;?\007", 7);
@@ -134,16 +135,16 @@ namespace Mlib::Term
         {
             close(temp_fd);
             close(stdout_fd);
-            non_fatal_err_with_errno_str("dup2");
+            nerre("dup2");
             return nullptr;
         }
         close(stdout_fd);
         lseek(temp_fd, 0, SEEK_SET);
-        ssize_t r_len = read(temp_fd, buf, sizeof(buf) - 1);
+        r_len = read(temp_fd, buf, sizeof(buf) - 1);
         close(temp_fd);
         if (r_len < 1)
         {
-            non_fatal_err_with_errno_str("read");
+            nerre("read");
             return nullptr;
         }
         buf[r_len] = '\0';

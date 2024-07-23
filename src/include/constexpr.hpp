@@ -5,9 +5,9 @@
 namespace Mlib::Constexpr
 {
     constexpr bool
-    is_sorted(C_s32 *arr, u64 size)
+    is_sorted(const int *arr, size_t size)
     {
-        for (u64 i = 1; i < size; ++i)
+        for (size_t i = 1; i < size; ++i)
         {
             if (arr[i - 1] > arr[i])
             {
@@ -29,17 +29,17 @@ namespace Mlib::Constexpr
         {}
     };
 
-    template <typename T1, typename T2, u64 Size>
+    template <typename T1, typename T2, size_t Size>
     using Map = ARRAY<MapEntry<T1, T2>, Size>;
 
     // template <typename T>
-    // constexpr u64
+    // constexpr size_t
     // fnv1a_32(std::span<const T> data)
     // {
-    //     constexpr u64 fnv_prime    = 16777619u;
-    //     constexpr u64 offset_basis = 2166136261u;
+    //     constexpr size_t fnv_prime    = 16777619u;
+    //     constexpr size_t offset_basis = 2166136261u;
 
-    //     u64 hash = offset_basis;
+    //     size_t hash = offset_basis;
     //     for (const auto &byte : data)
     //     {
     //         hash ^= byte;
@@ -48,20 +48,20 @@ namespace Mlib::Constexpr
     //     return hash;
     // }
 
-    // constexpr u64
+    // constexpr size_t
     // hash_string(const std::string_view &s)
     // {
     //     return fnv1a_32(std::as_bytes(std::span {s.data(), s.size()}));
     // }
 
-    constexpr u64
-    fnv1a_32(const s8 *s, u64 count)
+    constexpr size_t
+    fnv1a_32(const char *s, size_t count)
     {
-        constexpr u64 fnv_prime    = 16777619u;
-        constexpr u64 offset_basis = 2166136261u;
+        constexpr size_t fnv_prime    = 16777619u;
+        constexpr size_t offset_basis = 2166136261u;
 
-        u64 hash = offset_basis;
-        for (u64 i = 0; i < count; ++i)
+        size_t hash = offset_basis;
+        for (size_t i = 0; i < count; ++i)
         {
             hash ^= s[i];
             hash *= fnv_prime;
@@ -69,10 +69,10 @@ namespace Mlib::Constexpr
         return hash;
     }
 
-    constexpr u64
+    constexpr size_t
     hash_string(const char *s)
     {
-        return fnv1a_32(s, std::char_traits<s8>::length(s));
+        return fnv1a_32(s, std::char_traits<char>::length(s));
     }
 
     constexpr std::size_t
@@ -85,7 +85,7 @@ namespace Mlib::Constexpr
     //  Compile-time string comparison function
     //
     constexpr bool
-    strcmp(const s8 *str1, const s8 *str2) _NO_THROW
+    strcmp(const char *str1, const char *str2) _NO_THROW
     {
         while (*str1 && (*str1 == *str2))
         {
@@ -95,8 +95,8 @@ namespace Mlib::Constexpr
         return (*str1 - *str2);
     }
 
-    constexpr s32
-    strncmp(const s8 *s1, const s8 *s2, u64 n) _NO_THROW
+    constexpr int
+    strncmp(const char *s1, const char *s2, size_t n) _NO_THROW
     {
         for (std::size_t i = 0; i < n; ++i)
         {
@@ -124,10 +124,10 @@ namespace Mlib::Constexpr
         return 0;
     }
 
-    constexpr s8 *
-    strcpy(s8 *dest, C_s8 *src) _NO_THROW
+    constexpr char *
+    strcpy(char *dest, const char *src) _NO_THROW
     {
-        u64 i = 0;
+        size_t i = 0;
         for (; src[i] != '\0'; ++i)
         {
             dest[i] = src[i];
@@ -136,10 +136,10 @@ namespace Mlib::Constexpr
         return dest;
     }
 
-    constexpr s8 *
-    strncpy(s8 *dest, C_s8 *src, C_u64 n) _NO_THROW
+    constexpr char *
+    strncpy(char *dest, const char *src, const size_t n) _NO_THROW
     {
-        u64 i = 0;
+        size_t i = 0;
         for (; i < n && src[i] != '\0'; ++i)
         {
             dest[i] = src[i];
@@ -151,31 +151,31 @@ namespace Mlib::Constexpr
         return dest;
     }
 
-    constexpr u64
-    strlen(C_s8 *str) _NO_THROW
+    constexpr size_t
+    strlen(const char *str) _NO_THROW
     {
-        u64 i = 0;
+        size_t i = 0;
         for (; str[i]; ++i)
         {}
         return i;
     }
 
-    // template <u64 N>
+    // template <size_t N>
     // class String
     // {
     // public:
-    //     constexpr String(C_s8 (&str)[N + 1])
+    //     constexpr String(const char (&str)[N + 1])
     //     {
     //         std::copy_n(str, N + 1, data);
     //     }
 
-    //     constexpr C_PTR<s8>
+    //     constexpr C_PTR<char>
     //     c_str() const
     //     {
     //         return data;
     //     }
 
-    //     constexpr u64
+    //     constexpr size_t
     //     size() const
     //     {
     //         return N;
@@ -185,47 +185,47 @@ namespace Mlib::Constexpr
     //     char data[N + 1] {};
     // };
 
-    template <u64 N>
+    template <size_t N>
     struct String
     {
-        s8 data[N + 1] {};
+        char data[N + 1] {};
 
-        constexpr String(C_<s8> (&str)[N + 1])
+        constexpr String(C_<char> (&str)[N + 1])
         {
             std::copy_n(str, N + 1, data);
         }
 
-        constexpr s8 &
-        operator[](u64 i) const
+        constexpr char &
+        operator[](size_t i) const
         {
-            return const_cast<s8 &>(data[i]);
+            return const_cast<char &>(data[i]);
         }
 
-        constexpr C_s8 *
+        constexpr const char *
         c_str() const
         {
             return data;
         }
 
-        constexpr u64
+        constexpr size_t
         size() const
         {
             return N;
         }
     };
 
-    template <u64 N>
-    String(C_s8 (&)[N]) -> String<N - 1>;
+    template <size_t N>
+    String(const char (&)[N]) -> String<N - 1>;
 
-    template <u64 N>
+    template <size_t N>
     constexpr bool
-    operator==(const String<N> &lhs, const s8 *rhs)
+    operator==(const String<N> &lhs, const char *rhs)
     {
         return strcmp(&lhs[0], rhs);
     }
 
-    constexpr s32
-    tolower(s32 ch) _NO_THROW
+    constexpr int
+    tolower(int ch) _NO_THROW
     {
         return (ch >= 'A' && ch <= 'Z') ? (ch + 'a' - 'A') : ch;
     }
@@ -242,13 +242,13 @@ namespace Mlib::Constexpr
         return result;
     }
 
-    constexpr s32
-    strcasecmp(const s8 *s1, const s8 *s2) _NO_THROW
+    constexpr int
+    strcasecmp(const char *s1, const char *s2) _NO_THROW
     {
         while (*s1 && *s2)
         {
-            const s32 c1 = tolower(static_cast<u8>(*s1));
-            const s32 c2 = tolower(static_cast<u8>(*s2));
+            const int c1 = tolower((unsigned char)*s1);
+            const int c2 = tolower((unsigned char)*s2);
             if (c1 != c2)
             {
                 return c1 - c2;
@@ -256,7 +256,7 @@ namespace Mlib::Constexpr
             ++s1;
             ++s2;
         }
-        return tolower(static_cast<u8>(*s1)) - tolower(static_cast<u8>(*s2));
+        return tolower(static_cast<unsigned char>(*s1)) - tolower(static_cast<unsigned char>(*s2));
     }
 
     //
@@ -264,14 +264,14 @@ namespace Mlib::Constexpr
     //  a positive number if s1 is greater than s2,
     //  and a negative number if s1 is less than s2
     //
-    constexpr s32
-    strncasecmp(C_s8 *s1, C_s8 *s2, u64 n) _NO_THROW
+    constexpr int
+    strncasecmp(const char *s1, const char *s2, size_t n) _NO_THROW
     {
-        u64 i = 0;
+        size_t i = 0;
         while (i < n && *s1 && *s2)
         {
-            s32 c1 = tolower(*s1);
-            s32 c2 = tolower(*s2);
+            int c1 = tolower(*s1);
+            int c2 = tolower(*s2);
             if (c1 != c2)
             {
                 return c1 - c2;
@@ -314,8 +314,8 @@ namespace Mlib::Constexpr
         return nullptr;
     }
 
-    constexpr const s8 *
-    strchr(C_s8 *str, s8 ch) _NO_THROW
+    constexpr const char *
+    strchr(const char *str, char ch) _NO_THROW
     {
         while (*str)
         {
@@ -355,9 +355,9 @@ namespace Mlib::Constexpr
     //
     //  Helper function to compare two characters case-insensitively
     //
-    static constexpr bool char_equal_ignore_case(s8 a, s8 b) _NO_THROW _HIDDEN;
+    static constexpr bool char_equal_ignore_case(char a, char b) _NO_THROW _HIDDEN;
     static constexpr bool
-    char_equal_ignore_case(s8 a, s8 b) _NO_THROW
+    char_equal_ignore_case(char a, char b) _NO_THROW
     {
         return tolower(a) == tolower(b);
     }
@@ -365,9 +365,9 @@ namespace Mlib::Constexpr
     //
     //  Helper function to check if a string starts with another string, case-insensitively
     //
-    static constexpr bool starts_with_ignore_case(C_s8 *str, C_s8 *prefix) _NO_THROW _HIDDEN;
+    static constexpr bool starts_with_ignore_case(const char *str, const char *prefix) _NO_THROW _HIDDEN;
     static constexpr bool
-    starts_with_ignore_case(C_s8 *str, C_s8 *prefix) _NO_THROW
+    starts_with_ignore_case(const char *str, const char *prefix) _NO_THROW
     {
         while (*prefix)
         {
@@ -400,20 +400,22 @@ namespace Mlib::Constexpr
         return nullptr;
     }
 
-    constexpr s64
-    strtoll(C_s8 *str, s8 **endptr = nullptr, s32 base = 10) _NO_THROW
+    constexpr long
+    strtoll(const char *str, char **endptr = nullptr, int base = 10) _NO_THROW
     {
+        int         digit;
+        long        result;
+        const char *ptr;
+        const long  maxDivBase = s64_MAX / base;
         if (base < 2 || base > 36)
         {
             return s64_MAX;
         }
-
-        C_s8 *ptr = str;
-        while (std::isspace(*ptr))
+        ptr = str;
+        while (isspace(*ptr))
         {
             ++ptr;
         }
-
         bool negative = false;
         if (*ptr == '-')
         {
@@ -424,40 +426,33 @@ namespace Mlib::Constexpr
         {
             ++ptr;
         }
-
-        s64   result     = 0;
-        C_s64 maxDivBase = s64_MAX / base;
+        result = 0;
         while (*ptr != '\0')
         {
-            int digit = -1;
-            if (std::isdigit(*ptr))
+            digit = -1;
+            if (isdigit(*ptr))
             {
                 digit = *ptr - '0';
             }
-            else if (std::isalpha(*ptr))
+            else if (isalpha(*ptr))
             {
                 digit = Constexpr::tolower(*ptr) - 'a' + 10;
             }
-
             if (digit < 0 || digit >= base)
             {
                 break;
             }
-
             if (result > maxDivBase || (result == maxDivBase && digit > s64_MAX % base))
             {
                 return s64_MAX;
             }
-
             result = result * base + digit;
             ++ptr;
         }
-
         if (endptr)
         {
-            *endptr = const_cast<s8 *>(ptr);
+            *endptr = (char *)ptr;
         }
-
         return negative ? -result : result;
     }
 
@@ -474,10 +469,10 @@ namespace Mlib::Constexpr
         return start;
     }
 
-    constexpr u64
-    num_digits(s32 num) _NO_THROW
+    constexpr size_t
+    num_digits(int num) _NO_THROW
     {
-        u64 digits = (num <= 0) ? 1 : 0;
+        size_t digits = (num <= 0) ? 1 : 0;
         while (num)
         {
             num /= 10;
@@ -487,7 +482,7 @@ namespace Mlib::Constexpr
     }
 
     constexpr void
-    itoa(s32 num, s8 *buffer) _NO_THROW
+    itoa(int num, char *buffer) _NO_THROW
     {
         char *p = buffer;
         if (num < 0)
@@ -563,7 +558,7 @@ namespace Mlib::Constexpr
     namespace Chars
     {
         constexpr bool
-        isblank(s8 ch) _NO_THROW
+        isblank(char ch) _NO_THROW
         {
             return ch == ' ' || ch == '\t';
         }
@@ -751,7 +746,7 @@ namespace Mlib::Constexpr
         //
         //  TODO : DOES NOT WORK YET
         //
-        constexpr s32
+        constexpr int
         wcwidth(char32_t ucs)
         {
             // Control characters
@@ -824,8 +819,8 @@ namespace Mlib::Constexpr
 //
 //  Compile-time hash function
 //
-constexpr u64
-operator"" _constexpr_hash(const s8 *s, u64)
+constexpr size_t
+operator"" _constexpr_hash(const char *s, size_t)
 {
     return Mlib::Constexpr::hash_string(s);
 }

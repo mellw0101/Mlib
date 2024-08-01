@@ -10,6 +10,13 @@
 #include <string_view>
 #include <vector>
 
+#ifndef FALSE
+#    define FALSE 0
+#endif
+#ifndef TRUE
+#    define TRUE 1
+#endif
+
 #define ESC_CODE_RED                     "\033[31m"
 #define ESC_CODE_GREEN                   "\033[32m"
 #define ESC_CODE_YELLOW                  "\033[33m"

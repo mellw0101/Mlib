@@ -816,9 +816,7 @@ namespace Mlib::Constexpr
 #define constexpr_isblank(_Ch)                      Mlib::Constexpr::Chars::isblank(_Ch)
 #define constexpr_wcwidth(_Ucs)                     Mlib::Constexpr::Chars::wcwidth(_Ucs)
 
-//
-//  Compile-time hash function
-//
+/* Compile-time hash function */
 constexpr size_t
 operator"" _constexpr_hash(const char *s, size_t)
 {

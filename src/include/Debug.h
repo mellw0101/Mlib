@@ -234,15 +234,9 @@ namespace Mlib::Debug
         _logMessage()
         {
             using namespace std;
-
-            //
-            //  Lock the mutex to ensure thread safety.
-            //
+            /* Lock the mutex to ensure thread safety. */
             lock_guard<mutex> guard(_log_mutex);
-
-            //
-            //  Open the outputfile in append mode.
-            //
+            /* Open the outputfile in append mode. */
             ofstream file(_output_file.data(), ios::app);
             if (file)
             {
@@ -366,7 +360,7 @@ namespace Mlib::Debug
         STRINGSTREAM _buffer;
 
         static NetworkLogger *_NetworkLoggerInstance;
-        u16                   checksum(void *b, int len);
+        unsigned short        checksum(void *b, int len);
         bool                  ping(std::string_view ip);
 
         NetworkLogger();
@@ -391,11 +385,9 @@ namespace Mlib::Debug
         static NetworkLogger &Instance();
     };
 
-} // namespace Mlib::Debug
+} /* namespace Mlib::Debug */
 
-//
-//  Macros for logging
-//
+/* Macros for logging */
 #define FUNC             Mlib::Debug::FuncName_Wrapper(__func__)
 #define LINE             Mlib::Debug::Line_Wrapper(__LINE__)
 #define FILE_NAME        Mlib::Debug::FileName_Wrapper(__FILENAME__)
@@ -404,8 +396,6 @@ namespace Mlib::Debug
 #define LoutE            LOUT << Mlib::Debug::ERROR << FUNC << LINE
 #define LoutErrno(__msg) LoutE << Mlib::Debug::Lout_errno_msg(__msg) << '\n'
 
-//
-//  Macro to get the NetworkLogger instance
-//
+/* Macro to get the NetworkLogger instance */
 #define NETLOGGER        Mlib::Debug::NetworkLogger::Instance()
 #define NETLOG_ENDL      Mlib::Debug::NetworkLoggerEndl_Wrapper('\n')

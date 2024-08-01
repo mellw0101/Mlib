@@ -8,3 +8,5 @@ namespace Mlib::Io
     void fcwrite(int fd, const char c);
 
 } // namespace Mlib::Io
+
+char **get_file_lines(const char *path);

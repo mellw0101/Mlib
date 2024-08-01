@@ -3,7 +3,7 @@
 
 namespace Mlib::Debug
 {
-    Lout *Lout ::_LoutInstance = nullptr;
+    Lout *Lout ::_LoutInstance = NULL;
 
     Lout &
     Lout ::Instance()
@@ -28,19 +28,19 @@ namespace Mlib::Debug
         }
     }
 
-    NetworkLogger *NetworkLogger ::_NetworkLoggerInstance = nullptr;
+    NetworkLogger *NetworkLogger ::_NetworkLoggerInstance = NULL;
 
     NetworkLogger ::NetworkLogger()
-        : _CONNECTED(false)
+        : _CONNECTED(FALSE)
     {}
 
-    static constexpr u8 PACKET_SIZE = 64;
-    static constexpr u8 TIMEOUT     = 1;
+    static constexpr unsigned char PACKET_SIZE = 64;
+    static constexpr unsigned char TIMEOUT     = 1;
 
-    u16
+    unsigned short
     NetworkLogger ::checksum(void *b, int len)
     {
-        unsigned short result, *buf = static_cast<unsigned short *>(b);
+        unsigned short result, *buf = (unsigned short *)b;
         unsigned int   sum = 0;
         for (sum = 0; len > 1; len -= 2)
         {
@@ -193,12 +193,16 @@ namespace Mlib::Debug
         {
             return;
         }
-        static char buf[4096];
-        va_list     ap;
+        const char   *str;
+        unsigned long s_len;
+        static char   buf[4096];
+        va_list       ap;
         va_start(ap, format);
         vsnprintf(buf, sizeof(buf), format, ap);
         va_end(ap);
-        if (send(_socket, buf, sizeof(buf), 0) < 0)
+        str   = buf;
+        s_len = strlen(str);
+        if (send(_socket, str, s_len, 0) < 0)
         {
             _CONNECTED = false;
         }

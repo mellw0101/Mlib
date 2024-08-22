@@ -138,7 +138,7 @@ namespace Mlib::FileSys
         Use this to free the 'char **' recieved from 'dir_content'.
         Pass by ref 'dir_content_free(&buf)'
      */
-    void dir_content_free(char ***buf) __nonnull((1));
+    void dir_content_free(char **buf) __nonnull((1));
 
     void g_fsize(FILE *f, unsigned long *size) __nonnull((1));
 

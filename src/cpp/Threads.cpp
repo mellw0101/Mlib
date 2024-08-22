@@ -2,7 +2,6 @@
 
 namespace Mlib ::Threads
 {
-
     ThreadPool ::ThreadPool(u64 threads)
         : stop(false)
     {

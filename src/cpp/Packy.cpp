@@ -13,7 +13,6 @@ using namespace Compress;
 
 constexpr_map<unsigned int, STRING_VIEW, 5> PackyUrlMap = {
     {{PACKY_REPO_CORE, "ftp.lysator.liu.se/pub/archlinux/core/os/x86_64/"},
-     /* {PACKY_REPO_EXTRA, "ftp.lysator.liu.se/pub/archlinux/extra/os/x86_64/"}, */
      {PACKY_REPO_MULTILIB, "ftp.lysator.liu.se/pub/archlinux/multilib/os/x86_64/"},
      {PACKY_REPO_CORE, "mirror.pkgbuild.com/core/os/x86_64/"},
      {PACKY_REPO_EXTRA, "mirror.pkgbuild.com/extra/os/x86_64/"},

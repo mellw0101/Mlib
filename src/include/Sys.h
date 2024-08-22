@@ -98,26 +98,18 @@ namespace Mlib::Sys
         uint64_t read(uint32_t msr);
     };
 
-    s32 launch_child_process(C_s8 *command);
+    int           launch_child_process(const char *command);
+    unsigned long retriveSysLogicCores();
+    unsigned long read_msr_value_to_watts(MSRReader *msr_reader, unsigned int msr_address);
 
-    u64 retriveSysLogicCores();
-
-    u64 read_msr_value_to_watts(MSRReader *msr_reader, u32 msr_address);
-
-    //
-    //  Prompt for a answer to a prompt.
-    //  Return 'default_response' apon enter, else return 'true' if 'Y/y' or 'false' if 'N/n'.
-    //  If 'verbose_prompt' is set to 'true' the prompt will state "Press enter to answer 'default_response'".
-    //  By default 'default_response' is set to 'true' and 'verbose_prompt' is set to 'false'.
-    //
-    bool prompt_yes_no(const char *str, bool default_response = true, bool verbose_prompt = false);
-
+    /* Prompt for a answer to a prompt.
+     * Return 'default_response' apon enter, else return 'true' if 'Y/y' or 'false' if 'N/n'.
+     * If 'verbose_prompt' is set to 'true' the prompt will state "Press enter to answer 'default_response'".
+     * By default 'default_response' is set to 'true' and 'verbose_prompt' is set to 'false'. */
+    bool        prompt_yes_no(const char *str, bool default_response = true, bool verbose_prompt = false);
     const char *itoa(int num) _NO_THROW;
-
-    void run_bin(const char *bin, char *const *arg_arry, char *const *env_arry) __attribute_nonnull__((1, 2));
-
-    void get_dev_info(const char *path, unsigned long *b_size);
-
-    void posix_run_bin(const char *bin, char **argv, char **envv);
+    void        run_bin(const char *bin, char *const *arg_arry, char *const *env_arry) __attribute_nonnull__((1, 2));
+    void        get_dev_info(const char *path, unsigned long *b_size);
+    void        posix_run_bin(const char *bin, char **argv, char **envv);
 
 } // namespace Mlib::Sys

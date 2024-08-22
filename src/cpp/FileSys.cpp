@@ -514,16 +514,14 @@ namespace Mlib ::FileSys
     }
 
     void
-    dir_content_free(char ***buf)
+    dir_content_free(char **buf)
     {
         unsigned long i;
-        for (i = 0; *buf[i] != nullptr; i++)
+        for (i = 0; buf[i] != nullptr; i++)
         {
-            free(*buf[i]);
-            *buf[i] = nullptr;
+            free(buf[i]);
         }
-        free(*buf);
-        *buf = nullptr;
+        free(buf);
     }
 
     void

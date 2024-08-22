@@ -1,7 +1,5 @@
-/// @file Profile.cpp
-/// @brief
-/// - Contains the implementation of the
-/// - profiling classes and functions.
+/** @file Profile.cpp
+ * Contains the implementation of the profiling classes and functions. */
 #include "../include/Profile.h"
 
 using namespace std;
@@ -9,10 +7,10 @@ using namespace chrono;
 
 namespace Mlib::Profile
 {
-    /// @class @c ProfilerStats
+    /** @class @c ProfilerStats */
 
     void
-    ProfilerStats ::record(const f64 value)
+    ProfilerStats ::record(const double value)
     {
         values.push_back(value);
     }
@@ -35,22 +33,22 @@ namespace Mlib::Profile
         {
             return 0.0;
         }
-        f64 mean_val = mean();
-        f64 sq_sum   = std::accumulate(values.begin(), values.end(), 0.0,
-                                       [mean_val](f64 a, f64 b)
-                                       {
-                                         return a + (b - mean_val) * (b - mean_val);
-                                     });
+        double mean_val = mean();
+        double sq_sum   = std::accumulate(values.begin(), values.end(), 0.0,
+                                          [mean_val](double a, double b)
+                                          {
+                                            return a + (b - mean_val) * (b - mean_val);
+                                        });
         return std::sqrt(sq_sum / values.size());
     }
 
-    f64
+    double
     ProfilerStats ::min() const
     {
         return values.empty() ? 0.0 : *std::min_element(values.begin(), values.end());
     }
 
-    f64
+    double
     ProfilerStats ::max() const
     {
         return values.empty() ? 0.0 : *std::max_element(values.begin(), values.end());
@@ -62,15 +60,15 @@ namespace Mlib::Profile
         return values.size();
     }
 
-    /// @class @c GlobalProfiler
+    /** @class @c GlobalProfiler */
 
     GlobalProfiler *GlobalProfiler::instance = nullptr;
 
-    GlobalProfiler ::GlobalProfiler()
+    GlobalProfiler ::GlobalProfiler(void)
     {}
 
     void
-    GlobalProfiler ::destroy()
+    GlobalProfiler ::destroy(void)
     {
         if (instance != nullptr)
         {
@@ -80,7 +78,7 @@ namespace Mlib::Profile
     }
 
     void
-    GlobalProfiler ::record(const string &name, const f64 duration)
+    GlobalProfiler ::record(const string &name, const double duration)
     {
         stats[name].record(duration);
     }
@@ -110,37 +108,31 @@ namespace Mlib::Profile
     }
 
     std::string
-    mili()
+    mili(void)
     {
-        // Get the current time point
-        auto now = std::chrono::system_clock::now();
-
-        // Convert to time_t for seconds and tm for local time
-        auto    in_time_t = std::chrono::system_clock::to_time_t(now);
-        std::tm buf {};
+        using namespace std;
+        using namespace chrono;
+        /* Get the current time point */
+        auto now = system_clock::now();
+        /* Convert to time_t for seconds and tm for local time */
+        auto in_time_t = system_clock::to_time_t(now);
+        tm   buf {};
         localtime_r(&in_time_t, &buf);
-
-        // Use stringstream to format the time
-        std::ostringstream ss;
-        ss << "[" << std::put_time(&buf, "%Y-%m-%d %H:%M:%S");
-
-        // Calculate milliseconds (now time since epoch minus time_t converted back to time since epoch)
+        /* Use stringstream to format the time */
+        ostringstream ss;
+        ss << "[" << put_time(&buf, "%Y-%m-%d %H:%M:%S");
+        /* Calculate milliseconds (now time since epoch minus time_t converted back to time since epoch) */
         auto since_epoch = now.time_since_epoch();
-
-        auto s = std::chrono::duration_cast<std::chrono::seconds>(since_epoch);
-
+        auto s           = duration_cast<seconds>(since_epoch);
         since_epoch -= s;
-
-        auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(since_epoch);
-
-        // Append milliseconds to the formatted string, correctly placing the closing square bracket
-        ss << "." << std::setfill('0') << std::setw(3) << ms.count() << "]";
-
+        auto ms = duration_cast<milliseconds>(since_epoch);
+        /* Append milliseconds to the formatted string, correctly placing the closing square bracket */
+        ss << "." << setfill('0') << setw(3) << ms.count() << "]";
         return ss.str();
     }
 
     void
-    GlobalProfiler ::report()
+    GlobalProfiler ::report(void)
     {
         std::ofstream file(output_file, std::ios::app);
         file << "\n\nProfiling report: " << mili() << '\n';
@@ -158,20 +150,20 @@ namespace Mlib::Profile
         file.close();
     }
 
-    vector<string>
-    GlobalProfiler ::retrveFormatedStrVecStats() const
+    std::vector<std::string>
+    GlobalProfiler ::retrveFormatedStrVecStats(void) const
     {
-        vector<string> formated_stats;
+        std::vector<std::string> formated_stats;
         formated_stats.push_back("\n\nProfiling report: " + mili() + '\n');
-        for (const auto &pair : stats)
+        for (const auto &[name, stats] : stats)
         {
             std::stringstream ss;
-            ss << pair.first << makeNamePadding(pair.first) <<    /*  */
-                ": Mean = " << pair.second.mean() << " ms, " <<   /* makeDoublePadding(pair.second.mean())   << */
-                "Stddev = " << pair.second.stddev() << " ms, " << /* makeDoublePadding(pair.second.stddev()) << */
-                "   Min = " << pair.second.min() << " ms, " <<    /* makeDoublePadding(pair.second.min())    << */
-                "   Max = " << pair.second.max() << " ms, " <<    /* makeDoublePadding(pair.second.max())    << */
-                " Count = " << pair.second.count() <<             /* makeDoublePadding(pair.second.count())  << */
+            ss << name << makeNamePadding(name) <<          /*  */
+                ": Mean = " << stats.mean() << " ms, " <<   /* makeDoublePadding(pair.second.mean())   << */
+                "Stddev = " << stats.stddev() << " ms, " << /* makeDoublePadding(pair.second.stddev()) << */
+                "   Min = " << stats.min() << " ms, " <<    /* makeDoublePadding(pair.second.min())    << */
+                "   Max = " << stats.max() << " ms, " <<    /* makeDoublePadding(pair.second.max())    << */
+                " Count = " << stats.count() <<             /* makeDoublePadding(pair.second.count())  << */
                 "\n";
             formated_stats.push_back(ss.str());
         }
@@ -179,7 +171,7 @@ namespace Mlib::Profile
     }
 
     GlobalProfiler *
-    GlobalProfiler ::Instance()
+    GlobalProfiler ::Instance(void)
     {
         if (!instance)
         {
@@ -188,9 +180,9 @@ namespace Mlib::Profile
         return instance;
     }
 
-    /// @class @c AutoTimer
+    /** @class @c AutoTimer */
 
-    AutoTimer ::AutoTimer(string const &name)
+    AutoTimer ::AutoTimer(std::string const &name)
         : name(name)
         , start(high_resolution_clock::now())
     {}
@@ -213,4 +205,5 @@ namespace Mlib::Profile
                 GLOBALPROFILER->destroy();
             });
     }
+
 } // namespace Mlib::Profile

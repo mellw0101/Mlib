@@ -187,7 +187,7 @@ namespace Mlib::Compress
         {
             archive_read_free(a);
             archive_write_free(ext);
-            fatal_err("archive_read_open_memory", "archive_error_string: [%s]", archive_error_string(a));
+            ferr("archive_read_open_memory", "archive_error_string: [%s]", archive_error_string(a));
         }
         while ((r = archive_read_next_header(a, &entry)) == ARCHIVE_OK)
         {
@@ -197,7 +197,7 @@ namespace Mlib::Compress
             archive_entry_set_pathname(entry, full_path);
             if ((r = archive_write_header(ext, entry)) == ARCHIVE_FATAL)
             {
-                non_fatal_err("archive_write_header", "archive_error_string: ['%s']", archive_error_string(a));
+                nerr("archive_write_header", "archive_error_string: ['%s']", archive_error_string(a));
                 break;
             }
             while ((r = archive_read_data_block(a, &t_buf, &t_size, &offset)) == ARCHIVE_OK)
@@ -210,14 +210,13 @@ namespace Mlib::Compress
             }
             if ((r = archive_write_finish_entry(ext)) != ARCHIVE_OK)
             {
-                non_fatal_err("archive_write_finish_entry", "archive_error_string: [%s]", archive_error_string(a));
+                nerr("archive_write_finish_entry", "archive_error_string: [%s]", archive_error_string(a));
                 break;
             }
         }
         if (r != ARCHIVE_EOF)
         {
-            non_fatal_err(
-                __func__, "Could not fully extract archive, archive_error_string: [%s]", archive_error_string(a));
+            nerr(__func__, "Could not fully extract archive, archive_error_string: [%s]", archive_error_string(a));
         }
         archive_read_free(a);
         archive_write_free(ext);

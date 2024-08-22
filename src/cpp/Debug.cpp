@@ -9,7 +9,6 @@ namespace Mlib::Debug
     Lout ::Instance()
     {
         using namespace std;
-
         if (_LoutInstance == nullptr)
         {
             lock_guard<mutex> lock(mutex);
@@ -25,6 +24,24 @@ namespace Mlib::Debug
         {
             delete _LoutInstance;
             _LoutInstance = nullptr;
+        }
+    }
+
+    void
+    Lout ::log(const LogLevel log_level, const char *from_func, const unsigned long lineno, const char *format, ...)
+    {
+        char    fbuf[4096], buf[8192];
+        va_list ap;
+        va_start(ap, format);
+        vsnprintf(fbuf, sizeof(fbuf), format, ap);
+        snprintf(buf, sizeof(buf), "%s:%s:%s[Line:%lu]%s:%s[%s]%s: %s\n", TIME::mili().c_str(),
+                 &logLevelMap[log_level].key[0], ESC_CODE_YELLOW, lineno, ESC_CODE_RESET, ESC_CODE_MAGENTA, from_func,
+                 ESC_CODE_RESET, fbuf);
+        std::lock_guard<std::mutex> guard(_log_mutex);
+        std::ofstream               file(&_output_file[0], std::ios::app);
+        if (file)
+        {
+            file << buf;
         }
     }
 

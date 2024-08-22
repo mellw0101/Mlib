@@ -231,7 +231,7 @@ namespace Mlib::Debug
         static Lout *_LoutInstance;
 
         void
-        _logMessage()
+        _logMessage(void)
         {
             using namespace std;
             /* Lock the mutex to ensure thread safety. */
@@ -246,12 +246,12 @@ namespace Mlib::Debug
             }
         }
 
-        Lout()
+        Lout(void)
         {}
 
     public:
         Lout &
-        operator<<(LogLevel logLevel)
+        operator<<(const LogLevel logLevel)
         {
             _level = logLevel;
             return *this;
@@ -293,7 +293,7 @@ namespace Mlib::Debug
         }
 
         Lout &
-        operator<<(s8 c)
+        operator<<(char c)
         {
             if (c == '\n')
             {
@@ -338,6 +338,8 @@ namespace Mlib::Debug
         {
             _output_file = path;
         }
+
+        void log(const LogLevel log_level, const char *from_func, const unsigned long lineno, const char *format, ...);
     };
 
     inline ErrnoMsg
@@ -395,6 +397,8 @@ namespace Mlib::Debug
 #define LoutI            LOUT << Mlib::Debug::INFO << FUNC << LINE
 #define LoutE            LOUT << Mlib::Debug::ERROR << FUNC << LINE
 #define LoutErrno(__msg) LoutE << Mlib::Debug::Lout_errno_msg(__msg) << '\n'
+#define LOUT_logI(...)   LOUT.log(Mlib::Debug::INFO, __func__, __LINE__, __VA_ARGS__)
+#define LOUT_logE(...)   LOUT.log(Mlib::Debug::ERROR, __func__, __LINE__, __VA_ARGS__)
 
 /* Macro to get the NetworkLogger instance */
 #define NETLOGGER        Mlib::Debug::NetworkLogger::Instance()

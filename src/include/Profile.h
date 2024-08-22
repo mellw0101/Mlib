@@ -17,87 +17,54 @@
 
 namespace Mlib::Profile
 {
-    /// @class @c ProfilerStats
-    /// @brief
-    /// - This class is used to store the profiling
-    /// - statistics of a particular function.
-    /// - It stores the values of the time taken
-    /// - by the function in each call.
-    /// - It also provides the mean, standard deviation,
-    /// - minimum, maximum and count of the values.
-    /// @ingroup @c Mlib::Profiling
+    /* This class is used to store the profiling
+     * statistics of a particular function.
+     * It stores the values of the time taken
+     * by the function in each call.
+     * It also provides the mean, standard deviation,
+     * minimum, maximum and count of the values. */
     class ProfilerStats
     {
     public:
-        //
-        //  Records the value of the duration of the profiled function.
-        //  @param value ( f64 )
-        //  - The duration of the profiled function.
-        //  @returns void
-        //
-        void record(f64 value);
+        /* Records the value of the duration of the profiled function. */
+        void record(double value);
 
-        //
-        //  Calculates the mean of the recorded
-        //  values.
-        //
-        //  @return f64 ( double )
-        //
-        f64 mean() const;
+        /* Calculates the mean of the recorded values. */
+        double mean(void) const;
 
-        //
-        //  Calculates the standard deviation of the recorded values.
-        //  @return ( f64 )
-        //
-        f64 stddev() const;
+        /* Calculates the standard deviation of the recorded values. */
+        double stddev(void) const;
 
-        /// @name @c min
-        /// @brief
-        /// - Returns the minimum of the recorded
-        /// - values.
-        /// @returns ( double )
-        f64 min() const;
+        /* Returns the minimum of the recorded values. */
+        double min(void) const;
 
-        /// @name @c max
-        /// @brief
-        /// - Returns the maximum of the recorded
-        /// - values.
-        /// @returns ( double )
-        f64 max() const;
+        /* Returns the maximum of the recorded values. */
+        double max(void) const;
 
-        /// @name @c count
-        /// @brief
-        /// - Returns the number of values recorded.
-        /// @returns ( size_t )
-        u64 count() const;
+        /* Returns the number of values recorded. */
+        unsigned long count(void) const;
 
     private:
-        /// @name @c values
-        /// TYPE: @b vector<f64>
-        /// @brief
-        /// - The vector of values of the duration
-        /// - of the profiled function.
-        VECTOR<f64> values;
+        /* The vector of values of the duration of the profiled function. */
+        std::vector<double> values;
     };
 
     class GlobalProfiler
     {
     private:
-        MAP<STRING, ProfilerStats> stats;
-        static GlobalProfiler     *instance;
-
-        STRING output_file;
-
+        std::map<std::string, ProfilerStats> stats;
+        std::string                          output_file;
+        static GlobalProfiler               *instance;
         GlobalProfiler();
 
     public:
-        void record(C_STRING &name, f64 duration);
+        void record(const std::string &name, double duration);
         void report();
         void destroy();
         void setOutputFile(STRING_VIEW file_path);
 
-        MAP<STRING, ProfilerStats> getStatsCopy() const;
-        VECTOR<STRING>             retrveFormatedStrVecStats() const;
+        std::map<std::string, ProfilerStats> getStatsCopy() const;
+        std::vector<std::string>             retrveFormatedStrVecStats() const;
 
         [[__nodiscard__("GlobalProfiler::Instance()")]]
         static GlobalProfiler *Instance();
@@ -117,14 +84,12 @@ namespace Mlib::Profile
         TIME_POINT<HIGH_RES_CLOCK> start;
     };
 
-    //
-    //  Sets up the generation of the profiling.
-    //  This means that the report will be generated at the end of the program.
-    //  Note that this function must be called before any profiling is done,
-    //  otherwise the report will not be generated.
-    //  @param file_path (std::string_view)
-    //  - The path to the file where the report will be generated.
-    //
+    /* Sets up the generation of the profiling.
+     * This means that the report will be generated at the end of the program.
+     * Note that this function must be called before any profiling is done,
+     * otherwise the report will not be generated.
+     * @param file_path (std::string_view)
+     * - The path to the file where the report will be generated. */
     void setupReportGeneration(STRING_VIEW file_path);
 
 } // namespace Mlib::Profile

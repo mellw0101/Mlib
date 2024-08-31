@@ -55,19 +55,19 @@ namespace Mlib::Profile
         std::map<std::string, ProfilerStats> stats;
         std::string                          output_file;
         static GlobalProfiler               *instance;
-        GlobalProfiler();
+        GlobalProfiler(void);
 
     public:
         void record(const std::string &name, double duration);
-        void report();
-        void destroy();
+        void report(void);
+        void destroy(void);
         void setOutputFile(STRING_VIEW file_path);
 
-        std::map<std::string, ProfilerStats> getStatsCopy() const;
-        std::vector<std::string>             retrveFormatedStrVecStats() const;
+        std::map<std::string, ProfilerStats> getStatsCopy(void) const;
+        std::vector<std::string>             retrveFormatedStrVecStats(void) const;
 
-        [[__nodiscard__("GlobalProfiler::Instance()")]]
-        static GlobalProfiler *Instance();
+        [[__nodiscard__("GlobalProfiler::Instance(void)")]]
+        static GlobalProfiler *Instance(void);
 
         DELETE_COPY_AND_MOVE_CONSTRUCTORS(GlobalProfiler);
     };

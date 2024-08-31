@@ -177,12 +177,12 @@ namespace Mlib::Debug
         std::queue<LogMessage> queue_;
     };
 
-    MAKE_CONSTEXPR_WRAPPER(FuncName, STRING_VIEW);
-    MAKE_CONSTEXPR_WRAPPER(FileName, STRING_VIEW);
+    MAKE_CONSTEXPR_WRAPPER(FuncName, std::string_view);
+    MAKE_CONSTEXPR_WRAPPER(FileName, std::string_view);
     MAKE_CONSTEXPR_WRAPPER(Line, unsigned int);
 
     constexpr ARRAY<char, 256>
-    make_message(STRING_VIEW str)
+    make_message(std::string_view str)
     {
         std::array<char, 256> buffer     = {};
         auto                  str_len    = str.size();
@@ -209,7 +209,7 @@ namespace Mlib::Debug
         return buffer;
     }
 
-    CONSTEXPR_MAP<STRING_VIEW, unsigned char, 5> logLevelMap = {
+    constexpr_map<std::string_view, unsigned char, 5> logLevelMap = {
         {{ESC_CODE_GREEN "[INFO]" ESC_CODE_RESET, INFO},
          {ESC_CODE_CYAN "[INFO_PRIORITY]" ESC_CODE_RESET, INFO_PRIORITY},
          {ESC_CODE_YELLOW "[WARNING]" ESC_CODE_RESET, WARNING},
@@ -343,7 +343,7 @@ namespace Mlib::Debug
     };
 
     inline ErrnoMsg
-    Lout_errno_msg(STRING_VIEW str)
+    Lout_errno_msg(std::string_view str)
     {
         STRING s = STRING(str) + ": " + ERRNO_C_STR + " (errno: " + ERRNO_CODE_STR + ")";
         C_s8  *c = &s[0];
@@ -360,6 +360,7 @@ namespace Mlib::Debug
         bool         _CONNECTED = false;
         bool         _NET_DEBUG = false;
         STRINGSTREAM _buffer;
+        std::mutex   _mutex;
 
         static NetworkLogger *_NetworkLoggerInstance;
         unsigned short        checksum(void *b, int len);
@@ -402,4 +403,5 @@ namespace Mlib::Debug
 
 /* Macro to get the NetworkLogger instance */
 #define NETLOGGER        Mlib::Debug::NetworkLogger::Instance()
+#define NLOG(...)        NETLOGGER.log(__VA_ARGS__)
 #define NETLOG_ENDL      Mlib::Debug::NetworkLoggerEndl_Wrapper('\n')

@@ -140,7 +140,7 @@ namespace Mlib::Debug
     }
 
     NetworkLogger &
-    NetworkLogger ::Instance()
+    NetworkLogger ::Instance(void)
     {
         using namespace std;
 
@@ -185,7 +185,7 @@ namespace Mlib::Debug
     }
 
     void
-    NetworkLogger ::enable()
+    NetworkLogger ::enable(void)
     {
         _NET_DEBUG = true;
     }
@@ -219,6 +219,7 @@ namespace Mlib::Debug
         va_end(ap);
         str   = buf;
         s_len = strlen(str);
+        std::lock_guard<std::mutex> guard(_mutex);
         if (send(_socket, str, s_len, 0) < 0)
         {
             _CONNECTED = false;
@@ -226,7 +227,7 @@ namespace Mlib::Debug
     }
 
     void
-    NetworkLogger ::destroy()
+    NetworkLogger ::destroy(void)
     {
         if (_NetworkLoggerInstance != nullptr)
         {

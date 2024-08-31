@@ -40,27 +40,27 @@ namespace Mlib::Sdl2
     }
 
     bool
-    Object2D ::isStatic() const
+    Object2D ::isStatic(void) const
     {
         return data.state & State::STATIC;
     }
 
     SDL_Rect
-    Object2D ::rect() const
+    Object2D ::rect(void) const
     {
         SDL_Rect rect = {static_cast<int>(data.position.x), static_cast<int>(data.position.y), data.w, data.h};
         return rect;
     }
 
     SDL_FRect
-    Object2D ::frect() const
+    Object2D ::frect(void) const
     {
         return {static_cast<f32>(data.position.x), static_cast<f32>(data.position.y), static_cast<f32>(data.w),
                 static_cast<f32>(data.h)};
     }
 
-    u32
-    Object2D ::state(u32 stateToCheck) const noexcept
+    unsigned int
+    Object2D ::state(unsigned int stateToCheck) const noexcept
     {
         if (stateToCheck)
         {
@@ -70,31 +70,27 @@ namespace Mlib::Sdl2
     }
 
     void
-    Object2D ::updateVelocity()
+    Object2D ::updateVelocity(void)
     {
-        // Calculate velocity change due to acceleration
+        /* Calculate velocity change due to acceleration */
         Vec2D const velocityChange = GravityVec * timePerFrame;
-
-        // Update velocity
+        /* Update velocity */
         data.velocity += velocityChange;
-
-        // Update position
+        /* Update position */
         data.position += data.velocity;
     }
 
     void
     Object2D ::onStaticObjCollision(Object2D const &obj, Vec2D velVecToApply)
     {
-        f32 const X = data.position.x;
-        f32 const Y = data.position.y;
-        f32 const W = data.w;
-        f32 const H = data.h;
-
-        f32 const oX = obj.data.position.x;
-        f32 const oY = obj.data.position.y;
-        f32 const oW = obj.data.w;
-        f32 const oH = obj.data.h;
-
+        const float X  = data.position.x;
+        const float Y  = data.position.y;
+        const float W  = data.w;
+        const float H  = data.h;
+        const float oX = obj.data.position.x;
+        const float oY = obj.data.position.y;
+        const float oW = obj.data.w;
+        const float oH = obj.data.h;
         if (X <= oX + oW && X + W >= oX && Y <= oY + oH && Y + H >= oY)
         {
             move(velVecToApply);
@@ -111,7 +107,7 @@ namespace Mlib::Sdl2
     }
 
     int
-    Core ::init()
+    Core ::init(void)
     {
         initSDL();
         createWindow();
@@ -121,7 +117,7 @@ namespace Mlib::Sdl2
     }
 
     int
-    Core ::initSDL()
+    Core ::initSDL(void)
     {
         if (SDL_Init(SDL_INIT_VIDEO) < 0)
         {
@@ -132,7 +128,7 @@ namespace Mlib::Sdl2
     }
 
     int
-    Core ::createWindow()
+    Core ::createWindow(void)
     {
         window = SDL_CreateWindow(window_title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
                                   SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
@@ -145,7 +141,7 @@ namespace Mlib::Sdl2
     }
 
     int
-    Core ::createRenderer()
+    Core ::createRenderer(void)
     {
         renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
         if (!renderer)
@@ -158,7 +154,7 @@ namespace Mlib::Sdl2
     }
 
     void
-    Core ::setupKeys()
+    Core ::setupKeys(void)
     {
         KeyObject::Instance()->addActionForKey(
             SDL_SCANCODE_W,
@@ -223,7 +219,7 @@ namespace Mlib::Sdl2
     }
 
     int
-    Core ::run()
+    Core ::run(void)
     {
         init();
         while (running)
@@ -245,7 +241,7 @@ namespace Mlib::Sdl2
     }
 
     void
-    Core ::cleanup()
+    Core ::cleanup(void)
     {
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
@@ -253,27 +249,26 @@ namespace Mlib::Sdl2
     }
 
     void
-    Core ::logic()
+    Core ::logic(void)
     {
         KeyObject::Instance()->handleKeyEvent();
     }
 
     void
-    Core ::applyPhysics()
+    Core ::applyPhysics(void)
     {
         for (auto &object : objects)
         {
-            // Only apply gravity if the object is not static
+            /* Only apply gravity if the object is not static */
             if (object->state() & State::STATIC)
             {
                 continue;
             }
             else
             {
-                // Apply Gravity
+                /* Apply Gravity */
                 object->move({0.0f, 3.0f});
-
-                // Check if the object is on the ground
+                /* Check if the object is on the ground */
                 if (object->data.position.y + (f32)object->data.h == (f32)SCREEN_HEIGHT)
                 {
                     object->data.state |= State::ON_GROUND;
@@ -282,7 +277,6 @@ namespace Mlib::Sdl2
                 {
                     object->data.state &= ~State::ON_GROUND;
                 }
-
                 for (auto &other : objects)
                 {
                     if (&object == &other)
@@ -295,7 +289,7 @@ namespace Mlib::Sdl2
     }
 
     void
-    Core ::clear()
+    Core ::clear(void)
     {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);

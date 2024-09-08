@@ -369,7 +369,7 @@ using THREAD             = class std::thread;
 template <typename _Tp, typename _Sequence = std::deque<_Tp>>
 using QUEUE = class std::queue<_Tp, _Sequence>;
 
-decltype(auto) operator"" _hash(C_s8 *s, u64);
+decltype(auto) operator"" _hash(const char *s, unsigned long);
 
 #define CLAMBDA              [](auto &&...args) _NO_THROW -> decltype(auto)
 #define CLAMBDA_REF          [](auto &&...args) _NO_THROW -> decltype(auto) &

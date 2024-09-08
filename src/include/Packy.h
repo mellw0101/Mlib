@@ -25,11 +25,11 @@ private:
     DELETE_COPY_AND_MOVE_CONSTRUCTORS(packy);
     static packy *packyInstance;
     int           verbose_lvl = 0;
-    packy();
-    ~packy();
+    packy(void);
+    ~packy(void);
 
 public:
-    static packy *Instance();
+    static packy *Instance(void);
     const char   *retrieve_url(const char *package);
     char *find_package(const char *package, unsigned repo_mask = PACKY_REPO_ALL, unsigned *repo_index = nullptr);
     int   download(const char *p);

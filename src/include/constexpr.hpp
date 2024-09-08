@@ -176,7 +176,7 @@ namespace Mlib::Constexpr
     //     }
 
     //     constexpr size_t
-    //     size() const
+    //     get_size() const
     //     {
     //         return N;
     //     }
@@ -208,7 +208,7 @@ namespace Mlib::Constexpr
         }
 
         constexpr size_t
-        size() const
+        get_size() const
         {
             return N;
         }
@@ -259,11 +259,8 @@ namespace Mlib::Constexpr
         return tolower(static_cast<unsigned char>(*s1)) - tolower(static_cast<unsigned char>(*s2));
     }
 
-    //
-    //  Returns 0 if the strings are equal,
-    //  a positive number if s1 is greater than s2,
-    //  and a negative number if s1 is less than s2
-    //
+    /* Returns 0 if the strings are equal, a positive number if s1 is
+     *greater than s2, and a negative number if s1 is less than s2. */
     constexpr int
     strncasecmp(const char *s1, const char *s2, size_t n) _NO_THROW
     {

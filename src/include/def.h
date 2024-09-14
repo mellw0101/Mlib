@@ -441,4 +441,7 @@ decltype(auto) operator"" _hash(const char *s, unsigned long);
         PARAM_T_CONSTRUCT(name, T3, 3, type_3)        \
     }
 
-#define AMALLOC(obj) (decltype(obj))malloc(sizeof(*obj))
+#define AMALLOC(obj)             (decltype(obj))malloc(sizeof(*obj))
+#define AMALLOC_ARRAY(obj, cap)  (decltype(obj))malloc(sizeof(*obj) * cap)
+#define AREALLOC_ARRAY(obj, cap) (decltype(obj))realloc(obj, sizeof(*obj) * cap)
+#define BOOL_STR(statement)      statement ? "TRUE" : "FALSE"

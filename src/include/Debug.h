@@ -39,7 +39,8 @@ namespace Mlib::Debug
         bool
         append(const std::string &text)
         {
-            std::ofstream file(m_filename, std::ios::app); // Open in append mode
+            std::ofstream file(
+                m_filename, std::ios::app); // Open in append mode
 
             if (!file.is_open())
             {
@@ -53,8 +54,9 @@ namespace Mlib::Debug
         bool
         open()
         {
-            std::ofstream file(m_filename, std::ios::app); // Open in append mode
-            bool          isOpen = file.is_open();
+            std::ofstream file(
+                m_filename, std::ios::app); // Open in append mode
+            bool isOpen = file.is_open();
             file.close();
             return isOpen;
         }
@@ -69,7 +71,7 @@ namespace Mlib::Debug
     {
     public:
         static const std::string
-        get()
+        get(void)
         {
             using namespace std;
             using namespace chrono;
@@ -89,7 +91,7 @@ namespace Mlib::Debug
         }
 
         static std::string
-        mili()
+        mili(void)
         {
             using namespace std;
             using namespace chrono;
@@ -106,13 +108,15 @@ namespace Mlib::Debug
             std::ostringstream ss;
             ss << "[" << put_time(&buf, "%Y-%m-%d %H:%M:%S");
 
-            // Calculate milliseconds (now time since epoch minus time_t converted back to time since epoch)
+            // Calculate milliseconds (now time since epoch minus time_t
+            // converted back to time since epoch)
             auto since_epoch = now.time_since_epoch();
-            auto s           = chrono::duration_cast<chrono::seconds>(since_epoch);
+            auto s = chrono::duration_cast<chrono::seconds>(since_epoch);
             since_epoch -= s;
             auto ms = chrono::duration_cast<chrono::milliseconds>(since_epoch);
 
-            // Append milliseconds to the formatted string, correctly placing the closing square bracket
+            // Append milliseconds to the formatted string, correctly placing
+            // the closing square bracket
             ss << "." << setfill('0') << setw(3) << ms.count() << "]";
 
             return ss.str();
@@ -125,7 +129,8 @@ namespace Mlib::Debug
         std::string function;
         int         line;
         std::string message;
-        // Include a timestamp if you prefer logging it to be handled by the logger rather than each log call
+        // Include a timestamp if you prefer logging it to be handled by the
+        // logger rather than each log call
     } LogMessage;
 
     typedef struct
@@ -184,10 +189,10 @@ namespace Mlib::Debug
     constexpr ARRAY<char, 256>
     make_message(std::string_view str)
     {
-        std::array<char, 256> buffer     = {};
-        auto                  str_len    = str.size();
-        const char           *prefix     = ": error message (errno: 0)";
-        auto                  prefix_len = std::char_traits<char>::length(prefix);
+        std::array<char, 256> buffer  = {};
+        auto                  str_len = str.size();
+        const char           *prefix  = ": error message (errno: 0)";
+        auto prefix_len               = std::char_traits<char>::length(prefix);
 
         if (str_len + prefix_len >= buffer.size())
         {
@@ -240,9 +245,11 @@ namespace Mlib::Debug
             ofstream file(_output_file.data(), ios::app);
             if (file)
             {
-                file << TIME::mili() << ":" << logLevelMap[_level].key << ":" << ESC_CODE_YELLOW << "[Line:" << _line
-                     << "]" << ESC_CODE_RESET << ":" << ESC_CODE_MAGENTA << "[" << _function << "]" << ESC_CODE_RESET
-                     << ": " << _buffer.str() << "\n";
+                file << TIME::mili() << ":" << logLevelMap[_level].key << ":"
+                     << ESC_CODE_YELLOW << "[Line:" << _line << "]"
+                     << ESC_CODE_RESET << ":" << ESC_CODE_MAGENTA << "["
+                     << _function << "]" << ESC_CODE_RESET << ": "
+                     << _buffer.str() << "\n";
             }
         }
 
@@ -284,9 +291,7 @@ namespace Mlib::Debug
             if (pf == static_cast<std::ostream &(*)(std::ostream &)>(std::endl))
             {
                 _logMessage();
-                //
-                //  Reset the buffer for new messages
-                //
+                /* Reset the buffer for new messages */
                 _buffer = std::ostringstream();
             }
             return *this;
@@ -298,7 +303,8 @@ namespace Mlib::Debug
             if (c == '\n')
             {
                 _logMessage();
-                _buffer = std::ostringstream(); // Reset the buffer for new messages
+                _buffer =
+                    std::ostringstream(); // Reset the buffer for new messages
             }
             else
             {
@@ -339,14 +345,16 @@ namespace Mlib::Debug
             _output_file = path;
         }
 
-        void log(const LogLevel log_level, const char *from_func, const unsigned long lineno, const char *format, ...);
+        void log(const LogLevel log_level, const char *from_func,
+                 const unsigned long lineno, const char *format, ...);
     };
 
     inline ErrnoMsg
     Lout_errno_msg(std::string_view str)
     {
-        STRING s = STRING(str) + ": " + ERRNO_C_STR + " (errno: " + ERRNO_CODE_STR + ")";
-        C_s8  *c = &s[0];
+        std::string s = std::string(str) + ": " + strerror(errno) +
+                        " (errno: " + std::to_string(errno) + ")";
+        const char *c = &s[0];
         return {c};
     }
 
@@ -398,13 +406,15 @@ namespace Mlib::Debug
 #define LoutI            LOUT << Mlib::Debug::INFO << FUNC << LINE
 #define LoutE            LOUT << Mlib::Debug::ERROR << FUNC << LINE
 #define LoutErrno(__msg) LoutE << Mlib::Debug::Lout_errno_msg(__msg) << '\n'
-#define LOUT_logI(...)   LOUT.log(Mlib::Debug::INFO, __func__, __LINE__, __VA_ARGS__)
-#define LOUT_logE(...)   LOUT.log(Mlib::Debug::ERROR, __func__, __LINE__, __VA_ARGS__)
-#define logE(...)        LOUT_logE(__VA_ARGS__)
-#define logI(...)        LOUT_logI(__VA_ARGS__)
+#define LOUT_logI(...) \
+    LOUT.log(Mlib::Debug::INFO, __func__, __LINE__, __VA_ARGS__)
+#define LOUT_logE(...) \
+    LOUT.log(Mlib::Debug::ERROR, __func__, __LINE__, __VA_ARGS__)
+#define logE(...)   LOUT_logE(__VA_ARGS__)
+#define logI(...)   LOUT_logI(__VA_ARGS__)
 
 /* Macro to get the NetworkLogger instance */
-#define NETLOGGER        Mlib::Debug::NetworkLogger::Instance()
-#define NLOG(...)        NETLOGGER.log(__VA_ARGS__)
-#define nlog(...)        NLOG(__VA_ARGS__)
-#define NETLOG_ENDL      Mlib::Debug::NetworkLoggerEndl_Wrapper('\n')
+#define NETLOGGER   Mlib::Debug::NetworkLogger::Instance()
+#define NLOG(...)   NETLOGGER.log(__VA_ARGS__)
+#define nlog(...)   NLOG(__VA_ARGS__)
+#define NETLOG_ENDL Mlib::Debug::NetworkLoggerEndl_Wrapper('\n')

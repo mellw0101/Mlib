@@ -40,7 +40,7 @@ BraceWrapping:
   SplitEmptyNamespace: false
 BreakBeforeBraces: Custom
 BreakBeforeTernaryOperators: true
-ColumnLimit: 120
+ColumnLimit: 80
 CompactNamespaces: false
 ContinuationIndentWidth: 4
 EmptyLineAfterAccessModifier: Never

@@ -156,7 +156,7 @@ namespace Mlib::Constexpr
     {
         size_t i = 0;
         for (; str[i]; ++i)
-        {}
+            ;
         return i;
     }
 
@@ -326,7 +326,7 @@ namespace Mlib::Constexpr
     }
 
     constexpr const char *
-    strstr(const char *haystack, const char *needle) _NO_THROW
+    strstr(const char *haystack, const char *needle) noexcept
     {
         if (!*needle)
         {

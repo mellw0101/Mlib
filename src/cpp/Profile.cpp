@@ -10,13 +10,13 @@ namespace Mlib::Profile
     /** @class @c ProfilerStats */
 
     void
-    ProfilerStats ::record(const double value)
+    ProfilerStats::record(const double value)
     {
         values.push_back(value);
     }
 
     double
-    ProfilerStats ::mean() const
+    ProfilerStats::mean(void) const
     {
         if (values.empty())
         {
@@ -27,35 +27,38 @@ namespace Mlib::Profile
     }
 
     double
-    ProfilerStats ::stddev() const
+    ProfilerStats::stddev(void) const
     {
         if (values.size() < 2)
         {
             return 0.0;
         }
         double mean_val = mean();
-        double sq_sum   = std::accumulate(values.begin(), values.end(), 0.0,
-                                          [mean_val](double a, double b)
-                                          {
-                                            return a + (b - mean_val) * (b - mean_val);
-                                        });
+        double sq_sum =
+            std::accumulate(values.begin(), values.end(), 0.0,
+                            [mean_val](double a, double b)
+                            {
+                                return a + (b - mean_val) * (b - mean_val);
+                            });
         return std::sqrt(sq_sum / values.size());
     }
 
     double
-    ProfilerStats ::min() const
+    ProfilerStats::min(void) const
     {
-        return values.empty() ? 0.0 : *std::min_element(values.begin(), values.end());
+        return values.empty() ? 0.0
+                              : *std::min_element(values.begin(), values.end());
     }
 
     double
-    ProfilerStats ::max() const
+    ProfilerStats::max(void) const
     {
-        return values.empty() ? 0.0 : *std::max_element(values.begin(), values.end());
+        return values.empty() ? 0.0
+                              : *std::max_element(values.begin(), values.end());
     }
 
-    size_t
-    ProfilerStats ::count() const
+    unsigned long
+    ProfilerStats::count(void) const
     {
         return values.size();
     }
@@ -68,7 +71,7 @@ namespace Mlib::Profile
     {}
 
     void
-    GlobalProfiler ::destroy(void)
+    GlobalProfiler::destroy(void)
     {
         if (instance != nullptr)
         {
@@ -78,24 +81,24 @@ namespace Mlib::Profile
     }
 
     void
-    GlobalProfiler ::record(const string &name, const double duration)
+    GlobalProfiler::record(const string &name, const double duration)
     {
         stats[name].record(duration);
     }
 
     void
-    GlobalProfiler ::setOutputFile(string_view file_path)
+    GlobalProfiler::setOutputFile(string_view file_path)
     {
         output_file = file_path;
     }
 
     map<string, ProfilerStats>
-    GlobalProfiler ::getStatsCopy() const
+    GlobalProfiler::getStatsCopy() const
     {
         return stats;
     }
 
-    std::string
+    string
     makeNamePadding(const string &s)
     {
         std::stringstream ss;
@@ -107,7 +110,7 @@ namespace Mlib::Profile
         return ss.str();
     }
 
-    std::string
+    string
     mili(void)
     {
         using namespace std;
@@ -121,12 +124,14 @@ namespace Mlib::Profile
         /* Use stringstream to format the time */
         ostringstream ss;
         ss << "[" << put_time(&buf, "%Y-%m-%d %H:%M:%S");
-        /* Calculate milliseconds (now time since epoch minus time_t converted back to time since epoch) */
+        /* Calculate milliseconds (now time since epoch minus time_t converted
+         * back to time since epoch) */
         auto since_epoch = now.time_since_epoch();
         auto s           = duration_cast<seconds>(since_epoch);
         since_epoch -= s;
         auto ms = duration_cast<milliseconds>(since_epoch);
-        /* Append milliseconds to the formatted string, correctly placing the closing square bracket */
+        /* Append milliseconds to the formatted string, correctly placing the
+         * closing square bracket */
         ss << "." << setfill('0') << setw(3) << ms.count() << "]";
         return ss.str();
     }
@@ -138,32 +143,42 @@ namespace Mlib::Profile
         file << "\n\nProfiling report: " << mili() << '\n';
         for (const auto &pair : stats)
         {
-            file << pair.first << makeNamePadding(pair.first) <<  /*  */
-                ": Mean = " << pair.second.mean() << " ms, " <<   /* makeDoublePadding(pair.second.mean())   << */
-                "Stddev = " << pair.second.stddev() << " ms, " << /* makeDoublePadding(pair.second.stddev()) << */
-                "   Min = " << pair.second.min() << " ms, " <<    /* makeDoublePadding(pair.second.min())    << */
-                "   Max = " << pair.second.max() << " ms, " <<    /* makeDoublePadding(pair.second.max())    << */
-                " Count = " << pair.second.count() <<             /* makeDoublePadding(pair.second.count())  << */
+            file << pair.first << makeNamePadding(pair.first) << /*  */
+                ": Mean = " << pair.second.mean() << " ms, "
+                 << /* makeDoublePadding(pair.second.mean())   << */
+                "Stddev = " << pair.second.stddev() << " ms, "
+                 << /* makeDoublePadding(pair.second.stddev()) << */
+                "   Min = " << pair.second.min() << " ms, "
+                 << /* makeDoublePadding(pair.second.min())    << */
+                "   Max = " << pair.second.max() << " ms, "
+                 << /* makeDoublePadding(pair.second.max())    << */
+                " Count = " << pair.second.count()
+                 << /* makeDoublePadding(pair.second.count())  << */
                 "\n";
         }
 
         file.close();
     }
 
-    std::vector<std::string>
-    GlobalProfiler ::retrveFormatedStrVecStats(void) const
+    vector<string>
+    GlobalProfiler::retrveFormatedStrVecStats(void) const
     {
         std::vector<std::string> formated_stats;
         formated_stats.push_back("\n\nProfiling report: " + mili() + '\n');
         for (const auto &[name, stats] : stats)
         {
             std::stringstream ss;
-            ss << name << makeNamePadding(name) <<          /*  */
-                ": Mean = " << stats.mean() << " ms, " <<   /* makeDoublePadding(pair.second.mean())   << */
-                "Stddev = " << stats.stddev() << " ms, " << /* makeDoublePadding(pair.second.stddev()) << */
-                "   Min = " << stats.min() << " ms, " <<    /* makeDoublePadding(pair.second.min())    << */
-                "   Max = " << stats.max() << " ms, " <<    /* makeDoublePadding(pair.second.max())    << */
-                " Count = " << stats.count() <<             /* makeDoublePadding(pair.second.count())  << */
+            ss << name << makeNamePadding(name) << /*  */
+                ": Mean = " << stats.mean() << " ms, "
+               << /* makeDoublePadding(pair.second.mean())   << */
+                "Stddev = " << stats.stddev() << " ms, "
+               << /* makeDoublePadding(pair.second.stddev()) << */
+                "   Min = " << stats.min() << " ms, "
+               << /* makeDoublePadding(pair.second.min())    << */
+                "   Max = " << stats.max() << " ms, "
+               << /* makeDoublePadding(pair.second.max())    << */
+                " Count = " << stats.count()
+               << /* makeDoublePadding(pair.second.count())  << */
                 "\n";
             formated_stats.push_back(ss.str());
         }
@@ -171,7 +186,7 @@ namespace Mlib::Profile
     }
 
     GlobalProfiler *
-    GlobalProfiler ::Instance(void)
+    GlobalProfiler::Instance(void)
     {
         if (!instance)
         {
@@ -182,12 +197,12 @@ namespace Mlib::Profile
 
     /** @class @c AutoTimer */
 
-    AutoTimer ::AutoTimer(std::string const &name)
+    AutoTimer::AutoTimer(std::string const &name)
         : name(name)
         , start(high_resolution_clock::now())
     {}
 
-    AutoTimer ::~AutoTimer()
+    AutoTimer::~AutoTimer(void)
     {
         auto                    end      = high_resolution_clock::now();
         duration<double, milli> duration = end - start;
@@ -195,7 +210,7 @@ namespace Mlib::Profile
     }
 
     void
-    setupReportGeneration(std::string_view file_path)
+    setupReportGeneration(string_view file_path)
     {
         GLOBALPROFILER->setOutputFile(file_path);
         atexit(

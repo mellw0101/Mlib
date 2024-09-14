@@ -202,7 +202,8 @@ operator"" _KB(unsigned long long value)
     return value * 1024;
 }
 
-#define __FILENAME__ (std::strrchr(__FILE__, '/') ? std::strrchr(__FILE__, '/') + 1 : __FILE__)
+#define __FILENAME__ \
+    (std::strrchr(__FILE__, '/') ? std::strrchr(__FILE__, '/') + 1 : __FILE__)
 
 #define MAKE_CONSTEXPR_WRAPPER(_name, _type)     \
     struct _name                                 \
@@ -439,3 +440,5 @@ decltype(auto) operator"" _hash(const char *s, unsigned long);
         PARAM_T_CONSTRUCT(name, T2, 2, type_2)        \
         PARAM_T_CONSTRUCT(name, T3, 3, type_3)        \
     }
+
+#define AMALLOC(obj) (decltype(obj))malloc(sizeof(*obj))

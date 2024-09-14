@@ -13,7 +13,8 @@ using namespace Compress;
 
 constexpr_map<unsigned int, STRING_VIEW, 5> PackyUrlMap = {
     {{PACKY_REPO_CORE, "ftp.lysator.liu.se/pub/archlinux/core/os/x86_64/"},
-     {PACKY_REPO_MULTILIB, "ftp.lysator.liu.se/pub/archlinux/multilib/os/x86_64/"},
+     {PACKY_REPO_MULTILIB,
+      "ftp.lysator.liu.se/pub/archlinux/multilib/os/x86_64/"},
      {PACKY_REPO_CORE, "mirror.pkgbuild.com/core/os/x86_64/"},
      {PACKY_REPO_EXTRA, "mirror.pkgbuild.com/extra/os/x86_64/"},
      {PACKY_REPO_MULTILIB, "mirror.pkgbuild.com/multilib/os/x86_64/"}}
@@ -27,19 +28,21 @@ packy ::retrieve_url(const char *package)
     static char  url[PATH_MAX];
     unsigned int repo_index;
     const char  *found;
-    if ((found = this->find_package(package, PACKY_REPO_ALL, &repo_index)) == nullptr)
+    if ((found = this->find_package(package, PACKY_REPO_ALL, &repo_index)) ==
+        nullptr)
     {
         prog_err("find_package", "Could not find package: ['%s'].", package);
         return nullptr;
     }
-    snprintf(url, sizeof(url), "%s%s", &PackyUrlMap[repo_index].value[0], found);
+    snprintf(
+        url, sizeof(url), "%s%s", &PackyUrlMap[repo_index].value[0], found);
     return url;
 }
 
-packy ::packy()
+packy::packy(void)
 {}
 
-packy ::~packy()
+packy::~packy(void)
 {
     if (this->packyInstance != nullptr)
     {
@@ -49,7 +52,7 @@ packy ::~packy()
 }
 
 packy *
-packy ::Instance()
+packy::Instance(void)
 {
     if (packyInstance == nullptr)
     {
@@ -59,7 +62,8 @@ packy ::Instance()
 }
 
 char *
-packy ::find_package(const char *package, unsigned repo_mask, unsigned *repo_index)
+packy::find_package(const char *package, unsigned repo_mask,
+                    unsigned *repo_index)
 {
     int           i = 0;
     unsigned long package_len, ext_len;
@@ -76,7 +80,8 @@ packy ::find_package(const char *package, unsigned repo_mask, unsigned *repo_ind
         }
         if ((found = ssl_retrieve_url_data(&Entry.value[0])) == nullptr)
         {
-            prog_err("ssl_retrieve_url_data", "Failed to get data from: ['%s']", &Entry.value[0]);
+            prog_err("ssl_retrieve_url_data", "Failed to get data from: ['%s']",
+                     &Entry.value[0]);
             return nullptr;
         }
         while ((found = strstr(found, package)) != nullptr)
@@ -100,7 +105,7 @@ packy ::find_package(const char *package, unsigned repo_mask, unsigned *repo_ind
 }
 
 int
-packy ::download(const char *package)
+packy::download(const char *package)
 {
     unsigned long size, new_size;
     char         *buf;
@@ -126,7 +131,7 @@ packy ::download(const char *package)
 }
 
 void
-packy ::set_verbose_lvl(int lvl)
+packy::set_verbose_lvl(int lvl)
 {
     this->verbose_lvl = (lvl < 0) ? 0 : (lvl > 1) ? 1 : lvl;
 }

@@ -12,27 +12,30 @@ namespace Mlib::Sdl2
     KeyObject *KeyObject::KeyObjectInstance = nullptr;
     Core      *Core::CoreInstance           = nullptr;
 
-    /// @struct @c Object2D Function Definitions
+    /* @struct @c Object2D Function Definitions */
 
     void
-    Object2D ::init(ObjectData2D const &data)
+    Object2D::init(ObjectData2D const &data)
     {
         this->data = data;
     }
 
     void
-    Object2D ::move(Vec2D vel)
+    Object2D::move(Vec2D vel)
     {
-        vel.x = (data.position.x + data.w + vel.x >= SCREEN_WIDTH) ? SCREEN_WIDTH - data.position.x - data.w : vel.x;
-        vel.y = (data.position.y + data.h + vel.y >= SCREEN_HEIGHT) ? SCREEN_HEIGHT - data.position.y - data.h : vel.y;
+        vel.x = (data.position.x + data.w + vel.x >= SCREEN_WIDTH)
+                  ? SCREEN_WIDTH - data.position.x - data.w
+                  : vel.x;
+        vel.y = (data.position.y + data.h + vel.y >= SCREEN_HEIGHT)
+                  ? SCREEN_HEIGHT - data.position.y - data.h
+                  : vel.y;
         vel.x = (data.position.x + vel.x < 0) ? -data.position.x : vel.x;
         vel.y = (data.position.y + vel.y < 0) ? -data.position.y : vel.y;
-
         data.position += vel;
     }
 
     void
-    Object2D ::draw(SDL_Renderer *renderer) const
+    Object2D::draw(SDL_Renderer *renderer) const
     {
         SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
         SDL_Rect currentRect = rect();
@@ -40,27 +43,36 @@ namespace Mlib::Sdl2
     }
 
     bool
-    Object2D ::isStatic(void) const
+    Object2D::isStatic(void) const
     {
         return data.state & State::STATIC;
     }
 
     SDL_Rect
-    Object2D ::rect(void) const
+    Object2D::rect(void) const
     {
-        SDL_Rect rect = {static_cast<int>(data.position.x), static_cast<int>(data.position.y), data.w, data.h};
+        SDL_Rect rect = {
+            (int)data.position.x,
+            (int)data.position.y,
+            data.w,
+            data.h,
+        };
         return rect;
     }
 
     SDL_FRect
-    Object2D ::frect(void) const
+    Object2D::frect(void) const
     {
-        return {static_cast<f32>(data.position.x), static_cast<f32>(data.position.y), static_cast<f32>(data.w),
-                static_cast<f32>(data.h)};
+        return {
+            (float)data.position.x,
+            (float)data.position.y,
+            (float)data.w,
+            (float)data.h,
+        };
     }
 
     unsigned int
-    Object2D ::state(unsigned int stateToCheck) const noexcept
+    Object2D::state(unsigned int stateToCheck) const noexcept
     {
         if (stateToCheck)
         {
@@ -70,7 +82,7 @@ namespace Mlib::Sdl2
     }
 
     void
-    Object2D ::updateVelocity(void)
+    Object2D::updateVelocity(void)
     {
         /* Calculate velocity change due to acceleration */
         Vec2D const velocityChange = GravityVec * timePerFrame;
@@ -81,7 +93,7 @@ namespace Mlib::Sdl2
     }
 
     void
-    Object2D ::onStaticObjCollision(Object2D const &obj, Vec2D velVecToApply)
+    Object2D::onStaticObjCollision(Object2D const &obj, Vec2D velVecToApply)
     {
         const float X  = data.position.x;
         const float Y  = data.position.y;
@@ -97,17 +109,17 @@ namespace Mlib::Sdl2
         }
     }
 
-    /// @class @c Core Function Definitions
+    /* @class @c Core Function Definitions */
 
     void
-    Core ::createObject(const Object2D &object)
+    Core::createObject(const Object2D &object)
     {
         Object2D *nObj = new Object2D {object};
         objects.emplace_back(nObj);
     }
 
     int
-    Core ::init(void)
+    Core::init(void)
     {
         initSDL();
         createWindow();
@@ -117,7 +129,7 @@ namespace Mlib::Sdl2
     }
 
     int
-    Core ::initSDL(void)
+    Core::initSDL(void)
     {
         if (SDL_Init(SDL_INIT_VIDEO) < 0)
         {
@@ -128,9 +140,10 @@ namespace Mlib::Sdl2
     }
 
     int
-    Core ::createWindow(void)
+    Core::createWindow(void)
     {
-        window = SDL_CreateWindow(window_title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
+        window = SDL_CreateWindow(window_title.c_str(), SDL_WINDOWPOS_UNDEFINED,
+                                  SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
                                   SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
         if (!window)
         {
@@ -141,7 +154,7 @@ namespace Mlib::Sdl2
     }
 
     int
-    Core ::createRenderer(void)
+    Core::createRenderer(void)
     {
         renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
         if (!renderer)
@@ -154,7 +167,7 @@ namespace Mlib::Sdl2
     }
 
     void
-    Core ::setupKeys(void)
+    Core::setupKeys(void)
     {
         KeyObject::Instance()->addActionForKey(
             SDL_SCANCODE_W,
@@ -162,17 +175,20 @@ namespace Mlib::Sdl2
             {
                 for (auto &object : objects)
                 {
-                    ((object->state() & State::STATIC) == false) ? object->move({0.0, -object->data.speed}) : void();
+                    ((object->state() & State::STATIC) == false)
+                        ? object->move({0.0, -object->data.speed})
+                        : void();
                 }
             });
-
         KeyObject::Instance()->addActionForKey(
             SDL_SCANCODE_S,
             [&]() -> void
             {
                 for (auto &object : objects)
                 {
-                    ((object->state() & State::STATIC) == false) ? object->move({0.0, object->data.speed}) : void();
+                    ((object->state() & State::STATIC) == false)
+                        ? object->move({0.0, object->data.speed})
+                        : void();
                 }
             });
         KeyObject::Instance()->addActionForKey(
@@ -181,7 +197,9 @@ namespace Mlib::Sdl2
             {
                 for (auto &object : objects)
                 {
-                    ((object->state() & State::STATIC) == false) ? object->move({-object->data.speed, 0.0}) : void();
+                    ((object->state() & State::STATIC) == false)
+                        ? object->move({-object->data.speed, 0.0})
+                        : void();
                 }
             });
         KeyObject::Instance()->addActionForKey(
@@ -190,7 +208,9 @@ namespace Mlib::Sdl2
             {
                 for (auto &object : objects)
                 {
-                    !(object->state() & State::STATIC) ? object->move({object->data.speed, 0.0}) : void();
+                    !(object->state() & State::STATIC)
+                        ? object->move({object->data.speed, 0.0})
+                        : void();
                 }
             });
         KeyObject::Instance()->addActionForKey(SDL_SCANCODE_ESCAPE,
@@ -198,28 +218,29 @@ namespace Mlib::Sdl2
                                                {
                                                    running = false;
                                                });
-        KeyObject::Instance()->addActionForKey(SDL_SCANCODE_SPACE,
-                                               [&]() -> void
-                                               {
-                                                   for (auto &object : objects)
-                                                   {
-                                                       // If the object is static, skip
-                                                       if (object->state() & State::STATIC)
-                                                       {
-                                                           continue;
-                                                       }
+        KeyObject::Instance()->addActionForKey(
+            SDL_SCANCODE_SPACE,
+            [&]() -> void
+            {
+                for (auto &object : objects)
+                {
+                    // If the object is static, skip
+                    if (object->state() & State::STATIC)
+                    {
+                        continue;
+                    }
 
-                                                       // If the object is a player, jump
-                                                       if (object->state() & State::IS_PLAYER)
-                                                       {
-                                                           object->move({0, -10});
-                                                       }
-                                                   }
-                                               });
+                    // If the object is a player, jump
+                    if (object->state() & State::IS_PLAYER)
+                    {
+                        object->move({0, -10});
+                    }
+                }
+            });
     }
 
     int
-    Core ::run(void)
+    Core::run(void)
     {
         init();
         while (running)
@@ -241,7 +262,7 @@ namespace Mlib::Sdl2
     }
 
     void
-    Core ::cleanup(void)
+    Core::cleanup(void)
     {
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
@@ -249,13 +270,13 @@ namespace Mlib::Sdl2
     }
 
     void
-    Core ::logic(void)
+    Core::logic(void)
     {
         KeyObject::Instance()->handleKeyEvent();
     }
 
     void
-    Core ::applyPhysics(void)
+    Core::applyPhysics(void)
     {
         for (auto &object : objects)
         {
@@ -269,7 +290,8 @@ namespace Mlib::Sdl2
                 /* Apply Gravity */
                 object->move({0.0f, 3.0f});
                 /* Check if the object is on the ground */
-                if (object->data.position.y + (f32)object->data.h == (f32)SCREEN_HEIGHT)
+                if (object->data.position.y + (float)object->data.h ==
+                    (float)SCREEN_HEIGHT)
                 {
                     object->data.state |= State::ON_GROUND;
                 }
@@ -289,14 +311,14 @@ namespace Mlib::Sdl2
     }
 
     void
-    Core ::clear(void)
+    Core::clear(void)
     {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
     }
 
     void
-    Core ::draw()
+    Core::draw(void)
     {
         for (auto const &object : objects)
         {
@@ -305,14 +327,14 @@ namespace Mlib::Sdl2
     }
 
     void
-    Core ::update()
+    Core::update(void)
     {
         SDL_RenderPresent(renderer);    // Update screen
         SDL_Delay(timePerFrame * 1000); // Approximately 60 frames per second
     }
 
     void
-    Core ::pollForEvents()
+    Core::pollForEvents(void)
     {
         while (SDL_PollEvent(&event))
         {
@@ -324,38 +346,38 @@ namespace Mlib::Sdl2
     }
 
     void
-    Core ::stop()
+    Core::stop(void)
     {
         running = false;
     }
 
-    u32
-    Core ::getCurrentFrameCount() const noexcept
+    unsigned int
+    Core::getCurrentFrameCount(void) const noexcept
     {
         return frames;
     }
 
-    u32 *
-    Core ::getCurrentFrameCountPtr() noexcept
+    unsigned int *
+    Core::getCurrentFrameCountPtr(void) noexcept
     {
         return &frames;
     }
 
     void
-    Core ::setTitle(string const &title)
+    Core::setTitle(string const &title)
     {
         window_title = title;
         SDL_SetWindowTitle(window, window_title.c_str());
     }
 
     vector<Object2D *> &
-    Core ::getObjects()
+    Core::getObjects(void)
     {
         return objects;
     }
 
     Core *
-    Core ::Instance()
+    Core::Instance(void)
     {
         if (CoreInstance == nullptr)
         {

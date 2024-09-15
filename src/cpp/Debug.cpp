@@ -3,10 +3,9 @@
 
 namespace Mlib::Debug
 {
-    Lout *Lout ::_LoutInstance = NULL;
+    Lout *Lout ::_LoutInstance = nullptr;
 
-    Lout &
-    Lout ::Instance()
+    Lout &Lout ::Instance()
     {
         using namespace std;
         if (_LoutInstance == nullptr)
@@ -17,8 +16,7 @@ namespace Mlib::Debug
         return *_LoutInstance;
     }
 
-    void
-    Lout ::destroy()
+    void Lout ::destroy()
     {
         if (_LoutInstance != nullptr)
         {
@@ -27,35 +25,43 @@ namespace Mlib::Debug
         }
     }
 
-    void
-    Lout ::log(const LogLevel log_level, const char *from_func, const unsigned long lineno, const char *format, ...)
+    void Lout ::log(const LogLevel log_level, const char *from_func, const unsigned long lineno,
+                    const char *format, ...)
     {
         char    fbuf[4096], buf[8192];
         va_list ap;
         va_start(ap, format);
         vsnprintf(fbuf, sizeof(fbuf), format, ap);
-        snprintf(buf, sizeof(buf), "%s:%s:%s[Line:%lu]%s:%s[%s]%s: %s\n", TIME::mili().c_str(),
-                 &logLevelMap[log_level].key[0], ESC_CODE_YELLOW, lineno, ESC_CODE_RESET, ESC_CODE_MAGENTA, from_func,
-                 ESC_CODE_RESET, fbuf);
         std::lock_guard<std::mutex> guard(_log_mutex);
-        std::ofstream               file(&_output_file[0], std::ios::app);
-        if (file)
+        if (_output_file.empty())
         {
-            file << buf;
+            fprintf((log_level > 2) ? stderr : stdout, "%s:%s:%s[Line:%lu]%s:%s[%s]%s: %s\n",
+                    TIME::mili().c_str(), &logLevelMap[log_level].key[0], ESC_CODE_YELLOW, lineno,
+                    ESC_CODE_RESET, ESC_CODE_MAGENTA, from_func, ESC_CODE_RESET, fbuf);
+        }
+        else
+        {
+            snprintf(buf, sizeof(buf), "%s:%s:%s[Line:%lu]%s:%s[%s]%s: %s\n", TIME::mili().c_str(),
+                     &logLevelMap[log_level].key[0], ESC_CODE_YELLOW, lineno, ESC_CODE_RESET,
+                     ESC_CODE_MAGENTA, from_func, ESC_CODE_RESET, fbuf);
+            std::ofstream file(&_output_file[0], std::ios::app);
+            if (file)
+            {
+                file << buf;
+            }
         }
     }
 
-    NetworkLogger *NetworkLogger ::_NetworkLoggerInstance = NULL;
+    NetworkLogger *NetworkLogger ::_NetworkLoggerInstance = nullptr;
 
-    NetworkLogger ::NetworkLogger()
-        : _CONNECTED(FALSE)
+    NetworkLogger ::NetworkLogger(void)
+        : _CONNECTED(false)
     {}
 
     static constexpr unsigned char PACKET_SIZE = 64;
     static constexpr unsigned char TIMEOUT     = 1;
 
-    unsigned short
-    NetworkLogger ::checksum(void *b, int len)
+    unsigned short NetworkLogger ::checksum(void *b, int len)
     {
         unsigned short result, *buf = (unsigned short *)b;
         unsigned int   sum = 0;
@@ -73,8 +79,7 @@ namespace Mlib::Debug
         return result;
     }
 
-    bool
-    NetworkLogger ::ping(std::string_view ip)
+    bool NetworkLogger ::ping(std::string_view ip)
     {
         struct sockaddr_in addr;
         struct icmp        icmp_hdr;
@@ -113,7 +118,8 @@ namespace Mlib::Debug
             return false;
         }
 
-        if (sendto(sockfd, packet, sizeof(icmp_hdr), 0, (struct sockaddr *)&addr, sizeof(addr)) <= 0)
+        if (sendto(sockfd, packet, sizeof(icmp_hdr), 0, (struct sockaddr *)&addr, sizeof(addr)) <=
+            0)
         {
             perror("sendto");
             close(sockfd);
@@ -139,8 +145,7 @@ namespace Mlib::Debug
         return true;
     }
 
-    NetworkLogger &
-    NetworkLogger ::Instance(void)
+    NetworkLogger &NetworkLogger ::Instance(void)
     {
         using namespace std;
 
@@ -152,8 +157,7 @@ namespace Mlib::Debug
         return *_NetworkLoggerInstance;
     }
 
-    void
-    NetworkLogger ::init(std::string_view address, int port)
+    void NetworkLogger ::init(std::string_view address, int port)
     {
         if (!_NET_DEBUG)
         {
@@ -184,14 +188,12 @@ namespace Mlib::Debug
         _CONNECTED = true;
     }
 
-    void
-    NetworkLogger ::enable(void)
+    void NetworkLogger ::enable(void)
     {
         _NET_DEBUG = true;
     }
 
-    void
-    NetworkLogger ::send_to_server(std::string_view input)
+    void NetworkLogger ::send_to_server(std::string_view input)
     {
         if (!_NET_DEBUG || !_CONNECTED)
         {
@@ -203,8 +205,7 @@ namespace Mlib::Debug
         }
     }
 
-    void
-    NetworkLogger ::log(const char *format, ...)
+    void NetworkLogger ::log(const char *format, ...)
     {
         if (!_NET_DEBUG || !_CONNECTED)
         {
@@ -226,8 +227,7 @@ namespace Mlib::Debug
         }
     }
 
-    void
-    NetworkLogger ::destroy(void)
+    void NetworkLogger ::destroy(void)
     {
         if (_NetworkLoggerInstance != nullptr)
         {
@@ -236,8 +236,7 @@ namespace Mlib::Debug
         }
     }
 
-    NetworkLogger &
-    NetworkLogger ::operator<<(const NetworkLoggerEndl &endl)
+    NetworkLogger &NetworkLogger ::operator<<(const NetworkLoggerEndl &endl)
     {
         send_to_server(_buffer.str());
         _buffer.str("");

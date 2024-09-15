@@ -9,14 +9,12 @@ namespace Mlib::Profile
 {
     /** @class @c ProfilerStats */
 
-    void
-    ProfilerStats::record(const double value)
+    void ProfilerStats::record(const double value)
     {
         values.push_back(value);
     }
 
-    double
-    ProfilerStats::mean(void) const
+    double ProfilerStats::mean(void) const
     {
         if (values.empty())
         {
@@ -26,8 +24,7 @@ namespace Mlib::Profile
         return sum / values.size();
     }
 
-    double
-    ProfilerStats::stddev(void) const
+    double ProfilerStats::stddev(void) const
     {
         if (values.size() < 2)
         {
@@ -35,30 +32,23 @@ namespace Mlib::Profile
         }
         double mean_val = mean();
         double sq_sum =
-            std::accumulate(values.begin(), values.end(), 0.0,
-                            [mean_val](double a, double b)
-                            {
-                                return a + (b - mean_val) * (b - mean_val);
-                            });
+            std::accumulate(values.begin(), values.end(), 0.0, [mean_val](double a, double b) {
+                return a + (b - mean_val) * (b - mean_val);
+            });
         return std::sqrt(sq_sum / values.size());
     }
 
-    double
-    ProfilerStats::min(void) const
+    double ProfilerStats::min(void) const
     {
-        return values.empty() ? 0.0
-                              : *std::min_element(values.begin(), values.end());
+        return values.empty() ? 0.0 : *std::min_element(values.begin(), values.end());
     }
 
-    double
-    ProfilerStats::max(void) const
+    double ProfilerStats::max(void) const
     {
-        return values.empty() ? 0.0
-                              : *std::max_element(values.begin(), values.end());
+        return values.empty() ? 0.0 : *std::max_element(values.begin(), values.end());
     }
 
-    unsigned long
-    ProfilerStats::count(void) const
+    unsigned long ProfilerStats::count(void) const
     {
         return values.size();
     }
@@ -70,8 +60,7 @@ namespace Mlib::Profile
     GlobalProfiler ::GlobalProfiler(void)
     {}
 
-    void
-    GlobalProfiler::destroy(void)
+    void GlobalProfiler::destroy(void)
     {
         if (instance != nullptr)
         {
@@ -80,26 +69,22 @@ namespace Mlib::Profile
         }
     }
 
-    void
-    GlobalProfiler::record(const string &name, const double duration)
+    void GlobalProfiler::record(const string &name, const double duration)
     {
         stats[name].record(duration);
     }
 
-    void
-    GlobalProfiler::setOutputFile(string_view file_path)
+    void GlobalProfiler::setOutputFile(string_view file_path)
     {
         output_file = file_path;
     }
 
-    map<string, ProfilerStats>
-    GlobalProfiler::getStatsCopy() const
+    map<string, ProfilerStats> GlobalProfiler::getStatsCopy() const
     {
         return stats;
     }
 
-    string
-    makeNamePadding(const string &s)
+    string makeNamePadding(const string &s)
     {
         std::stringstream ss;
         for (int i = 0; (i + s.length()) < 30; ++i)
@@ -110,8 +95,7 @@ namespace Mlib::Profile
         return ss.str();
     }
 
-    string
-    mili(void)
+    string mili(void)
     {
         using namespace std;
         using namespace chrono;
@@ -136,32 +120,51 @@ namespace Mlib::Profile
         return ss.str();
     }
 
-    void
-    GlobalProfiler ::report(void)
+    void GlobalProfiler ::report(void)
     {
-        std::ofstream file(output_file, std::ios::app);
-        file << "\n\nProfiling report: " << mili() << '\n';
-        for (const auto &pair : stats)
+        if (output_file.empty())
         {
-            file << pair.first << makeNamePadding(pair.first) << /*  */
-                ": Mean = " << pair.second.mean() << " ms, "
-                 << /* makeDoublePadding(pair.second.mean())   << */
-                "Stddev = " << pair.second.stddev() << " ms, "
-                 << /* makeDoublePadding(pair.second.stddev()) << */
-                "   Min = " << pair.second.min() << " ms, "
-                 << /* makeDoublePadding(pair.second.min())    << */
-                "   Max = " << pair.second.max() << " ms, "
-                 << /* makeDoublePadding(pair.second.max())    << */
-                " Count = " << pair.second.count()
-                 << /* makeDoublePadding(pair.second.count())  << */
-                "\n";
+            cout << "\n\nProfiling report: " << mili() << '\n';
+            for (const auto &[first, second] : stats)
+            {
+                cout << first << makeNamePadding(first) << /*  */
+                    ": Mean = " << second.mean() << " ms, "
+                     << /* makeDoublePadding(pair.second.mean())   << */
+                    "Stddev = " << second.stddev() << " ms, "
+                     << /* makeDoublePadding(pair.second.stddev()) << */
+                    "   Min = " << second.min() << " ms, "
+                     << /* makeDoublePadding(pair.second.min())    << */
+                    "   Max = " << second.max() << " ms, "
+                     << /* makeDoublePadding(pair.second.max())    << */
+                    " Count = " << second.count()
+                     << /* makeDoublePadding(pair.second.count())  << */
+                    "\n";
+            }
         }
-
-        file.close();
+        else
+        {
+            std::ofstream file(output_file, std::ios::app);
+            file << "\n\nProfiling report: " << mili() << '\n';
+            for (const auto &pair : stats)
+            {
+                file << pair.first << makeNamePadding(pair.first) << /*  */
+                    ": Mean = " << pair.second.mean() << " ms, "
+                     << /* makeDoublePadding(pair.second.mean())   << */
+                    "Stddev = " << pair.second.stddev() << " ms, "
+                     << /* makeDoublePadding(pair.second.stddev()) << */
+                    "   Min = " << pair.second.min() << " ms, "
+                     << /* makeDoublePadding(pair.second.min())    << */
+                    "   Max = " << pair.second.max() << " ms, "
+                     << /* makeDoublePadding(pair.second.max())    << */
+                    " Count = " << pair.second.count()
+                     << /* makeDoublePadding(pair.second.count())  << */
+                    "\n";
+            }
+            file.close();
+        }
     }
 
-    vector<string>
-    GlobalProfiler::retrveFormatedStrVecStats(void) const
+    vector<string> GlobalProfiler::retrveFormatedStrVecStats(void) const
     {
         std::vector<std::string> formated_stats;
         formated_stats.push_back("\n\nProfiling report: " + mili() + '\n');
@@ -170,23 +173,21 @@ namespace Mlib::Profile
             std::stringstream ss;
             ss << name << makeNamePadding(name) << /*  */
                 ": Mean = " << stats.mean() << " ms, "
-               << /* makeDoublePadding(pair.second.mean())   << */
+               <<                                  /* makeDoublePadding(pair.second.mean())   << */
                 "Stddev = " << stats.stddev() << " ms, "
-               << /* makeDoublePadding(pair.second.stddev()) << */
+               <<                                  /* makeDoublePadding(pair.second.stddev()) << */
                 "   Min = " << stats.min() << " ms, "
-               << /* makeDoublePadding(pair.second.min())    << */
+               <<                                  /* makeDoublePadding(pair.second.min())    << */
                 "   Max = " << stats.max() << " ms, "
-               << /* makeDoublePadding(pair.second.max())    << */
-                " Count = " << stats.count()
-               << /* makeDoublePadding(pair.second.count())  << */
+               <<                                  /* makeDoublePadding(pair.second.max())    << */
+                " Count = " << stats.count() <<    /* makeDoublePadding(pair.second.count())  << */
                 "\n";
             formated_stats.push_back(ss.str());
         }
         return formated_stats;
     }
 
-    GlobalProfiler *
-    GlobalProfiler::Instance(void)
+    GlobalProfiler *GlobalProfiler::Instance(void)
     {
         if (!instance)
         {
@@ -209,16 +210,13 @@ namespace Mlib::Profile
         GLOBALPROFILER->record(name, duration.count());
     }
 
-    void
-    setupReportGeneration(string_view file_path)
+    void setupReportGeneration(string_view file_path)
     {
         GLOBALPROFILER->setOutputFile(file_path);
-        atexit(
-            []
-            {
-                GLOBALPROFILER->report();
-                GLOBALPROFILER->destroy();
-            });
+        atexit([] {
+            GLOBALPROFILER->report();
+            GLOBALPROFILER->destroy();
+        });
     }
 
 } // namespace Mlib::Profile

@@ -46,4 +46,23 @@ public:
     unsigned int size(void);
 };
 
+#define BOLLCHECKER_MAX_SIZE 100
+namespace boolchecker
+{
+    int    precedence(char *op);
+    int    is_operator(char *token);
+    char **tokenize(char *, int *);
+    typedef struct
+    {
+        char *items[BOLLCHECKER_MAX_SIZE];
+        int   top;
+    } Stack;
+    void  push(Stack *, char *);
+    char *pop(Stack *);
+    char *peek(Stack *);
+    int   is_empty(Stack *s);
+    void  infix_to_postfix(char **, int);
+
+} // namespace boolchecker
+
 #define Mstring MString

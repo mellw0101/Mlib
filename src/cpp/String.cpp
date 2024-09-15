@@ -290,3 +290,147 @@ MString_getenv(const char *str)
     }
     return var;
 }
+
+#define BOLLCHECKER_MAX_SIZE 100
+namespace boolchecker
+{
+    int
+    precedence(char *op)
+    {
+        if (strcmp(op, "!") == 0)
+        {
+            return 3;
+        }
+        else if (strcmp(op, "&&"))
+        {
+            return 2;
+        }
+        else if (strcmp(op, "||"))
+        {
+            return 1;
+        }
+        return 0;
+    }
+
+    /* Check if a token is an operator. */
+    int
+    is_operator(char *token)
+    {
+        return (strcmp(token, "!") == 0 || strcmp(token, "&&") == 0 ||
+                strcmp(token, "||") == 0);
+    }
+
+    char **
+    tokenize(char *expression, int *token_count)
+    {
+        char **tokens = AMALLOC_ARRAY(tokens, BOLLCHECKER_MAX_SIZE);
+        char  *token  = strtok(expression, " ");
+        int    count  = 0;
+        while (token != NULL)
+        {
+            tokens[count] = (char *)malloc(strlen(token) + 1);
+            strcpy(tokens[count++], token);
+            token = strtok(NULL, " ");
+        }
+        *token_count = count;
+        return tokens;
+    }
+
+    void
+    push(Stack *s, char *item)
+    {
+        s->items[++(s->top)] = item;
+    }
+
+    char *
+    pop(Stack *s)
+    {
+        return s->items[(s->top)--];
+    }
+
+    char *
+    peek(Stack *s)
+    {
+        return s->items[s->top];
+    }
+
+    int
+    is_empty(Stack *s)
+    {
+        return s->top == -1;
+    }
+
+    void
+    infix_to_postfix(char **tokens, int token_count)
+    {
+        Stack operator_stack = {.top = -1};
+        char *postfix[BOLLCHECKER_MAX_SIZE];
+        int   postfix_count = 0;
+        for (int i = 0; i < token_count; i++)
+        {
+            char *token = tokens[i];
+            if (isalpha(token[0]))
+            {
+                postfix[postfix_count++] = token;
+            }
+            else if (strcmp(token, "(") == 0)
+            {
+                push(&operator_stack, token);
+            }
+            else if (strcmp(token, ")") == 0)
+            {
+                while (!is_empty(&operator_stack) &&
+                       strcmp(peek(&operator_stack), "(") != 0)
+                {
+                    postfix[postfix_count++] = pop(&operator_stack);
+                }
+                pop(&operator_stack);
+            }
+            else if (is_operator(token))
+            {
+                while (!is_empty(&operator_stack) &&
+                       precedence(peek(&operator_stack)))
+                {
+                    postfix[postfix_count++] = pop(&operator_stack);
+                }
+                push(&operator_stack, token);
+            }
+        }
+        while (!is_empty(&operator_stack))
+        {
+            postfix[postfix_count++] = pop(&operator_stack);
+        }
+        printf("Postfix Expression (Order of Operations): ");
+        for (int i = 0; i < postfix_count; i++)
+        {
+            printf("%s ", postfix[i]);
+        }
+        printf("\n\n");
+        printf("Order of Evaluation:\n");
+        Stack evel_stack = {.top = -1};
+        for (int i = 0; i < postfix_count; i++)
+        {
+            char *token = postfix[i];
+            if (isalpha(token[0]))
+            {
+                push(&evel_stack, token);
+            }
+            else
+            {
+                if (strcmp(token, "!") == 0)
+                {
+                    char *operand = pop(&evel_stack);
+                    printf("Evaluating: !%s\n", operand);
+                    push(&evel_stack, operand);
+                }
+                else
+                {
+                    char *right = pop(&evel_stack);
+                    char *left  = pop(&evel_stack);
+                    printf("Evaluating: %s %s %s", left, token, right);
+                    push(&evel_stack, left);
+                }
+            }
+        }
+    }
+} // namespace boolchecker

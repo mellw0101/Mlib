@@ -28,14 +28,12 @@ public:
         free(data);
     }
 
-    T &
-    operator[](unsigned int index)
+    T &operator[](unsigned int index)
     {
         return data[index];
     }
 
-    void
-    push_back(const T &element)
+    void push_back(const T &element)
     {
         if (len == cap)
         {
@@ -46,20 +44,22 @@ public:
         len++;
     }
 
-    unsigned int
-    size(void)
+    unsigned int size(void)
     {
         return len;
     }
 
-    T *
-    begin(void)
+    inline bool empty(void)
+    {
+        return (len == 0);
+    }
+
+    T *begin(void)
     {
         return data;
     }
 
-    T *
-    end(void)
+    T *end(void)
     {
         return data + len;
     }

@@ -118,8 +118,7 @@ constexpr auto ESC_CODE_TURN_OFF_BRACKETED_PASTE = "\x1B[?2004l";
 
 // Macro to enforce that a parameter is a compile-time constant
 #define __ENFORCE_CONSTANT_PARAM(param)   \
-    do                                    \
-    {                                     \
+    do {                                  \
         if (!__builtin_constant_p(param)) \
         {                                 \
             __builtin_trap();             \
@@ -196,14 +195,12 @@ constexpr u8  u8_MIN  = NUMERIC_LIMITS<u8>::min();
 constexpr auto FAILURE = 1;
 constexpr auto SUCCESS = 0;
 
-constexpr u64
-operator"" _KB(unsigned long long value)
+constexpr u64 operator"" _KB(unsigned long long value)
 {
     return value * 1024;
 }
 
-#define __FILENAME__ \
-    (std::strrchr(__FILE__, '/') ? std::strrchr(__FILE__, '/') + 1 : __FILE__)
+#define __FILENAME__ (std::strrchr(__FILE__, '/') ? std::strrchr(__FILE__, '/') + 1 : __FILE__)
 
 #define MAKE_CONSTEXPR_WRAPPER(_name, _type)     \
     struct _name                                 \
@@ -219,8 +216,7 @@ operator"" _KB(unsigned long long value)
     }
 
 #define DIE(_Msg)           \
-    do                      \
-    {                       \
+    do {                    \
         perror(_Msg);       \
         exit(EXIT_FAILURE); \
     }                       \
@@ -441,7 +437,39 @@ decltype(auto) operator"" _hash(const char *s, unsigned long);
         PARAM_T_CONSTRUCT(name, T3, 3, type_3)        \
     }
 
-#define AMALLOC(obj)             (decltype(obj))malloc(sizeof(*obj))
-#define AMALLOC_ARRAY(obj, cap)  (decltype(obj))malloc(sizeof(*obj) * cap)
-#define AREALLOC_ARRAY(obj, cap) (decltype(obj))realloc(obj, sizeof(*obj) * cap)
-#define BOOL_STR(statement)      statement ? "TRUE" : "FALSE"
+#define AMALLOC(obj)              (decltype(obj))malloc(sizeof(*obj))
+#define AMALLOC_ARRAY(obj, size)  (decltype(obj))malloc(sizeof(*obj) * size)
+#define AREALLOC_ARRAY(obj, size) (decltype(obj))realloc(obj, sizeof(*obj) * size)
+#define BOOL_STR(statement)       statement ? "TRUE" : "FALSE"
+
+#define LOG_AMALLOC(obj)            \
+    do {                            \
+        obj = AMALLOC(obj);         \
+        if (obj == nullptr)         \
+        {                           \
+            logE("Malloc Failed."); \
+            exit(1);                \
+        }                           \
+    }                               \
+    while (0)
+
+#define LOG_AMALLOC_HANDLE(obj, handler) \
+    do {                                 \
+        obj = AMALLOC(obj);              \
+        if (obj == nullptr)              \
+        {                                \
+            logE("Malloc Failed.");      \
+            handler();                   \
+        }                                \
+    }                                    \
+    while (0)
+
+#define LOG_AMALLOC_ARRAY(obj, size)    \
+    do {                                \
+        obj = AMALLOC_ARRAY(obj, size); \
+        if (obj == nullptr)             \
+        {                               \
+            logE("Malloc Failed.");     \
+        }                               \
+    }                                   \
+    while (0)

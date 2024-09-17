@@ -17,12 +17,14 @@
 
 namespace Mlib::Profile
 {
-    /* This class is used to store the profiling
-     * statistics of a particular function.
-     * It stores the values of the time taken
-     * by the function in each call.
-     * It also provides the mean, standard deviation,
-     * minimum, maximum and count of the values. */
+    using std::map;
+    using std::string;
+    using std::vector;
+
+    /* This class is used to store the profiling statistics of a
+     * particular function. It stores the values of the time taken
+     * by the function in each call.  It also provides the mean,
+     * standard deviation, minimum, maximum and count of the values. */
     class ProfilerStats
     {
     public:
@@ -46,30 +48,29 @@ namespace Mlib::Profile
 
     private:
         /* The vector of values of the duration of the profiled function. */
-        std::vector<double> values;
+        vector<double> values;
     };
 
     class GlobalProfiler
     {
-    private:
-        std::map<std::string, ProfilerStats> stats;
-        std::string                          output_file;
-        static GlobalProfiler               *instance;
-        GlobalProfiler(void);
+        map<string, ProfilerStats> stats;
+        string                     output_file;
+        static GlobalProfiler     *instance;
+        GlobalProfiler(void) noexcept;
+        static void destroy(void) noexcept;
 
     public:
-        void record(const std::string &name, double duration);
+        void record(const string &name, double duration);
         void report(void);
-        void destroy(void);
         void setOutputFile(STRING_VIEW file_path);
 
-        std::map<std::string, ProfilerStats> getStatsCopy(void) const;
-        std::vector<std::string>             retrveFormatedStrVecStats(void) const;
+        map<string, ProfilerStats> getStatsCopy(void) const;
+        vector<string>             retrveFormatedStrVecStats(void) const;
 
         [[__nodiscard__("GlobalProfiler::Instance(void)")]]
-        static GlobalProfiler *Instance(void);
+        static GlobalProfiler *Instance(void) noexcept;
 
-        DELETE_COPY_AND_MOVE_CONSTRUCTORS(GlobalProfiler);
+        DEL_CM_CONSTRUCTORS(GlobalProfiler);
     };
 
     class AutoTimer

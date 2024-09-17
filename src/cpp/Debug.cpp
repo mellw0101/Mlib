@@ -5,18 +5,23 @@ namespace Mlib::Debug
 {
     Lout *Lout ::_LoutInstance = nullptr;
 
-    Lout &Lout ::Instance()
+    Lout &Lout ::Instance(void) noexcept
     {
         using namespace std;
         if (_LoutInstance == nullptr)
         {
             lock_guard<mutex> lock(mutex);
-            _LoutInstance = new Lout();
+            _LoutInstance = new (nothrow) Lout();
+            if (_LoutInstance == nullptr)
+            {
+                exit(1);
+            }
+            atexit(destroy);
         }
         return *_LoutInstance;
     }
 
-    void Lout ::destroy()
+    void Lout ::destroy(void) noexcept
     {
         if (_LoutInstance != nullptr)
         {
@@ -54,7 +59,7 @@ namespace Mlib::Debug
 
     NetworkLogger *NetworkLogger ::_NetworkLoggerInstance = nullptr;
 
-    NetworkLogger ::NetworkLogger(void)
+    NetworkLogger ::NetworkLogger(void) noexcept
         : _CONNECTED(false)
     {}
 
@@ -145,14 +150,19 @@ namespace Mlib::Debug
         return true;
     }
 
-    NetworkLogger &NetworkLogger ::Instance(void)
+    NetworkLogger &NetworkLogger ::Instance(void) noexcept
     {
         using namespace std;
 
         if (!_NetworkLoggerInstance)
         {
             lock_guard<mutex> lock(mutex);
-            _NetworkLoggerInstance = new NetworkLogger();
+            _NetworkLoggerInstance = new (nothrow) NetworkLogger();
+            if (_NetworkLoggerInstance == nullptr)
+            {
+                exit(1);
+            }
+            atexit(destroy);
         }
         return *_NetworkLoggerInstance;
     }
@@ -227,10 +237,11 @@ namespace Mlib::Debug
         }
     }
 
-    void NetworkLogger ::destroy(void)
+    void NetworkLogger ::destroy(void) noexcept
     {
         if (_NetworkLoggerInstance != nullptr)
         {
+
             delete _NetworkLoggerInstance;
             _NetworkLoggerInstance = nullptr;
         }

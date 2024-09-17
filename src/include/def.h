@@ -102,19 +102,23 @@ constexpr auto ESC_CODE_TURN_OFF_BRACKETED_PASTE = "\x1B[?2004l";
 
 #define DELETE_MOVE_CONSTRUCTORS(class_name)       \
     class_name(class_name &&)            = delete; \
-    class_name &operator=(class_name &&) = delete;
+    class_name &operator=(class_name &&) = delete
 
 #define DELETE_COPY_CONSTRUCTORS(class_name)            \
     class_name(const class_name &)            = delete; \
-    class_name &operator=(const class_name &) = delete;
+    class_name &operator=(const class_name &) = delete
 
 #define DELETE_COPY_AND_MOVE_CONSTRUCTORS(class_name) \
-    DELETE_COPY_CONSTRUCTORS(class_name)              \
+    DELETE_COPY_CONSTRUCTORS(class_name);             \
     DELETE_MOVE_CONSTRUCTORS(class_name)
 
-#define DEPRECATED(msg)      [[deprecated(#msg)]]
+#define DEL_CM_CONSTRUCTORS(class) DELETE_COPY_AND_MOVE_CONSTRUCTORS(class)
 
-#define RE_CAST(type, value) reinterpret_cast<type>(value)
+#define DEPRECATED(msg)            [[deprecated(#msg)]]
+#define NO_DISCARD                 [[__nodiscard__]]
+#define NO_RETURN                  [[__noreturn__]]
+
+#define RE_CAST(type, value)       reinterpret_cast<type>(value)
 
 // Macro to enforce that a parameter is a compile-time constant
 #define __ENFORCE_CONSTANT_PARAM(param)   \
@@ -437,10 +441,25 @@ decltype(auto) operator"" _hash(const char *s, unsigned long);
         PARAM_T_CONSTRUCT(name, T3, 3, type_3)        \
     }
 
+#define __align_size(size)   __attribute__((__aligned__(size)))
+
+#define BOOL_STR(statement)  statement ? "TRUE" : "FALSE"
+#define SIZEOF_BIT(type)     (sizeof(type) * 8)
+#define SSE_SIMD_WIDTH(type) (128 / SIZEOF_BIT(type))
+
+template <typename T>
+[[__nodiscard__]]
+static constexpr unsigned long __inline
+    __attribute((__always_inline__, __nodebug__)) sse_simd_width(void) noexcept
+{
+    return SSE_SIMD_WIDTH(T);
+}
+
+#define sizeof_sse_simd(type)     sse_simd_width<type>()
+
 #define AMALLOC(obj)              (decltype(obj))malloc(sizeof(*obj))
 #define AMALLOC_ARRAY(obj, size)  (decltype(obj))malloc(sizeof(*obj) * size)
 #define AREALLOC_ARRAY(obj, size) (decltype(obj))realloc(obj, sizeof(*obj) * size)
-#define BOOL_STR(statement)       statement ? "TRUE" : "FALSE"
 
 #define LOG_AMALLOC(obj)            \
     do {                            \
@@ -464,12 +483,24 @@ decltype(auto) operator"" _hash(const char *s, unsigned long);
     }                                    \
     while (0)
 
-#define LOG_AMALLOC_ARRAY(obj, size)    \
+#define LOG_AREALLOC_ARRAY(obj, size)   \
     do {                                \
         obj = AMALLOC_ARRAY(obj, size); \
         if (obj == nullptr)             \
         {                               \
             logE("Malloc Failed.");     \
+            exit(1);                    \
         }                               \
     }                                   \
+    while (0)
+
+#define LOG_AREALLOC_ARRAY_HANDLE(obj, handler) \
+    do {                                        \
+        obj = AMALLOC(obj);                     \
+        if (obj == nullptr)                     \
+        {                                       \
+            logE("Malloc Failed.");             \
+            handler();                          \
+        }                                       \
+    }                                           \
     while (0)

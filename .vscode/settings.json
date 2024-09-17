@@ -60,5 +60,9 @@
     "editor.experimentalInlineEdit.enabled": true,
     "emmet.useInlineCompletions": true,
     "diffEditor.experimental.useTrueInlineView": true,
-    "editor.inlineCompletionsAccessibilityVerbose": true
+    "editor.inlineCompletionsAccessibilityVerbose": true,
+    "editor.quickSuggestions": {
+        "comments": "on",
+        "strings": "on"
+    }
 }

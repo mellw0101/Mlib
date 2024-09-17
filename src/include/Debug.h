@@ -36,11 +36,9 @@ namespace Mlib::Debug
 
     public:
         /* Methods 	   */
-        bool
-        append(const std::string &text)
+        bool append(const std::string &text)
         {
-            std::ofstream file(
-                m_filename, std::ios::app); // Open in append mode
+            std::ofstream file(m_filename, std::ios::app); // Open in append mode
 
             if (!file.is_open())
             {
@@ -51,12 +49,10 @@ namespace Mlib::Debug
             return true;
         }
 
-        bool
-        open()
+        bool open()
         {
-            std::ofstream file(
-                m_filename, std::ios::app); // Open in append mode
-            bool isOpen = file.is_open();
+            std::ofstream file(m_filename, std::ios::app); // Open in append mode
+            bool          isOpen = file.is_open();
             file.close();
             return isOpen;
         }
@@ -70,8 +66,7 @@ namespace Mlib::Debug
     class TIME
     {
     public:
-        static const std::string
-        get(void)
+        static const std::string get(void)
         {
             using namespace std;
             using namespace chrono;
@@ -90,8 +85,7 @@ namespace Mlib::Debug
             return ss.str();
         }
 
-        static std::string
-        mili(void)
+        static std::string mili(void)
         {
             using namespace std;
             using namespace chrono;
@@ -111,7 +105,7 @@ namespace Mlib::Debug
             // Calculate milliseconds (now time since epoch minus time_t
             // converted back to time since epoch)
             auto since_epoch = now.time_since_epoch();
-            auto s = chrono::duration_cast<chrono::seconds>(since_epoch);
+            auto s           = chrono::duration_cast<chrono::seconds>(since_epoch);
             since_epoch -= s;
             auto ms = chrono::duration_cast<chrono::milliseconds>(since_epoch);
 
@@ -141,8 +135,7 @@ namespace Mlib::Debug
     class LogQueue
     {
     public:
-        void
-        push(const LogMessage &message)
+        void push(const LogMessage &message)
         {
             using namespace std;
 
@@ -150,8 +143,7 @@ namespace Mlib::Debug
             queue_.push(message);
         }
 
-        bool
-        try_pop(LogMessage &message)
+        bool try_pop(LogMessage &message)
         {
             using namespace std;
 
@@ -166,8 +158,7 @@ namespace Mlib::Debug
             return true;
         }
 
-        LogMessage
-        retrieve()
+        LogMessage retrieve(void)
         {
             using namespace std;
 
@@ -186,13 +177,12 @@ namespace Mlib::Debug
     MAKE_CONSTEXPR_WRAPPER(FileName, std::string_view);
     MAKE_CONSTEXPR_WRAPPER(Line, unsigned int);
 
-    constexpr ARRAY<char, 256>
-    make_message(std::string_view str)
+    constexpr ARRAY<char, 256> make_message(std::string_view str)
     {
-        std::array<char, 256> buffer  = {};
-        auto                  str_len = str.size();
-        const char           *prefix  = ": error message (errno: 0)";
-        auto prefix_len               = std::char_traits<char>::length(prefix);
+        std::array<char, 256> buffer     = {};
+        auto                  str_len    = str.size();
+        const char           *prefix     = ": error message (errno: 0)";
+        auto                  prefix_len = std::char_traits<char>::length(prefix);
 
         if (str_len + prefix_len >= buffer.size())
         {
@@ -235,8 +225,7 @@ namespace Mlib::Debug
 
         static Lout *_LoutInstance;
 
-        void
-        _logMessage(void)
+        void _logMessage(void)
         {
             using namespace std;
             /* Lock the mutex to ensure thread safety. */
@@ -245,48 +234,43 @@ namespace Mlib::Debug
             ofstream file(_output_file.data(), ios::app);
             if (file)
             {
-                file << TIME::mili() << ":" << logLevelMap[_level].key << ":"
-                     << ESC_CODE_YELLOW << "[Line:" << _line << "]"
-                     << ESC_CODE_RESET << ":" << ESC_CODE_MAGENTA << "["
-                     << _function << "]" << ESC_CODE_RESET << ": "
-                     << _buffer.str() << "\n";
+                file << TIME::mili() << ":" << logLevelMap[_level].key << ":" << ESC_CODE_YELLOW
+                     << "[Line:" << _line << "]" << ESC_CODE_RESET << ":" << ESC_CODE_MAGENTA << "["
+                     << _function << "]" << ESC_CODE_RESET << ": " << _buffer.str() << "\n";
             }
         }
+
+        static void destroy(void) noexcept;
 
         Lout(void)
         {}
 
     public:
-        Lout &
-        operator<<(const LogLevel logLevel)
+        Lout &operator<<(const LogLevel logLevel)
         {
             _level = logLevel;
             return *this;
         }
 
-        Lout &
-        operator<<(const FuncName &funcName)
+        Lout &operator<<(const FuncName &funcName)
         {
             _function = funcName.value;
             return *this;
         }
 
-        Lout &
-        operator<<(const Line &line)
+        Lout &operator<<(const Line &line)
         {
             _line = line.value;
             return *this;
         }
 
-        Lout &
-        operator<<(const FileName &file_name)
+        Lout &operator<<(const FileName &file_name)
         {
             _file = file_name.value;
             return *this;
         }
 
-        Lout &
-        operator<<(std::ostream &(*pf)(std::ostream &))
+        Lout &operator<<(std::ostream &(*pf)(std::ostream &))
         {
             if (pf == static_cast<std::ostream &(*)(std::ostream &)>(std::endl))
             {
@@ -297,14 +281,12 @@ namespace Mlib::Debug
             return *this;
         }
 
-        Lout &
-        operator<<(char c)
+        Lout &operator<<(char c)
         {
             if (c == '\n')
             {
                 _logMessage();
-                _buffer =
-                    std::ostringstream(); // Reset the buffer for new messages
+                _buffer = std::ostringstream(); // Reset the buffer for new messages
             }
             else
             {
@@ -313,16 +295,14 @@ namespace Mlib::Debug
             return *this;
         }
 
-        Lout &
-        operator<<(const ErrnoMsg &errno_msg)
+        Lout &operator<<(const ErrnoMsg &errno_msg)
         {
             _buffer << errno_msg.value;
             return *this;
         }
 
         template <typename T>
-        typename std::enable_if<std::is_arithmetic<T>::value, Lout &>::type
-        operator<<(T value)
+        typename std::enable_if<std::is_arithmetic<T>::value, Lout &>::type operator<<(T value)
         {
             _buffer << ESC_CODE_YELLOW << value << ESC_CODE_RESET;
             return *this;
@@ -336,24 +316,21 @@ namespace Mlib::Debug
             return *this;
         }
 
-        static Lout &Instance();
-        void         destroy();
+        static Lout &Instance(void) noexcept;
 
-        constexpr void
-        setOutputFile(std::string_view path)
+        constexpr void setOutputFile(std::string_view path)
         {
             _output_file = path;
         }
 
-        void log(const LogLevel log_level, const char *from_func,
-                 const unsigned long lineno, const char *format, ...);
+        void log(const LogLevel log_level, const char *from_func, const unsigned long lineno,
+                 const char *format, ...);
     };
 
-    inline ErrnoMsg
-    Lout_errno_msg(std::string_view str)
+    inline ErrnoMsg Lout_errno_msg(std::string_view str)
     {
-        std::string s = std::string(str) + ": " + strerror(errno) +
-                        " (errno: " + std::to_string(errno) + ")";
+        std::string s =
+            std::string(str) + ": " + strerror(errno) + " (errno: " + std::to_string(errno) + ")";
         const char *c = &s[0];
         return {c};
     }
@@ -374,26 +351,25 @@ namespace Mlib::Debug
         unsigned short        checksum(void *b, int len);
         bool                  ping(std::string_view ip);
 
-        NetworkLogger();
+        NetworkLogger(void) noexcept;
+        static void destroy(void) noexcept;
 
     public:
         void init(std::string_view address, int port);
         void enable();
         void send_to_server(std::string_view input);
         void log(const char *format, ...);
-        void destroy();
 
         NetworkLogger &operator<<(const NetworkLoggerEndl &endl);
 
         template <typename T>
-        NetworkLogger &
-        operator<<(T value)
+        NetworkLogger &operator<<(T value)
         {
             _buffer << value;
             return Instance();
         }
 
-        static NetworkLogger &Instance();
+        static NetworkLogger &Instance(void) noexcept;
     };
 
 } /* namespace Mlib::Debug */
@@ -406,15 +382,13 @@ namespace Mlib::Debug
 #define LoutI            LOUT << Mlib::Debug::INFO << FUNC << LINE
 #define LoutE            LOUT << Mlib::Debug::ERROR << FUNC << LINE
 #define LoutErrno(__msg) LoutE << Mlib::Debug::Lout_errno_msg(__msg) << '\n'
-#define LOUT_logI(...) \
-    LOUT.log(Mlib::Debug::INFO, __func__, __LINE__, __VA_ARGS__)
-#define LOUT_logE(...) \
-    LOUT.log(Mlib::Debug::ERROR, __func__, __LINE__, __VA_ARGS__)
-#define logE(...)   LOUT_logE(__VA_ARGS__)
-#define logI(...)   LOUT_logI(__VA_ARGS__)
+#define LOUT_logI(...)   LOUT.log(Mlib::Debug::INFO, __func__, __LINE__, __VA_ARGS__)
+#define LOUT_logE(...)   LOUT.log(Mlib::Debug::ERROR, __func__, __LINE__, __VA_ARGS__)
+#define logE(...)        LOUT_logE(__VA_ARGS__)
+#define logI(...)        LOUT_logI(__VA_ARGS__)
 
 /* Macro to get the NetworkLogger instance */
-#define NETLOGGER   Mlib::Debug::NetworkLogger::Instance()
-#define NLOG(...)   NETLOGGER.log(__VA_ARGS__)
-#define nlog(...)   NLOG(__VA_ARGS__)
-#define NETLOG_ENDL Mlib::Debug::NetworkLoggerEndl_Wrapper('\n')
+#define NETLOGGER        Mlib::Debug::NetworkLogger::Instance()
+#define NLOG(...)        NETLOGGER.log(__VA_ARGS__)
+#define nlog(...)        NLOG(__VA_ARGS__)
+#define NETLOG_ENDL      Mlib::Debug::NetworkLoggerEndl_Wrapper('\n')

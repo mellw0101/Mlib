@@ -57,10 +57,7 @@ namespace Mlib::Profile
 
     GlobalProfiler *GlobalProfiler::instance = nullptr;
 
-    GlobalProfiler ::GlobalProfiler(void)
-    {}
-
-    void GlobalProfiler::destroy(void)
+    void GlobalProfiler::destroy(void) noexcept
     {
         if (instance != nullptr)
         {
@@ -187,18 +184,28 @@ namespace Mlib::Profile
         return formated_stats;
     }
 
-    GlobalProfiler *GlobalProfiler::Instance(void)
+    GlobalProfiler::GlobalProfiler(void) noexcept
+    {}
+
+    GlobalProfiler *GlobalProfiler::Instance(void) noexcept
     {
-        if (!instance)
+        if (instance == nullptr)
         {
-            instance = new GlobalProfiler;
+            instance = new (nothrow) GlobalProfiler();
+            if (instance == nullptr)
+            {
+                exit(1);
+            }
+            atexit([] {
+                destroy();
+            });
         }
         return instance;
     }
 
     /** @class @c AutoTimer */
 
-    AutoTimer::AutoTimer(std::string const &name)
+    AutoTimer::AutoTimer(const string &name)
         : name(name)
         , start(high_resolution_clock::now())
     {}
@@ -215,7 +222,6 @@ namespace Mlib::Profile
         GLOBALPROFILER->setOutputFile(file_path);
         atexit([] {
             GLOBALPROFILER->report();
-            GLOBALPROFILER->destroy();
         });
     }
 

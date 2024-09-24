@@ -1,18 +1,10 @@
 #pragma once
 
-#include <algorithm>
-#include <chrono>
-#include <cmath>
-#include <fstream>
-#include <iomanip>
-#include <ios>
-#include <iostream>
 #include <map>
-#include <numeric>
-#include <sstream>
 #include <string>
 #include <vector>
 
+#include "Attributes.h"
 #include "def.h"
 
 namespace Mlib::Profile
@@ -67,8 +59,7 @@ namespace Mlib::Profile
         map<string, ProfilerStats> getStatsCopy(void) const;
         vector<string>             retrveFormatedStrVecStats(void) const;
 
-        [[__nodiscard__("GlobalProfiler::Instance(void)")]]
-        static GlobalProfiler *Instance(void) noexcept;
+        static GlobalProfiler *__warn_unused Instance(void) noexcept;
 
         DEL_CM_CONSTRUCTORS(GlobalProfiler);
     };

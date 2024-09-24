@@ -168,7 +168,8 @@ namespace Mlib ::FileSys
                         {
                             if ((mode & NO_THROW) == false)
                             {
-                                throw runtime_error("Failed to recursively create directory: " + path);
+                                throw runtime_error("Failed to recursively create directory: " +
+                                                    path);
                             }
                         }
                     }
@@ -352,7 +353,8 @@ namespace Mlib ::FileSys
     }
 
     bool
-    doesFileExistInDirs(const string &name, const vector<string> &dirPathsVec, const string &fileExtention)
+    doesFileExistInDirs(const string &name, const vector<string> &dirPathsVec,
+                        const string &fileExtention)
     {
         for (const auto &path : dirPathsVec)
         {
@@ -360,7 +362,8 @@ namespace Mlib ::FileSys
             {
                 for (const auto &entry : fs::directory_iterator(path))
                 {
-                    if (entry.is_regular_file() && (entry.path().extension() == fileExtention || fileExtention.empty()))
+                    if (entry.is_regular_file() &&
+                        (entry.path().extension() == fileExtention || fileExtention.empty()))
                     {
                         if (entry.path().filename().string().find(name) != string::npos)
                         {
@@ -398,22 +401,24 @@ namespace Mlib ::FileSys
         size_t size;
         if (!file_size(&size, file))
         {
-            fprintf(stderr, "%s: Failed to retrieve file size for file: [%s].\n", __func__, file_path);
+            fprintf(
+                stderr, "%s: Failed to retrieve file size for file: [%s].\n", __func__, file_path);
             return (size_t)-1;
         }
         return size;
     }
 
     FILE *
-    write_to_tmp_file(const void *buf, unsigned long *bytes)
+    write_to_tmp_file(const void *buf, Ulong *bytes)
     {
-        unsigned long data_len, written_len;
-        FILE         *file;
+        Ulong data_len, written_len;
+        FILE *file;
         if ((file = tmpfile64()) == nullptr)
         {
             fatal_err("tmpfile64");
         }
-        data_len = bytes ? *bytes == RETRIEVE_SIZE ? strlen((const char *)buf) : *bytes : strlen((const char *)buf);
+        data_len = bytes ? *bytes == RETRIEVE_SIZE ? strlen((const char *)buf) : *bytes
+                         : strlen((const char *)buf);
         if ((written_len = fwrite(buf, 1, data_len, file)) != data_len)
         {
             fatal_err("fwrite");
@@ -423,16 +428,17 @@ namespace Mlib ::FileSys
     }
 
     int
-    write_to_file(const void *buf, unsigned long *bytes, const char *file)
+    write_to_file(const void *buf, Ulong *bytes, const char *file)
     {
-        int           file_fd;
-        long          written_bytes;
-        unsigned long data_len;
+        int   file_fd;
+        long  written_bytes;
+        Ulong data_len;
         if ((file_fd = open(file, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR)) == -1)
         {
             ferr("open");
         }
-        data_len = bytes ? *bytes == RETRIEVE_SIZE ? strlen((const char *)buf) : *bytes : strlen((const char *)buf);
+        data_len = bytes ? *bytes == RETRIEVE_SIZE ? strlen((const char *)buf) : *bytes
+                         : strlen((const char *)buf);
         if ((written_bytes = write(file_fd, buf, data_len)) != data_len)
         {
             close(file_fd);
@@ -525,7 +531,7 @@ namespace Mlib ::FileSys
     }
 
     void
-    g_fsize(FILE *f, unsigned long *size)
+    g_fsize(FILE *f, Ulong *size)
     {
         fseek(f, 0, SEEK_END);
         *size = ftell(f);

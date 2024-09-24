@@ -5,3 +5,5 @@
 /build/lib/*.a
 /build/obj/*.o
 *.o
+/.cache/
+/module-cache/

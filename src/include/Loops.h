@@ -168,7 +168,7 @@ SIMD_SSE_add_4_floats(const float a[4] __attribute__((__aligned__(16))),
 }
 
 // 'r' will hold the sum of 'a + b'.
-static void __inline __attribute((__always_inline__, __nodebug__))
+static __inline__ void __attribute((__always_inline__, __nodebug__))
 AVX_SIMD_add_4_floats(const double a[4] __attribute__((__aligned__(32))),
                       const double b[4] __attribute__((__aligned__(32))),
                       double       r[4] __attribute__((__aligned__(32)))) noexcept
@@ -190,8 +190,9 @@ AVX_SIMD_add_4_floats(const double **a __attribute__((__aligned__(32))),
     _mm256_store_pd(*r, vr);
 }
 
-static void __AVX_ATTR AVX_SIMD_add_4_double(double **a __attribute__((__aligned__(32))),
-                                             double **b __attribute__((__aligned__(32)))) noexcept
+static __inline__ void __AVX_ATTR AVX_SIMD_add_4_double(double **a __attribute__((__aligned__(32))),
+                                                        double **b
+                                                        __attribute__((__aligned__(32)))) noexcept
 {
     __m256d va = _mm256_load_pd(*a);
     __m256d vb = _mm256_load_pd(*b);
@@ -244,29 +245,31 @@ is_object_A_inside_B_sse(const float a[4] __attribute__((__aligned__(32))),
     return result == 0b1111;
 }
 
-static bool __AVX_ATTR is_object_A_inside_B_avx(const double a[4] __attribute__((__aligned__(32))),
-                                                const double b[4] __attribute__((__aligned__(32))))
-{
-    /* Load all 4 doubles from A (x_min, y_min, x_max, y_max) */
-    __m256d va = _mm256_load_pd(a);
-    /* Load all 4 doubles from B (x_min, y_min, x_max, y_max) */
-    __m256d vb = _mm256_load_pd(b);
-    /* Compare if A's min bounds (x_min, y_min) are greater
-     * than or equal to B's min bounds (x_min, y_min) */
-    __m256d cmp_min = _mm256_cmp_pd(va, vb, _CMP_GE_OQ);
-    /* Compare if A's max bounds (x_max, y_max) are less
-     * than or equal to B's max bounds (x_max, y_max) */
-    __m256d cmp_max = _mm256_cmp_pd(va, vb, _CMP_LE_OQ);
-    /* Combine the results (using AND operation to check if all conditions are true) */
-    __m256d cmp_result = _mm256_and_pd(cmp_min, cmp_max);
-    /* Extract the results from the AVX register into an integer bitmask */
-    int result = _mm256_movemask_pd(cmp_result);
-    /* If result is 0b1111 (all comparisons are true), return true */
-    return result == 0b1111;
-}
+// static bool __AVX_ATTR is_object_A_inside_B_avx(const double a[4]
+// __attribute__((__aligned__(32))),
+//                                                 const double b[4]
+//                                                 __attribute__((__aligned__(32))))
+// {
+//     /* Load all 4 doubles from A (x_min, y_min, x_max, y_max) */
+//     __m256d va = _mm256_load_pd(a);
+//     /* Load all 4 doubles from B (x_min, y_min, x_max, y_max) */
+//     __m256d vb = _mm256_load_pd(b);
+//     /* Compare if A's min bounds (x_min, y_min) are greater
+//      * than or equal to B's min bounds (x_min, y_min) */
+//     __m256d cmp_min = _mm256_cmp_pd(va, vb, _CMP_GE_OQ);
+//     /* Compare if A's max bounds (x_max, y_max) are less
+//      * than or equal to B's max bounds (x_max, y_max) */
+//     __m256d cmp_max = _mm256_cmp_pd(va, vb, _CMP_LE_OQ);
+//     /* Combine the results (using AND operation to check if all conditions are true) */
+//     __m256d cmp_result = _mm256_and_pd(cmp_min, cmp_max);
+//     /* Extract the results from the AVX register into an integer bitmask */
+//     int result = _mm256_movemask_pd(cmp_result);
+//     /* If result is 0b1111 (all comparisons are true), return true */
+//     return result == 0b1111;
+// }
 
-static bool __AVX_ATTR compare_scalar_to_array_avx(const unsigned int *array, unsigned int scalar,
-                                                   size_t size)
+/* static bool __AVX_ATTR compare_scalar_to_array_avx(const unsigned int *array, unsigned int
+scalar, size_t size)
 {
     // Ensure size is a multiple of 8 (since AVX works with 8 unsigned ints at a time)
     unsigned long aligned_size = size - (size % 8);
@@ -293,9 +296,9 @@ static bool __AVX_ATTR compare_scalar_to_array_avx(const unsigned int *array, un
         }
     }
     return false;
-}
+} */
 
-static void update_rect_simd(__m128 *rect, const __m128 *frect, const __m128 *step,
+/* static void update_rect_simd(__m128 *rect, const __m128 *frect, const __m128 *step,
                              const __m128 *end)
 {
     // Load rect and frect values (x, y, w, h) into SIMD registers
@@ -359,7 +362,7 @@ static void update_rect_avx(__m256 *rect, const __m256 *frect, const __m256 *ste
 
     // Store the updated values back into rect
     _mm256_store_ps((float *)rect, updated_rect);
-}
+} */
 
 /* static bool __inline __attribute((__always_inline__, __nodebug__))
 AVX_is_ra_inside_rb(const double a[4], const double b[4]) noexcept

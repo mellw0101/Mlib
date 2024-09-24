@@ -23,8 +23,7 @@ namespace Mlib::Compress
     using namespace FileSys;
     using namespace Io;
 
-    void
-    decompress_zst(const char *file, char **buf, unsigned long *size)
+    void decompress_zst(const char *file, char **buf, unsigned long *size)
     {
         FILE          *f;
         char          *tmp_buf, *o_buf;
@@ -53,7 +52,8 @@ namespace Mlib::Compress
             ferr("fread");
         }
         fclose(f);
-        if ((*size = ZSTD_getFrameContentSize((const void *)tmp_buf, c_size)) == ZSTD_CONTENTSIZE_ERROR)
+        if ((*size = ZSTD_getFrameContentSize((const void *)tmp_buf, c_size)) ==
+            ZSTD_CONTENTSIZE_ERROR)
         {
             free(tmp_buf);
             ferr("ZSTD_getFrameContentSize");
@@ -118,8 +118,7 @@ namespace Mlib::Compress
         ZSTD_freeDStream(d_stream);
     }
 
-    void
-    compress_zst(const char *in_file, const char *out_file)
+    void compress_zst(const char *in_file, const char *out_file)
     {
         FILE         *in_f, *out_f;
         char         *in_buf, *c_buf;
@@ -169,8 +168,7 @@ namespace Mlib::Compress
         free(c_buf);
     }
 
-    void
-    extract_tar(const char *buf, const unsigned long size, const char *output, int verbose)
+    void extract_tar(const char *buf, const unsigned long size, const char *output, int verbose)
     {
         archive       *a, *ext;
         archive_entry *entry;
@@ -197,26 +195,30 @@ namespace Mlib::Compress
             archive_entry_set_pathname(entry, full_path);
             if ((r = archive_write_header(ext, entry)) == ARCHIVE_FATAL)
             {
-                nerr("archive_write_header", "archive_error_string: ['%s']", archive_error_string(a));
+                nerr("archive_write_header", "archive_error_string: ['%s']",
+                     archive_error_string(a));
                 break;
             }
             while ((r = archive_read_data_block(a, &t_buf, &t_size, &offset)) == ARCHIVE_OK)
             {
                 if ((r = archive_write_data_block(ext, t_buf, t_size, offset)) != 0)
                 {
-                    nerr("archive_write_data_block", "archive_error_string: [%s]", archive_error_string(a));
+                    nerr("archive_write_data_block", "archive_error_string: [%s]",
+                         archive_error_string(a));
                     break;
                 }
             }
             if ((r = archive_write_finish_entry(ext)) != ARCHIVE_OK)
             {
-                nerr("archive_write_finish_entry", "archive_error_string: [%s]", archive_error_string(a));
+                nerr("archive_write_finish_entry", "archive_error_string: [%s]",
+                     archive_error_string(a));
                 break;
             }
         }
         if (r != ARCHIVE_EOF)
         {
-            nerr(__func__, "Could not fully extract archive, archive_error_string: [%s]", archive_error_string(a));
+            nerr(__func__, "Could not fully extract archive, archive_error_string: [%s]",
+                 archive_error_string(a));
         }
         archive_read_free(a);
         archive_write_free(ext);

@@ -1,11 +1,11 @@
 /// @file String.h
 #pragma once
 
-#include "def.h"
-
 #include <stdarg.h>
 #include <string.h>
 #include <string>
+
+#include "Attributes.h"
 
 using std::pair;
 using std::string;
@@ -14,13 +14,11 @@ using std::vector;
 namespace Mlib::String
 {
     size_t findN(const string &str, const string &search, size_t n);
-    string replaceAll(const string &str, const string &search,
-                      const string &replace);
-    string replaceN(const string &str, const string &search,
-                    const string &replace, size_t n);
+    string replaceAll(const string &str, const string &search, const string &replace);
+    string replaceN(const string &str, const string &search, const string &replace, size_t n);
     vector<pair<string, string>> parse_variables(const string &input);
 
-} /* namespace Mlib::String */
+}
 
 class MString
 {
@@ -45,24 +43,13 @@ public:
     const char  *c_str(void) const;
     unsigned int size(void);
 };
-
-#define BOLLCHECKER_MAX_SIZE 100
-namespace boolchecker
-{
-    int    precedence(char *op);
-    int    is_operator(char *token);
-    char **tokenize(char *, int *);
-    typedef struct
-    {
-        char *items[BOLLCHECKER_MAX_SIZE];
-        int   top;
-    } Stack;
-    void  push(Stack *, char *);
-    char *pop(Stack *);
-    char *peek(Stack *);
-    int   is_empty(Stack *s);
-    void  infix_to_postfix(char **, int);
-
-} // namespace boolchecker
-
 #define Mstring MString
+
+size_t __warn_unused __pure __no_debug __no_throw __no_null(1)
+mstrlen(const char *str) noexcept;
+
+size_t __warn_unused __pure __no_debug __no_throw __no_null(1)
+mstrnlen(const char *str, size_t maxlen) noexcept;
+
+char *__warn_unused __pure __no_debug __no_throw __no_null(1)
+mstrndup(const char *str, size_t maxlen) noexcept;

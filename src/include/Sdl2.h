@@ -1,29 +1,35 @@
 #pragma once
+/* clang-format off */
 
 #if defined(__i386__) || defined(__x86_64__)
 #    ifdef __cplusplus
 
-#        include "Debug.h"
 #        include "Mem_pool.h"
-#        include "Profile.h"
 
 #        include <SDL2/SDL.h>
 #        include <SDL2/SDL_rect.h>
 #        include <SDL2/SDL_ttf.h>
 
 #        include <functional>
-#        include <map>
 #        include <mutex>
 #        include <string>
 #        include <unordered_map>
 #        include <vector>
 #        include "Vector.h"
+
+#        include "Flag.h"
+#        include "Attributes.h"
 #        include "def.h"
 
 using std::function;
+using std::milli;
 using std::nothrow;
 using std::pair;
 using std::string;
+using std::chrono::duration;
+using std::chrono::high_resolution_clock;
+using std::chrono::time_point;
+using std::this_thread::sleep_for;
 
 namespace Mlib::Sdl2
 {
@@ -55,15 +61,11 @@ namespace Mlib::Sdl2
         double x, y;
 
         /* Initializes the vector to (0, 0). */
-        Vec2D(void)
-            : x(0)
-            , y(0)
+        Vec2D(void) : x(0), y(0)
         {}
 
         /* Initializes the vector to (x, y). */
-        Vec2D(double x, double y)
-            : x(x)
-            , y(y)
+        Vec2D(double x, double y) : x(x), y(y)
         {}
 
         /* Add two vectors together */
@@ -118,11 +120,11 @@ namespace Mlib::Sdl2
         Vec2D position;
         /* Velocity of the object ( x (float), y (float)) in the 2D plane */
         Vec2D  velocity;
-        int    w;
-        int    h;
-        double speed;
+        int    w = 0;
+        int    h = 0;
+        double speed = 0;
         /* State of the object, This is a bit field */
-        unsigned int state;
+        unsigned int state = 0;
     } ObjectData2D;
 
     /* This struct represents a 2D object. */
@@ -429,7 +431,7 @@ namespace utils
         double step_y;
         double step_w;
         double step_h;
-    } __align_size(32);
+    };
 
     void convert_sdl_rect_to_floats(const SDL_Rect *rect, float *floats);
 
@@ -438,7 +440,7 @@ namespace utils
 #        define TOTAL_EVENTS 59
     using sdl_event_callback_t = std::function<void(SDL_Event ev)>;
     using sdl_event_vector_t   = MVector<sdl_event_callback_t>;
-#        define FRAME_DELAY(framerate) ((double)1000 / framerate)
+#        define FRAME_DELAY(framerate) ((double)1000 / (framerate))
 }
 
 typedef utils::sdl_texture_exceptions_t     sdl_texture_exceptions;
@@ -449,6 +451,8 @@ namespace sdl
     int set_render_draw_color(SDL_Renderer *ren, unsigned char r, unsigned char g, unsigned char b,
                               unsigned char a) noexcept;
 }
+
+#        define ELEMENT_BIT_FLAG_SIZE 8
 
 namespace sdl_structs
 {
@@ -462,80 +466,82 @@ namespace sdl_structs
      */
     class sdl_event_handler_t
     {
-        utils::sdl_event_vector_t   map[TOTAL_EVENTS] {};
-        static sdl_event_handler_t *instance;
-        SDL_Event                   ev;
+        utils::sdl_event_vector_t   _map[TOTAL_EVENTS] {};
+        static sdl_event_handler_t *_instance;
+        SDL_Event                   _ev;
 
         sdl_event_handler_t(void) = default;
-        static void destroy(void) noexcept;
+        static void __no_debug __no_throw _destroy(void) noexcept;
         DEL_CM_CONSTRUCTORS(sdl_event_handler_t);
 
     public:
-        static sdl_event_handler_t *Instance(void) noexcept;
+        static sdl_event_handler_t *instance(void) noexcept;
         template <typename F>
-        void add_action_for_event(unsigned int ev_t, F &&f) noexcept
+        __inline__ void __attr(__always_inline__, __nodebug__, __nothrow__)
+            event_action(unsigned int ev_t, F &&f) noexcept
         {
             const unsigned int type = utils::event_to_index(ev_t);
             if (type == (unsigned int)-1)
             {
                 return;
             }
-            map[type].push_back(std::forward<F>(f));
+            _map[type].push_back(std::forward<F>(f));
         }
-        void handle_event(void) noexcept;
-    } __align_size(32);
+        void __no_debug __no_throw handle_event(void) noexcept;
+    };
 
     struct sdl_element_text_t
     {
         int          x = -1;
         int          y = -1;
-        int          w;
-        int          h;
-        unsigned int format;
-        int          access;
+        int          w = 0;
+        int          h = 0;
+        unsigned int format = 0;
+        int          access = 0;
         SDL_Texture *texture = nullptr;
         /*-<< Methods >>-*/
         void query_text_texture(int x = -1, int y = -1, SDL_Texture *t = nullptr) noexcept;
-    } __align_size(32);
+    };
 
     struct sdl_element_t
     {
-        SDL_Color           color;
         SDL_Rect            rect;
         SDL_FRect           frect;
+        SDL_Color           color;
         unsigned int        id;
         SDL_Renderer      **renptr;
         sdl_element_text_t *text_data;
-        bool                in_animation;
-        unsigned char       flags;
+        bit_flag_t<8>       flags;
         /*-<< Methods >>-*/
-        void draw(void) noexcept;
+        void __attr() draw(void) noexcept;
         void add_text_data(int x, int y, SDL_Texture *texture) noexcept;
         void animate(int end_x, int end_y, int end_w, int end_h, int duration_ms) noexcept;
         void set_borders(int size, SDL_Color color) noexcept;
+        void check_flags(void) noexcept;
         /*-<< Constructor >>-*/
         sdl_element_t(SDL_Color color, SDL_Rect rect) noexcept;
+        sdl_element_t(void) noexcept;
 
     private:
         int       border_size;
         SDL_Color border_color;
         /*-<< Methods >>-*/
         void draw_borders(void) noexcept;
-    } __align_size(32);
+    };
 
     struct sdl_button_element_t : sdl_element_t
     {
         function<void(SDL_MouseButtonEvent ev)> _action = nullptr;
         template <typename F>
-        __always_inline void action_on_button_press(F &&f) noexcept
+        __always_inline void action(F &&f) noexcept
         {
             _action = std::forward<F>(f);
-            add_callback();
+            _add_callback();
         }
 
     private:
-        void add_callback(void) noexcept;
-    } __align_size(32);
+        void _add_callback(void) noexcept;
+    };
 
     class sdl_window_t
     {
@@ -544,7 +550,7 @@ namespace sdl_structs
         _UNUSED SDL_Window   *_win = nullptr;
         _UNUSED SDL_Renderer *_ren = nullptr;
         _UNUSED MVector<sdl_element_t *> _elements;
-        _UNUSED mem_pool_t<__m256d> memory_pool;
+        _UNUSED mem_pool_t<32> memory_pool;
 
     public:
         __always_inline operator SDL_Window *(void) noexcept
@@ -560,18 +566,18 @@ namespace sdl_structs
 
     class sdl_app_t
     {
-        static sdl_app_t        *_instance;
-        int                      _framerate = 480;
-        int                      _width     = 600;
-        int                      _height    = 400;
-        SDL_Window              *_win;
-        SDL_Renderer            *_ren;
-        const char              *_title = nullptr;
-        MVector<sdl_element_t *> _elements;
-        function<void()>         _main_loop = nullptr;
-        bool                     _running;
-        MVector<SDL_Texture *>   _alloced_textures;
-        MVector<TTF_Font *>      _alloced_fonts;
+        static sdl_app_t                 *_instance;
+        int                               _framerate = 480;
+        int                               _width     = 600;
+        int                               _height    = 400;
+        SDL_Window                       *_win;
+        SDL_Renderer                     *_ren;
+        const char                       *_title = nullptr;
+        MVector<sdl_element_t *>          _elements;
+        function<void()>                  _main_loop = nullptr;
+        bit_flag_t<ELEMENT_BIT_FLAG_SIZE> _flags;
+        MVector<SDL_Texture *>            _alloced_textures;
+        MVector<TTF_Font *>               _alloced_fonts;
 
         double *a;
         double *b;
@@ -582,52 +588,47 @@ namespace sdl_structs
         DEL_CM_CONSTRUCTORS(sdl_app_t);
 
         sdl_app_t(void) noexcept;
-        static void destroy(void) noexcept;
-        void        cleanup(void) noexcept;
-        void        perform_amimation(void) noexcept;
+        static void _destroy(void) noexcept;
+        void        _cleanup(void) noexcept;
+        void        _perform_amimation(void) noexcept;
         /* These are used to calculate correct frame dalay based on time to render frame. */
-        unsigned int frame_start_tick;
-        void         frame_start(void) noexcept;
-        void         frame_end(void) noexcept;
+        time_point<high_resolution_clock> _frame_start_time;
+        void                              _frame_start(void) noexcept;
+        void                              _frame_end(void) noexcept;
 
     public:
-        mem_pool_t<__m256d> mem_pool;
+        mem_pool_t<8> mem_pool;
 
-        static sdl_app_t *instance(void) noexcept;
-        int               run(void) noexcept;
-        void              set_main_loop(function<void()>) noexcept;
-        [[__nodiscard__]]
-        sdl_element_t        *new_element(sdl_element_t) noexcept;
-        sdl_button_element_t *new_button_element(sdl_element_t) noexcept;
-        void                  quit(void) noexcept;
-        [[__nodiscard__]]
-        TTF_Font *retrieve_new_font(const int size, const char *file) noexcept __nonnull((3));
-        [[__nodiscard__]]
-        SDL_Texture *make_text_texture(TTF_Font *font, const char *text, SDL_Color fg,
-                                       SDL_Color bg) noexcept __nonnull((2, 3));
-        [[__nodiscard__]]
-        SDL_Texture   *make_destroy_text_texture(SDL_Texture *old_texture, TTF_Font *font,
-                                                 const char *text, SDL_Color fg,
-                                                 SDL_Color bg) noexcept __nonnull((3, 4));
-        void           render_text(int x, int y, SDL_Texture *texture);
-        void           move_element(unsigned int id, int x, int y);
-        int            width(void) const noexcept;
-        int            height(void) const noexcept;
-        void           set_size(const int w, const int h) noexcept;
-        void           set_position(const int x, const int y) noexcept;
-        void           set_title(const char *str) noexcept;
-        void           set_min_size(const int w, const int h) noexcept;
-        sdl_element_t *element_from_id(unsigned int id);
-        [[__noreturn__]]
-        void exit_clean(const int status) noexcept;
-        int  set_framerate(const int new_framerate) noexcept;
-        int  get_framerate(void) const noexcept;
+        static sdl_app_t *__warn_unused     instance(void) noexcept;
+        int                                 run(void) noexcept;
+        void                                set_main_loop(function<void()>) noexcept;
+        sdl_element_t *__warn_unused        new_element(SDL_Color color, SDL_Rect rect,
+                                                        const init_list<unsigned int> &flags) noexcept;
+        sdl_button_element_t *__warn_unused new_button_element(sdl_element_t) noexcept;
+        void                                quit(void) noexcept;
+        TTF_Font *__warn_unused retrieve_new_font(const int size, const char *file) noexcept
+            __no_null(3);
+        SDL_Texture *__warn_unused make_text_texture(TTF_Font *font, const char *text, SDL_Color fg,
+                                                     SDL_Color bg) noexcept __no_null(2, 3);
+        SDL_Texture *__warn_unused make_destroy_text_texture(SDL_Texture *old_texture,
+                                                             TTF_Font *font, const char *text,
+                                                             SDL_Color fg, SDL_Color bg) noexcept
+            __no_null(3, 4);
+        void                         render_text(int x, int y, SDL_Texture *texture) noexcept;
+        void                         move_element(unsigned int id, int x, int y);
+        int                          width(void) const noexcept;
+        int                          height(void) const noexcept;
+        void                         set_size(const int w, const int h) noexcept;
+        void                         set_position(const int x, const int y) noexcept;
+        void                         set_title(const char *str) noexcept;
+        void                         set_min_size(const int w, const int h) noexcept;
+        sdl_element_t *__warn_unused element_from_id(unsigned int id) noexcept;
+        void __no_return             exit_clean(const int status) noexcept;
+        int                          set_framerate(const int new_framerate) noexcept;
+        int                          framerate(void) const noexcept;
         void animate_element(sdl_element_t *element, sdl_element_animation_data data) noexcept;
     };
 }
-
-/* Flags. */
-#        define SDL_ELEMENT_HIGHLIGHT_ON_HOVER (1 << 1)
 
 /* Some shorthand typedefs. */
 typedef sdl_structs::sdl_event_handler_t  sdl_event_handler;
@@ -636,10 +637,18 @@ typedef sdl_structs::sdl_element_t        sdl_element;
 typedef sdl_structs::sdl_button_element_t sdl_button_element;
 typedef sdl_structs::sdl_app_t            sdl_app;
 
+/* Flags for 'sdl_element'. */
+#        define ELEMENT_IN_ANIMATION            1
+#        define ELEMENT_ALIGN_WIDTH             2
+#        define ELEMENT_ALIGN_HEIGHT            3
+/* Flags for 'sdl_app'. */
+#        define APP_RUNNING                     1
+
 /* Singleton instance shorthands. */
-#        define SDL_APP           sdl_app::instance()
-#        define SDL_KEY_HANDLER   Mlib::Sdl2::KeyObject::Instance()
-#        define SDL_EVENT_HANDLER sdl_event_handler::Instance()
+#        define SDL_APP                         sdl_app::instance()
+#        define SDL_KEY_HANDLER                 Mlib::Sdl2::KeyObject::Instance()
+#        define SDL_EVENT_HANDLER               sdl_event_handler::instance()
+#        define SDL_EVENT_ACTION(event, action) SDL_EVENT_HANDLER->event_action(event, action)
 
 #    endif /* __cplusplus */
 #endif

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <algorithm>
 #include <array>
 #include <chrono>
 #include <future>
@@ -9,6 +8,8 @@
 #include <set>
 #include <string_view>
 #include <vector>
+
+#include "Attributes.h"
 
 #ifndef FALSE
 #    define FALSE 0
@@ -88,6 +89,12 @@
 #define ESC_CODE_CURSOR_COLUMN_ALT       "\033G"
 #define ESC_CODE_CURSOR_POSITION_ALT_ALT "\033H"
 
+
+#define RW_FOR_ALL (S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH)
+
+using std::initializer_list;
+using std::is_nothrow_destructible;
+
 constexpr auto ESC_CODE_TURN_ON_BRACKETED_PASTE  = "\x1B[?2004h";
 constexpr auto ESC_CODE_TURN_OFF_BRACKETED_PASTE = "\x1B[?2004l";
 
@@ -131,8 +138,6 @@ constexpr auto ESC_CODE_TURN_OFF_BRACKETED_PASTE = "\x1B[?2004l";
     while (0)
 
 #define __COMPILE_ERROR(msg) __attribute__((__error__(msg)))
-
-#define __notnull(...)       __attribute__(__nonnull__(__VA_ARGS__))
 
 //
 //  Some macros for ease of use for errno handling.
@@ -210,8 +215,7 @@ constexpr u64 operator"" _KB(unsigned long long value)
     struct _name                                 \
     {                                            \
         _type value;                             \
-        constexpr _name(_type val)               \
-            : value(val)                         \
+        constexpr _name(_type val) : value(val)  \
         {}                                       \
     };                                           \
     constexpr _name _name##_Wrapper(_type value) \
@@ -239,6 +243,9 @@ constexpr u64 operator"" _KB(unsigned long long value)
 
 template <typename T>
 using C_ = const T;
+
+template <typename T>
+using __ptr = T *;
 
 using C_s64 = const s64;
 using C_s32 = const s32;
@@ -401,10 +408,8 @@ decltype(auto) operator"" _hash(const char *s, unsigned long);
         T3 union_3;                   \
     }
 
-#define PARAM_T_CONSTRUCT(OBJ, T, N, NAME) \
-    OBJ(T NAME)                            \
-        : type(TYPE_##N)                   \
-        , union_##N(NAME)                  \
+#define PARAM_T_CONSTRUCT(OBJ, T, N, NAME)        \
+    OBJ(T NAME) : type(TYPE_##N), union_##N(NAME) \
     {}
 
 #define TRI_PARAM_T_MAKE_ALL_CONSTRUCTS(OBJ, NAME_1, NAME_2, NAME_3) \
@@ -441,20 +446,26 @@ decltype(auto) operator"" _hash(const char *s, unsigned long);
         PARAM_T_CONSTRUCT(name, T3, 3, type_3)        \
     }
 
-#define __align_size(size)   __attribute__((__aligned__(size)))
-
-#define BOOL_STR(statement)  statement ? "TRUE" : "FALSE"
-#define SIZEOF_BIT(type)     (sizeof(type) * 8)
-#define SSE_SIMD_WIDTH(type) (128 / SIZEOF_BIT(type))
+#define BOOL_STR(statement) statement ? "TRUE" : "FALSE"
+#define SIZEOF_BIT(type)    (sizeof(type) * 8)
 
 template <typename T>
-[[__nodiscard__]]
-static constexpr unsigned long __inline
-    __attribute((__always_inline__, __nodebug__)) sse_simd_width(void) noexcept
+__inline__ __warn_unused constexpr unsigned long
+    __attribute__((__always_inline__, __nodebug__, __const__))
+    __bit_sizeof(void) noexcept
+{
+    return (sizeof(T) * 8);
+}
+#define bit_sizeof(type)     __bit_sizeof<type>()
+
+#define SSE_SIMD_WIDTH(type) (128 / SIZEOF_BIT(type))
+template <typename T>
+__inline__ __warn_unused constexpr unsigned long
+    __attribute__((__always_inline__, __nodebug__, __const__))
+    sse_simd_width(void) noexcept
 {
     return SSE_SIMD_WIDTH(T);
 }
-
 #define sizeof_sse_simd(type)     sse_simd_width<type>()
 
 #define AMALLOC(obj)              (decltype(obj))malloc(sizeof(*obj))
@@ -504,3 +515,27 @@ static constexpr unsigned long __inline
         }                                       \
     }                                           \
     while (0)
+
+#define __MLIB_BEGIN_NAMESPACE_(name, vis) \
+    namespace __type_##vis Mlib            \
+    {                                      \
+        inline namespace name
+
+#define __END_NAMESPACE(name) }
+
+#ifdef Ulong
+#undef Ulong
+#endif
+#define Ulong unsigned long
+#ifdef Uint
+#undef Uint
+#endif
+#define Uint unsigned int
+#ifdef Ushort
+#undef Ushort
+#endif
+#define Ushort unsigned short
+#ifdef Uchar
+#undef Uchar
+#endif
+#define Uchar unsigned char

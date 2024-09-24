@@ -2,36 +2,31 @@
 
 namespace Mlib ::Threads
 {
-    ThreadPool ::ThreadPool(u64 threads)
-        : stop(false)
+    ThreadPool ::ThreadPool(u64 threads) : stop(false)
     {
         for (u64 i = 0; i < threads; ++i)
         {
-            workers.emplace_back(
-                [this]
+            workers.emplace_back([this] {
+                while (true)
                 {
-                    while (true)
+                    std::function<void()> task;
                     {
-                        std::function<void()> task;
+                        std::unique_lock<std::mutex> lock(this->queueMutex);
+                        this->condition.wait(lock, [this] {
+                            return this->stop || !this->tasks.empty();
+                        });
+
+                        if (this->stop && this->tasks.empty())
                         {
-                            std::unique_lock<std::mutex> lock(this->queueMutex);
-                            this->condition.wait(lock,
-                                                 [this]
-                                                 {
-                                                     return this->stop || !this->tasks.empty();
-                                                 });
-
-                            if (this->stop && this->tasks.empty())
-                            {
-                                return;
-                            }
-
-                            task = std::move(this->tasks.front());
-                            this->tasks.pop();
+                            return;
                         }
-                        task();
+
+                        task = std::move(this->tasks.front());
+                        this->tasks.pop();
                     }
-                });
+                    task();
+                }
+            });
         }
     }
 

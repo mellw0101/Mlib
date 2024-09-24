@@ -11,8 +11,7 @@ void lock_pthread_mutex(pthread_mutex_t *mutex, bool lock);
 struct pthread_mutex_guard_t
 {
     pthread_mutex_t *m = nullptr;
-    explicit pthread_mutex_guard_t(pthread_mutex_t *mutex)
-        : m(mutex)
+    explicit pthread_mutex_guard_t(pthread_mutex_t *mutex) : m(mutex)
     {
         if (m == nullptr)
         {

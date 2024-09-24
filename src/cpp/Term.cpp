@@ -19,6 +19,7 @@
 #include <cstring>
 #include <fcntl.h>
 #include <sys/ioctl.h>
+#include <sys/types.h>
 #include <termios.h>
 #include <unistd.h>
 
@@ -365,7 +366,7 @@ namespace Mlib::Term
     }
 
     void
-    reset_color()
+    reset_color(void)
     {
         printf(ESC_CODE_RESET);
         fflush(stdout);
@@ -431,8 +432,13 @@ namespace Mlib::Term
     }
 
     const char *
-    prompt_raw(int fd, const char **wanted_answers, const rgb_code_t *fg, const rgb_code_t *bg,
-               const unsigned short row, const unsigned short colum, const char *format, ...)
+    prompt_raw(int fd,
+               const char **wanted_answers,
+               const rgb_code_t *fg,
+               const rgb_code_t *bg,
+               const u_short row,
+               const u_short colum,
+               const char *format, ...)
     {
         char    prompt_str[1024], read_buf[1024];
         int     c, i, prompt_len;

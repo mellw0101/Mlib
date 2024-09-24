@@ -1,2 +1,7 @@
 CompileFlags:
-  Add: [-std=c++23]
+  Add: 
+    - -stdlib=libc++     # Use libc++ as the standard library
+    - -I/usr/include/c++/v1   # Include path for libc++ headers
+    # - -fmodules      # Enable C++20 module support
+    # - -fmodules-cache-path=./module-cache  # Cache the modules in a directory (optional)
+    # - -Iinclude         # Specify include directories

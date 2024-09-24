@@ -1,8 +1,9 @@
 #pragma once
 
-#include <stdlib.h>
-#include "Debug.h"
 #include "def.h"
+
+#define __MVector_attr       __attribute__((__always_inline__, __nodebug__))
+#define __MVector_const_attr __attribute__((__always_inline__, __nodebug__, __const__))
 
 template <class T>
 class MVector
@@ -12,30 +13,7 @@ class MVector
     unsigned int cap;
 
 public:
-    MVector(void) noexcept
-        : len(0)
-        , cap(10)
-    {
-        cap  = 10;
-        len  = 0;
-        data = (T *)malloc(sizeof(T) * cap);
-    }
-
-    ~MVector(void) noexcept(std::is_nothrow_destructible<T>::value)
-    {
-        for (unsigned int i = 0; i < len; i++)
-        {
-            data[i].~T();
-        }
-        free(data);
-    }
-
-    __always_inline T &operator[](unsigned int index) noexcept
-    {
-        return data[index];
-    }
-
-    void push_back(const T &element) noexcept
+    __inline__ void __MVector_attr push_back(const T &element) noexcept
     {
         if (len == cap)
         {
@@ -46,37 +24,36 @@ public:
         len++;
     }
 
-    __always_inline void reorder_from(unsigned int newstart) noexcept
+    __inline__ void __MVector_attr reorder_from(unsigned int newstart) noexcept
     {
         if (newstart < len)
         {
-            for (unsigned int i = newstart; i < len; i++)
+            for (unsigned int i = newstart; i < len; ++i)
             {
                 data[i - newstart] = std::move(data[i]);
             }
+            len -= newstart;
         }
-        len -= newstart;
     }
 
-    __always_inline void
+    __inline__ void __MVector_attr
     erase_at(unsigned int index) noexcept(std::is_nothrow_destructible<T>::value)
     {
-        if (index >= len)
+        if (index < len)
         {
-            return;
+            data[index].~T();
+            for (unsigned int i = index; i < (len - 1); ++i)
+            {
+                data[i] = std::move(data[i + 1]);
+            }
+            len -= 1;
         }
-        data[index].~T();
-        for (unsigned int i = index; i < len - 1; i++)
-        {
-            data[i] = std::move(data[i + 1]);
-        }
-        len -= 1;
     }
 
     /* Note that this does not free any elements in the array
      * it only free`s the current array and set`s 'len' to 0
      * then mallocs the 'data' ptr again. */
-    void clear(void) noexcept(std::is_nothrow_destructible<T>::value)
+    __inline__ void __MVector_attr clear(void) noexcept(std::is_nothrow_destructible<T>::value)
     {
         for (unsigned int i = 0; i < len; i++)
         {
@@ -88,17 +65,27 @@ public:
         data = AMALLOC_ARRAY(data, cap);
     }
 
-    __always_inline unsigned int size(void) const noexcept
+    __inline__ unsigned int __warn_unused __MVector_attr size(void) noexcept
     {
         return len;
     }
 
-    __always_inline bool empty(void) const noexcept
+    __inline__ const unsigned int __warn_unused __MVector_const_attr size(void) const noexcept
+    {
+        return len;
+    }
+
+    __inline__ bool __warn_unused __MVector_attr empty(void) noexcept
     {
         return (len == 0);
     }
 
-    __always_inline void resize(unsigned int newlen) noexcept
+    __inline__ const bool __warn_unused __MVector_const_attr empty(void) const noexcept
+    {
+        return (len == 0);
+    }
+
+    __inline__ void __MVector_attr resize(const unsigned int newlen) noexcept
     {
         if (newlen < len)
         {
@@ -106,13 +93,52 @@ public:
         }
     }
 
-    __always_inline T *begin(void) const noexcept
+    __inline__ T *__MVector_const_attr begin(void) const noexcept
     {
         return data;
     }
 
-    __always_inline T *end(void) const noexcept
+    __inline__ T *__MVector_const_attr end(void) const noexcept
     {
         return data + len;
     }
+
+    /* Constructors. */
+    MVector(void) noexcept : len(0), cap(10)
+    {
+        data = (T *)malloc(sizeof(T) * cap);
+    }
+
+    MVector(initializer_list<T> list) noexcept : len(0), cap(list.size() * 2)
+    {
+        data    = (T *)malloc(sizeof(T) * cap);
+        for (const auto &it : list)
+        {
+            push_back(it);
+        }
+    }
+
+    /* Destructor. */
+    ~MVector(void) noexcept(is_nothrow_destructible<T>::value)
+    {
+        for (unsigned int i = 0; i < len; i++)
+        {
+            data[i].~T();
+        }
+        free(data);
+    }
+
+    /* Operator. */
+    __inline__ T &__MVector_attr operator[](const unsigned int index) noexcept
+    {
+        return data[index];
+    }
+
+    __inline__ const T &__MVector_const_attr operator[](const unsigned int index) const noexcept
+    {
+        return data[index];
+    }
 };
+
+#undef MVECTOR_ATTR
+#undef MVECTOR_CONST_ATTR

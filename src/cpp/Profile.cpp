@@ -2,6 +2,11 @@
  * Contains the implementation of the profiling classes and functions. */
 #include "../include/Profile.h"
 
+#include <iomanip>
+#include <iostream>
+#include <numeric>
+#include <fstream>
+
 using namespace std;
 using namespace chrono;
 
@@ -205,9 +210,7 @@ namespace Mlib::Profile
 
     /** @class @c AutoTimer */
 
-    AutoTimer::AutoTimer(const string &name)
-        : name(name)
-        , start(high_resolution_clock::now())
+    AutoTimer::AutoTimer(const string &name) : name(name), start(high_resolution_clock::now())
     {}
 
     AutoTimer::~AutoTimer(void)

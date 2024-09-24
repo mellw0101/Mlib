@@ -2,17 +2,54 @@
 
 #include "def.h"
 
-template <typename T>
-concept Arithmetic = std::is_arithmetic_v<T>;
+__MLIB_BEGIN_NAMESPACE_(Types, export)
+{
+    template <typename A, typename B>
+    struct is_same
+    {
+        static __inline__ constexpr bool value = false;
+    };
 
-template <typename T>
-concept ConstexprArithmetic = Arithmetic<T> && requires(T a, T b) {
-    { a + b } -> std::convertible_to<T>;
-    { a - b } -> std::convertible_to<T>;
-    { a *b } -> std::convertible_to<T>;
-    { a / b } -> std::convertible_to<T>;
-    { a % b } -> std::convertible_to<T>; // Only for integral types
-};
+    template <typename A>
+    struct is_same<A, A>
+    {
+        static __inline__ constexpr bool value = true;
+    };
+
+    /* Using some clever deduction, so to get the correct result we declare
+     * the default struct template as have type 'T' and that its = 'void'. */
+    template <typename T, typename = void>
+    struct has_addition_operator : std::false_type
+    {};
+
+    template <typename T>
+    struct has_addition_operator<T, decltype(void(std::declval<T>() + std::declval<T>()))>
+        : std::true_type
+    {};
+
+    template <int A, int B>
+    struct Greatest_Common_Divisor
+    {
+        static const int value = Greatest_Common_Divisor<B, A % B>::value;
+    };
+
+    template <int A>
+    struct Greatest_Common_Divisor<A, 0>
+    {
+        static const int value = A;
+    };
+
+    template <typename T>
+    constexpr bool is_integral(void)
+    {
+        if constexpr (std::is_integral<T>::value)
+        {
+            return true;
+        }
+        return false;
+    }
+}
+__END_NAMESPACE(Types)
 
 template <typename T1, typename T2, typename T3>
 struct tri_param_t

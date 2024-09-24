@@ -10,8 +10,7 @@
 
 namespace Mlib::Io
 {
-    void
-    fwritef(int fd, const char *format, ...)
+    void fwritef(int fd, const char *format, ...)
     {
         static char buf[1024];
         va_list     ap;
@@ -22,8 +21,7 @@ namespace Mlib::Io
         write(fd, &buf, length);
     }
 
-    void
-    writef(const char *format, ...)
+    void writef(const char *format, ...)
     {
         static char buf[4096];
         va_list     ap;
@@ -39,8 +37,7 @@ namespace Mlib::Io
         }
     }
 
-    void
-    cwrite(const char c)
+    void cwrite(const char c)
     {
         long len = write(STDOUT_FILENO, &c, 1);
         if (len != 1 || len == -1)
@@ -49,8 +46,7 @@ namespace Mlib::Io
         }
     }
 
-    void
-    fcwrite(int fd, const char c)
+    void fcwrite(int fd, const char c)
     {
         ssize_t len = write(fd, &c, 1);
         if (len != 1 || len == -1)
@@ -59,10 +55,9 @@ namespace Mlib::Io
         }
     }
 
-} // namespace Mlib::Io
+}
 
-char **
-get_file_lines(const char *path)
+char **get_file_lines(const char *path)
 {
     unsigned long size, len, i, cap;
     char         *buf, *line, **lines;

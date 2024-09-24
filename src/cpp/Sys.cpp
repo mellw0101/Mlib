@@ -8,9 +8,8 @@ namespace Mlib::Sys
 {
     using namespace Io;
 
-    s8
-    run_binary(const std::string &binary_path, const std::vector<std::string> &args,
-               const std::vector<std::string> &env_vars)
+    s8 run_binary(const std::string &binary_path, const std::vector<std::string> &args,
+                  const std::vector<std::string> &env_vars)
     {
         s8 result = 0;
         /* Convert vector of arguments to array of C-strings */
@@ -61,7 +60,8 @@ namespace Mlib::Sys
                 result = WEXITSTATUS(status);
                 if (result != 0)
                 {
-                    throw std::runtime_error("Process exited with status " + std::to_string(result));
+                    throw std::runtime_error("Process exited with status " +
+                                             std::to_string(result));
                 }
             }
             else
@@ -106,8 +106,7 @@ namespace Mlib::Sys
         }
     }
 
-    unsigned long
-    MSRReader ::read(unsigned int msr)
+    unsigned long MSRReader ::read(unsigned int msr)
     {
         if (!msr_file.is_open())
         {
@@ -123,8 +122,7 @@ namespace Mlib::Sys
         return value;
     }
 
-    int
-    launch_child_process(const char *command)
+    int launch_child_process(const char *command)
     {
         pid_t             pid;
         posix_spawnattr_t attr;
@@ -137,8 +135,7 @@ namespace Mlib::Sys
         return result;
     }
 
-    unsigned long
-    retriveSysLogicCores()
+    unsigned long retriveSysLogicCores()
     {
         unsigned long sys_cores = sysconf(_SC_NPROCESSORS_ONLN);
         if (sys_cores == -1)
@@ -148,8 +145,7 @@ namespace Mlib::Sys
         return sys_cores;
     }
 
-    unsigned long
-    read_msr_value_to_watts(MSRReader *msr_reader, unsigned int msr_address)
+    unsigned long read_msr_value_to_watts(MSRReader *msr_reader, unsigned int msr_address)
     {
         unsigned long raw_value = msr_reader->read(msr_address);
         /* Assuming the raw value is in milliwatts, convert to watts */
@@ -161,14 +157,14 @@ namespace Mlib::Sys
         return power_in_watts;
     }
 
-    bool
-    prompt_yes_no(const char *str, bool default_response, bool verbose_prompt)
+    bool prompt_yes_no(const char *str, bool default_response, bool verbose_prompt)
     {
         const char *yes_no_prompt = default_response ? "Y/n" : "y/N";
         while (true)
         {
             printf("%s [%s]%s: ", str, yes_no_prompt,
-                   verbose_prompt ? (default_response ? " Press enter to answer 'Yes'" : " Press enter to answer 'No'")
+                   verbose_prompt ? (default_response ? " Press enter to answer 'Yes'"
+                                                      : " Press enter to answer 'No'")
                                   : "");
             fflush(stdout);
             char input[3];
@@ -198,16 +194,14 @@ namespace Mlib::Sys
                     fflush(stdout);
                     if (input[1] != '\n')
                     {
-                        for (int c; (c = fgetc(stdin)) != '\n' && c != EOF;)
-                            ;
+                        for (int c; (c = fgetc(stdin)) != '\n' && c != EOF;);
                     }
                 }
             }
         }
     }
 
-    const char *
-    itoa(int num) _NO_THROW
+    const char *itoa(int num) _NO_THROW
     {
         static thread_local char buffer[20];
         char                    *p = buffer;
@@ -216,8 +210,7 @@ namespace Mlib::Sys
             *p++ = '-';
             num  = -num;
         }
-        do
-        {
+        do {
             *p++ = '0' + (num % 10);
             num /= 10;
         }
@@ -232,8 +225,7 @@ namespace Mlib::Sys
         return buffer;
     }
 
-    void
-    run_bin(const char *bin, char *const *arg_arry, char *const *env_arry)
+    void run_bin(const char *bin, char *const *arg_arry, char *const *env_arry)
     {
         pid_t pid;
         int   status;
@@ -271,8 +263,7 @@ namespace Mlib::Sys
         }
     }
 
-    void
-    posix_run_bin(const char *bin, char **argv, char **envv)
+    void posix_run_bin(const char *bin, char **argv, char **envv)
     {
         pid_t             pid;
         int               r;
@@ -285,8 +276,7 @@ namespace Mlib::Sys
         }
     }
 
-    void
-    get_dev_info(const char *path, unsigned long *b_size)
+    void get_dev_info(const char *path, unsigned long *b_size)
     {
         struct statfs s;
         if (statfs(path, &s) == 0)

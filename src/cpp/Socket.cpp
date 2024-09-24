@@ -8,8 +8,7 @@
 #include <netdb.h>
 #include <unistd.h>
 
-void
-parse_url(const char *url, char *host, char *subdomain)
+void parse_url(const char *url, char *host, char *subdomain)
 {
     const char *p;
     if ((p = strchr(url, '/')) != nullptr)
@@ -26,8 +25,7 @@ parse_url(const char *url, char *host, char *subdomain)
     }
 }
 
-const char *
-remove_header(const char *data, unsigned long *size)
+const char *remove_header(const char *data, unsigned long *size)
 {
     const char *delimiter, *pos;
     delimiter = "\r\n\r\n";
@@ -39,8 +37,7 @@ remove_header(const char *data, unsigned long *size)
     return data;
 }
 
-int
-create_local_unix_socket_fd(int socket_domain, int socket_type, int socket_protocol)
+int create_local_unix_socket_fd(int socket_domain, int socket_type, int socket_protocol)
 {
     int fd;
     if ((fd = socket(socket_domain, socket_type, socket_protocol)) == -1)
@@ -50,15 +47,13 @@ create_local_unix_socket_fd(int socket_domain, int socket_type, int socket_proto
     return fd;
 }
 
-void
-ssl_init()
+void ssl_init()
 {
     SSL_load_error_strings();
     OpenSSL_add_ssl_algorithms();
 }
 
-void
-ssl_cleanup(SSL *ssl, int fd, SSL_CTX *ctx)
+void ssl_cleanup(SSL *ssl, int fd, SSL_CTX *ctx)
 {
     SSL_shutdown(ssl);
     SSL_free(ssl);
@@ -67,8 +62,7 @@ ssl_cleanup(SSL *ssl, int fd, SSL_CTX *ctx)
     EVP_cleanup();
 }
 
-SSL_CTX *
-ssl_create_ctx()
+SSL_CTX *ssl_create_ctx()
 {
     const SSL_METHOD *method;
     SSL_CTX          *ssl_ctx;
@@ -81,8 +75,7 @@ ssl_create_ctx()
     return ssl_ctx;
 }
 
-int
-ssl_create_socket_fd(const char *hostname, int port)
+int ssl_create_socket_fd(const char *hostname, int port)
 {
     int             socket_fd;
     struct addrinfo hints, *res, *p;
@@ -118,8 +111,7 @@ ssl_create_socket_fd(const char *hostname, int port)
     return socket_fd;
 }
 
-SSL *
-ssl_connect(SSL_CTX *ctx, int fd)
+SSL *ssl_connect(SSL_CTX *ctx, int fd)
 {
     SSL *ssl;
     ssl = SSL_new(ctx);
@@ -132,15 +124,14 @@ ssl_connect(SSL_CTX *ctx, int fd)
     return ssl;
 }
 
-void
-ssl_https_request(SSL *ssl, const char *hostname, const char *subdomain)
+void ssl_https_request(SSL *ssl, const char *hostname, const char *subdomain)
 {
     int          ret;
     int          error;
     static char  buf[4096];
     const int    subdomain_len = (subdomain) ? strlen(subdomain) : 1;
-    const size_t req_len =
-        strlen("GET / HTTP/1.1\r\nHost: \r\nConnection: close\r\n\r\n") + strlen(hostname) + subdomain_len;
+    const size_t req_len       = strlen("GET / HTTP/1.1\r\nHost: \r\nConnection: close\r\n\r\n") +
+                           strlen(hostname) + subdomain_len;
     snprintf(buf, req_len + 1, "GET %s HTTP/1.1\r\nHost: %s\r\nConnection: close\r\n\r\n",
              (subdomain) ? subdomain : "/", hostname);
     ret = SSL_write(ssl, buf, req_len);
@@ -192,8 +183,7 @@ ssl_https_request(SSL *ssl, const char *hostname, const char *subdomain)
     }
 }
 
-const char *
-ssl_retrieve_response(SSL *ssl, unsigned long *size)
+const char *ssl_retrieve_response(SSL *ssl, unsigned long *size)
 {
     int         bytes, error, total_bytes_read = 0;
     static char buf[4096];
@@ -261,8 +251,7 @@ ssl_retrieve_response(SSL *ssl, unsigned long *size)
     return nullptr;
 }
 
-const char *
-ssl_retrieve_url_data(const char *url, unsigned long *size)
+const char *ssl_retrieve_url_data(const char *url, unsigned long *size)
 {
     int              fd;
     unsigned long    total_size;
@@ -283,8 +272,7 @@ ssl_retrieve_url_data(const char *url, unsigned long *size)
     return response;
 }
 
-const char *
-ssl_download(const char *url, unsigned long *size)
+const char *ssl_download(const char *url, unsigned long *size)
 {
     const char *data;
     data = ssl_retrieve_url_data(url, size);

@@ -1,6 +1,11 @@
-#include "../include/String.h"
+#include <cstddef>
+#include <cstdlib>
+#include <cstring>
+#include <string>
 
-#include "../include/def.h"
+#include "Attributes.h"
+#include "String.h"
+#include "def.h"
 
 using std::pair;
 using std::string;
@@ -38,8 +43,7 @@ namespace Mlib::String
     }
 
     string
-    replaceN(const string &str, const string &search, const string &replace,
-             size_t n)
+    replaceN(const string &str, const string &search, const string &replace, size_t n)
     {
         string result = str;
         size_t pos    = 0;
@@ -276,7 +280,7 @@ MString::c_str(void) const
     return data;
 }
 
-unsigned int
+Uint
 MString::size(void)
 {
     return len;
@@ -293,8 +297,7 @@ MString_getenv(const char *str)
     return var;
 }
 
-Ulong __warn_unused __pure __no_debug __no_throw __no_null(1)
-mstrlen(const char *str) noexcept
+Ulong __warn_unused __pure __no_debug __no_throw __no_null(1) mstrlen(const char *str) noexcept
 {
     const char *cp = str;
     for (; *cp; ++cp);
@@ -302,17 +305,17 @@ mstrlen(const char *str) noexcept
 }
 
 Ulong __warn_unused __pure __no_debug __no_throw __no_null(1)
-mstrnlen(const char *str, Ulong maxlen) noexcept 
+    mstrnlen(const char *str, Ulong maxlen) noexcept
 {
     const char *cp = str;
     for (; maxlen != 0 && *cp; ++cp, --maxlen);
     return (Ulong)(cp - str);
 }
 
-char * __warn_unused __pure __no_debug __no_throw __no_null(1)
-mstrndup(const char *str, Ulong maxlen) noexcept
+char *__warn_unused __pure __no_debug __no_throw __no_null(1)
+    mstrndup(const char *str, Ulong maxlen) noexcept
 {
-    Ulong len = mstrnlen(str, maxlen);
+    Ulong len  = mstrnlen(str, maxlen);
     char *copy = (char *)malloc(len + 1);
     if (copy)
     {
@@ -321,3 +324,13 @@ mstrndup(const char *str, Ulong maxlen) noexcept
     }
     return copy;
 }
+
+/* clang-format off */
+void __no_debug __no_throw __no_null(1, 2)
+stack_str_ncpy(char *__restrict __dst,
+               char *__restrict __src,
+               Uint __n) noexcept
+{
+    for (Uint i = 0; i < __n; ++i) __dst[i] = __src[i];
+}
+/* clang-format on */

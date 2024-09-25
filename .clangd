@@ -1,5 +1,8 @@
+Diagnostics:
+  MissingIncludes: Strict
+  UnusedIncludes: None
 CompileFlags:
-  Add: 
+  Add:
     - -stdlib=libc++     # Use libc++ as the standard library
     - -I/usr/include/c++/v1   # Include path for libc++ headers
     # - -fmodules      # Enable C++20 module support

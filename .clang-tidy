@@ -1,3 +1,4 @@
+Checks: '-clangd-unused-includes'
 # # Checks: |
 # #   readability-static-accessed-through-instance,
 # #   readability-convert-member-functions-to-static,

@@ -17,8 +17,7 @@ namespace Mlib::Profile
      * particular function. It stores the values of the time taken
      * by the function in each call.  It also provides the mean,
      * standard deviation, minimum, maximum and count of the values. */
-    class ProfilerStats
-    {
+    class ProfilerStats {
     public:
         /* Records the value of the duration of the profiled function. */
         void record(double value);
@@ -43,8 +42,7 @@ namespace Mlib::Profile
         vector<double> values;
     };
 
-    class GlobalProfiler
-    {
+    class GlobalProfiler {
         map<string, ProfilerStats> stats;
         string                     output_file;
         static GlobalProfiler     *instance;
@@ -64,8 +62,7 @@ namespace Mlib::Profile
         DEL_CM_CONSTRUCTORS(GlobalProfiler);
     };
 
-    class AutoTimer
-    {
+    class AutoTimer {
     public:
         AutoTimer(const std::string &name);
         ~AutoTimer();

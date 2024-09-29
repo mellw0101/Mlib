@@ -111,5 +111,4 @@ namespace Mlib::Sys
     void        run_bin(const char *bin, char *const *arg_arry, char *const *env_arry) __attribute_nonnull__((1, 2));
     void        get_dev_info(const char *path, unsigned long *b_size);
     void        posix_run_bin(const char *bin, char **argv, char **envv);
-
-} // namespace Mlib::Sys
+}

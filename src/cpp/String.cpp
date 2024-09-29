@@ -132,7 +132,7 @@ namespace Mlib::String
         return result;
     }
 
-} // namespace Mlib::String
+}
 
 /* Constructor. */
 MString::MString(const char *str)

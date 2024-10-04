@@ -7,81 +7,78 @@
 #include "Attributes.h"
 #include "def.h"
 
-namespace Mlib::Profile
-{
-    using std::map;
-    using std::string;
-    using std::vector;
+namespace Mlib::Profile {
+  using std::map;
+  using std::string;
+  using std::vector;
 
-    /* This class is used to store the profiling statistics of a
-     * particular function. It stores the values of the time taken
-     * by the function in each call.  It also provides the mean,
-     * standard deviation, minimum, maximum and count of the values. */
-    class ProfilerStats {
-    public:
-        /* Records the value of the duration of the profiled function. */
-        void record(double value);
+  /* This class is used to store the profiling statistics of a
+   * particular function. It stores the values of the time taken
+   * by the function in each call.  It also provides the mean,
+   * standard deviation, minimum, maximum and count of the values. */
+  class ProfilerStats {
+   public:
+    /* Records the value of the duration of the profiled function. */
+    void record(double value);
 
-        /* Calculates the mean of the recorded values. */
-        double mean(void) const;
+    /* Calculates the mean of the recorded values. */
+    double mean(void) const;
 
-        /* Calculates the standard deviation of the recorded values. */
-        double stddev(void) const;
+    /* Calculates the standard deviation of the recorded values. */
+    double stddev(void) const;
 
-        /* Returns the minimum of the recorded values. */
-        double min(void) const;
+    /* Returns the minimum of the recorded values. */
+    double min(void) const;
 
-        /* Returns the maximum of the recorded values. */
-        double max(void) const;
+    /* Returns the maximum of the recorded values. */
+    double max(void) const;
 
-        /* Returns the number of values recorded. */
-        unsigned long count(void) const;
+    /* Returns the number of values recorded. */
+    Ulong count(void) const;
 
-    private:
-        /* The vector of values of the duration of the profiled function. */
-        vector<double> values;
-    };
+   private:
+    /* The vector of values of the duration of the profiled function. */
+    vector<double> values;
+  };
 
-    class GlobalProfiler {
-        map<string, ProfilerStats> stats;
-        string                     output_file;
-        static GlobalProfiler     *instance;
-        GlobalProfiler(void) noexcept;
-        static void destroy(void) noexcept;
+  class GlobalProfiler {
+    map<string, ProfilerStats> stats;
+    string                     output_file;
+    static GlobalProfiler     *instance;
+    GlobalProfiler(void) noexcept;
+    static void _destroy(void) noexcept;
 
-    public:
-        void record(const string &name, double duration);
-        void report(void);
-        void setOutputFile(STRING_VIEW file_path);
+   public:
+    void record(const string &name, double duration);
+    void report(void);
+    void setOutputFile(STRING_VIEW file_path);
 
-        map<string, ProfilerStats> getStatsCopy(void) const;
-        vector<string>             retrveFormatedStrVecStats(void) const;
+    map<string, ProfilerStats> getStatsCopy(void) const;
+    vector<string>             retrveFormatedStrVecStats(void) const;
 
-        static GlobalProfiler *__warn_unused Instance(void) noexcept;
+    static GlobalProfiler *__warn_unused Instance(void) noexcept;
 
-        DEL_CM_CONSTRUCTORS(GlobalProfiler);
-    };
+    DEL_CM_CONSTRUCTORS(GlobalProfiler);
+  };
 
-    class AutoTimer {
-    public:
-        AutoTimer(const std::string &name);
-        ~AutoTimer();
+  class AutoTimer {
+   public:
+    AutoTimer(const string &name);
+    ~AutoTimer();
 
-    private:
-        STRING name;
+   private:
+    STRING name;
+    TIME_POINT<HIGH_RES_CLOCK> start;
+  };
 
-        TIME_POINT<HIGH_RES_CLOCK> start;
-    };
-
-    /* Sets up the generation of the profiling.
-     * This means that the report will be generated at the end of the program.
-     * Note that this function must be called before any profiling is done,
-     * otherwise the report will not be generated.
-     * @param file_path (std::string_view)
-     * - The path to the file where the report will be generated. */
-    void setupReportGeneration(STRING_VIEW file_path);
-
-} // namespace Mlib::Profile
+  /* Sets up the generation of the profiling.
+   * This means that the report will be generated at the end of the program.
+   * Note that this function must be called before any profiling is done,
+   * otherwise the report will not be generated.
+   * @param file_path (std::string_view)
+   * - The path to the file where the report will be generated. */
+  void setupReportGeneration(STRING_VIEW file_path);
+}
 
 #define GLOBALPROFILER                Mlib::Profile::GlobalProfiler::Instance()
 #define PROFILE_CURRENT_SCOPE(__Name) Mlib::Profile::AutoTimer PROFILE_CURRENT_SCOPE__(__Name)

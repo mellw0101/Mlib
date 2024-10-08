@@ -14,9 +14,8 @@
 #include <openssl/ssl.h>
 
 void        parse_url(const char *url, char *host, char *subdomain) __nonnull((1, 2, 3));
-const char *remove_header(const char *data, unsigned long *size)
-    __nonnull((1, 2)) __returns_nonnull;
-int create_local_unix_socket_fd();
+const char *remove_header(const char *data, unsigned long *size) __nonnull((1, 2)) __returns_nonnull;
+int         create_local_unix_socket_fd();
 
 void        ssl_init();
 void        ssl_cleanup(SSL *ssl, int fd, SSL_CTX *ctx) __nonnull((1, 3));

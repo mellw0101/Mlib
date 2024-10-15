@@ -1,5 +1,5 @@
 Diagnostics:
-  MissingIncludes: Strict
+  # MissingIncludes: Strict
   UnusedIncludes: None
 CompileFlags:
   Add:

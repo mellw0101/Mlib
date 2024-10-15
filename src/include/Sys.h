@@ -17,98 +17,82 @@
 #include "Http.h"
 #include "def.h"
 
-namespace Mlib::Sys
-{
-    s8 run_binary(C_STRING &binary_path, C_VECTOR<STRING> &args, C_VECTOR<STRING> &env_vars = {});
+namespace Mlib::Sys {
+  char run_binary(C_STRING &binary_path, C_VECTOR<STRING> &args, C_VECTOR<STRING> &env_vars = {});
 
-    class Prompt
-    {
-    public:
-        Prompt(C_STRING &prompt);
-        operator STRING() const;
+  class Prompt {
+   public:
+    Prompt(C_STRING &prompt);
+    operator STRING() const;
 
-    private:
-        STRINGSTREAM ss;
+   private:
+    STRINGSTREAM ss;
+  };
+
+  template <typename T>
+  class Singleton {
+   private:
+    static Singleton *instance;
+    T                 value;
+
+    Singleton(T val)
+        : value(val) {
+    }
+
+   public:
+    static Singleton *Instance(T val) {
+      if (instance == nullptr) {
+        instance = new Singleton(val);
+      }
+      return instance;
+    }
+
+    void destroy() {
+      if (instance != nullptr) {
+        delete instance;
+        instance = nullptr;
+      }
+    }
+
+    T getValue() const {
+      return value;
+    }
+
+    void setValue(T val) {
+      value = val;
+    }
+  };
+
+  namespace CpuMsrAddr {
+    struct RYZEN_3900_X {
+      static constexpr u32 prf_lmt_r    = 0xC001029A; // (Core Performance Limit Reasons)
+      static constexpr u32 pwr_rep      = 0xC0010293; // (Power Reporting)
+      static constexpr u32 pwr_lmt_stat = 0xC0010295; // (Power Limit Status)
     };
+  }
 
-    template <typename T>
-    class Singleton
-    {
-    private:
-        static Singleton *instance;
-        T                 value;
+  class MSRReader {
+    IFSTREAM msr_file;
 
-        Singleton(T val)
-            : value(val)
-        {}
+   public:
+    MSRReader(unsigned int cpu);
 
-    public:
-        static Singleton *
-        Instance(T val)
-        {
-            if (instance == nullptr)
-            {
-                instance = new Singleton(val);
-            }
-            return instance;
-        }
+    ~MSRReader();
 
-        void
-        destroy()
-        {
-            if (instance != nullptr)
-            {
-                delete instance;
-                instance = nullptr;
-            }
-        }
+    Ulong read(Uint msr);
+  };
 
-        T
-        getValue() const
-        {
-            return value;
-        }
+  int           launch_child_process(const char *command);
+  unsigned long retriveSysLogicCores();
+  unsigned long read_msr_value_to_watts(MSRReader *msr_reader, Uint msr_address);
 
-        void
-        setValue(T val)
-        {
-            value = val;
-        }
-    };
-
-    namespace CpuMsrAddr
-    {
-        struct RYZEN_3900_X
-        {
-            static constexpr u32 prf_lmt_r    = 0xC001029A; // (Core Performance Limit Reasons)
-            static constexpr u32 pwr_rep      = 0xC0010293; // (Power Reporting)
-            static constexpr u32 pwr_lmt_stat = 0xC0010295; // (Power Limit Status)
-        };
-    } // namespace CpuMsrAddr
-
-    class MSRReader
-    {
-        IFSTREAM msr_file;
-
-    public:
-        MSRReader(unsigned int cpu);
-
-        ~MSRReader();
-
-        uint64_t read(uint32_t msr);
-    };
-
-    int           launch_child_process(const char *command);
-    unsigned long retriveSysLogicCores();
-    unsigned long read_msr_value_to_watts(MSRReader *msr_reader, unsigned int msr_address);
-
-    /* Prompt for a answer to a prompt.
-     * Return 'default_response' apon enter, else return 'true' if 'Y/y' or 'false' if 'N/n'.
-     * If 'verbose_prompt' is set to 'true' the prompt will state "Press enter to answer 'default_response'".
-     * By default 'default_response' is set to 'true' and 'verbose_prompt' is set to 'false'. */
-    bool        prompt_yes_no(const char *str, bool default_response = true, bool verbose_prompt = false);
-    const char *itoa(int num) _NO_THROW;
-    void        run_bin(const char *bin, char *const *arg_arry, char *const *env_arry) __attribute_nonnull__((1, 2));
-    void        get_dev_info(const char *path, unsigned long *b_size);
-    void        posix_run_bin(const char *bin, char **argv, char **envv);
+  /* Prompt for a answer to a prompt.
+   * Return 'default_response' apon enter, else return 'true' if 'Y/y' or 'false' if 'N/n'.
+   * If 'verbose_prompt' is set to 'true' the prompt will state "Press enter to answer 'default_response'".
+   * By default 'default_response' is set to 'true' and 'verbose_prompt' is set to 'false'. */
+  bool        prompt_yes_no(const char *str, bool default_response = true, bool verbose_prompt = false);
+  const char *itoa(int num) _NO_THROW;
+  void        run_bin(const char *bin, char *const *arg_arry, char *const *env_arry) __attribute_nonnull__((1, 2));
+  void        get_dev_info(const char *path, Ulong *b_size);
+  void        posix_run_bin(const char *bin, char **argv, char **envv);
 }

@@ -9,7 +9,7 @@
 
 template <Uint Size>
 struct bit_flag_t {
-  static_assert((Size % 8 == 0) && Size != 0, "Size must be a power of 8");
+  static_assert(((Size % 8) == 0) && (Size != 0), "Size must be a power of 8");
 
   __inline__ void __bit_flag_t_attr set(const Uint flag) noexcept {
     _flags(flag) |= _flag_mask(flag);
@@ -143,6 +143,26 @@ struct bit_flag_t {
     }
   }
 
+  __inline__ constexpr Uint __bit_flag_t_attr num_of_set_flags(void) noexcept {
+    Uint n = 0;
+    for (Uint i = 0; i < Size; ++i) {
+      if (is_set(i)) {
+        ++n;
+      }
+    }
+    return n;
+  }
+
+  __inline__ constexpr Uint __bit_flag_t_attr num_of_set_flags(void) const noexcept {
+    Uint n = 0;
+    for (Uint i = 0; i < Size; ++i) {
+      if (is_set(i)) {
+        ++n;
+      }
+    }
+    return n;
+  }
+
   /* Constructors. */
   __inline__ __bit_flag_t_attr bit_flag_t(void) noexcept {
     clear();
@@ -178,7 +198,7 @@ struct bit_flag_t {
     return *this;
   }
 
-  private:
+ private:
   Uchar _flag_array[Size / 8];
 
   __inline__ Uchar __warn_unused __bit_flag_t_attr _flag_mask(const Uint flag) noexcept {

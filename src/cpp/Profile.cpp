@@ -34,7 +34,7 @@ namespace Mlib::Profile {
       return 0.0;
     }
     double sum = std::accumulate(values.begin(), values.end(), 0.0);
-    return sum / values.size();
+    return (sum / values.size());
   }
 
   double ProfilerStats::stddev(void) const {

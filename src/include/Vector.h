@@ -9,197 +9,219 @@
 #define __MVector_attr       __attribute__((__always_inline__, __nodebug__))
 #define __MVector_const_attr __attribute__((__always_inline__, __nodebug__, __const__))
 
+/* clang-format off */
+
+namespace /* Defines. */ {
+  #define __nothrow_default_constructor noexcept(is_nothrow_default_constructible<T>::value)
+  #define __nothrow_destruct            noexcept(is_nothrow_destructible<T>::value)
+  #define __nothrow_copy_constructible  noexcept(is_nothrow_copy_constructible<T>::value)
+  #define __nothrow_move_constructible  noexcept(std::is_nothrow_move_constructible<T>::value)
+
+  #define __ref  __inline__ constexpr MVector & __attribute((__always_inline__, __nothrow__, __nodebug__))
+  #define __type_ref __inline__ constexpr T &__warn_unused __attribute((__always_inline__, __nothrow__, __nodebug__))
+  #define __type_ptr __inline__ constexpr T *__warn_unused __attribute((__always_inline__, __nothrow__, __nodebug__))
+  #define __bool __inline__ constexpr bool __warn_unused __attribute((__const__, __always_inline__, __nothrow__, __nodebug__))
+  #define __Uint __inline__ constexpr Uint __warn_unused __attribute((__const__, __always_inline__, __nothrow__, __nodebug__))
+}
+
 template <class T>
 class MVector {
-  T   *data;
-  Uint len;
-  Uint cap;
+ private:
+  T   *_data;
+  Uint _len;
+  Uint _cap;
 
  public:
-  __inline__ void __MVector_attr push_back(const T &element) noexcept(std::is_nothrow_default_constructible<T>::value) {
-    if (len == cap) {
-      cap *= 2;
-      data = AREALLOC_ARRAY(data, cap);
+  __ref push_back(const T &element) __nothrow_default_constructor {
+    if (_len == _cap) {
+      _cap *= 2;
+      _data = AREALLOC_ARRAY(_data, _cap);
     }
-    new (data + len) T(element);
-    len++;
+    new (_data + _len) T(element);
+    ++_len;
+    return *this;
   }
 
-  __inline__ void __MVector_attr push_back(T &&element) noexcept(std::is_nothrow_default_constructible<T>::value) {
-    if (len == cap) {
-      cap *= 2;
-      data = AREALLOC_ARRAY(data, cap);
+  __ref push_back(T &&element) __nothrow_default_constructor {
+    if (_len == _cap) {
+      _cap *= 2;
+      _data = AREALLOC_ARRAY(_data, _cap);
     }
-    *(data + len) = (T &&)element;
-    ++len;
+    *(_data + _len) = (T &&)element;
+    ++_len;
+    return *this;
   }
 
-  __inline__ void __MVector_attr reorder_from(Uint newstart) noexcept {
-    if (newstart < len) {
-      for (Uint i = newstart; i < len; ++i) {
-        data[i - newstart] = std::move(data[i]);
+  __ref reorder_from(Uint newstart) {
+    if (newstart < _len) {
+      for (Uint i = newstart; i < _len; ++i) {
+        _data[i - newstart] = (T &&)_data[i];
       }
-      len -= newstart;
+      _len -= newstart;
     }
+    return *this;
   }
 
-  __inline__ void __MVector_attr erase_at(Uint index) noexcept(std::is_nothrow_destructible<T>::value) {
-    if (index < len) {
-      data[index].~T();
-      for (Uint i = index; i < (len - 1); ++i) {
-        data[i] = std::move(data[i + 1]);
+  __ref erase_at(Uint index) __nothrow_destruct {
+    if (index < _len) {
+      _data[index].~T();
+      for (Uint i = index; i < (_len - 1); ++i) {
+        _data[i] = (T &&)_data[i + 1];
       }
-      len -= 1;
+      _len -= 1;
     }
+    return *this;
   }
 
   /* Note that this does not free any elements in the array
-   * it only free`s the current array and set`s 'len' to 0
-   * then mallocs the 'data' ptr again. */
-  __inline__ void __MVector_attr clear(void) noexcept(std::is_nothrow_destructible<T>::value) {
-    for (Uint i = 0; i < len; i++) {
-      data[i].~T();
+   * it only free`s the current array and set`s '_len' to 0
+   * then mallocs the '_data' ptr again. */
+  __ref clear(void) __nothrow_destruct {
+    for (Uint i = 0; i < _len; i++) {
+      _data[i].~T();
     }
-    free(data);
-    len  = 0;
-    cap  = 10;
-    data = AMALLOC_ARRAY(data, cap);
+    free(_data);
+    _len  = 0;
+    _cap  = 10;
+    _data = AMALLOC_ARRAY(_data, _cap);
+    return *this;
   }
 
-  __inline__ Uint __warn_unused __MVector_attr size(void) noexcept {
-    return len;
+  __Uint size(void) const {
+    return _len;
   }
 
-  __inline__ const Uint __warn_unused __MVector_const_attr size(void) const noexcept {
-    return len;
+  __bool empty(void) const {
+    return (_len == 0);
   }
 
-  __inline__ bool __warn_unused __MVector_attr empty(void) noexcept {
-    return (len == 0);
-  }
-
-  __inline__ const bool __warn_unused __MVector_const_attr empty(void) const noexcept {
-    return (len == 0);
-  }
-
-  __inline__ void __MVector_attr resize(const Uint newlen) noexcept {
-    if (newlen < len) {
-      len = newlen;
+  __ref resize(Uint newlen) {
+    if (newlen < _len) {
+      _len = newlen;
     }
+    return *this;
   }
 
-  __inline__ T &__MVector_attr back(void) noexcept {
-    return (len > 0) ? *(data + (len - 1)) : *data;
+  __type_ref back(void) const {
+    return (_len > 0) ? *(_data + (_len - 1)) : *_data;
   }
 
-  __inline__ const T &__MVector_const_attr back(void) const noexcept {
-    return (len > 0) ? *(data + (len - 1)) : *data;
+  __type_ptr data(void) const {
+    return _data;
   }
 
-  __inline__ T *__MVector_const_attr begin(void) const noexcept {
-    return data;
+  __type_ptr begin(void) const {
+    return _data;
   }
 
-  __inline__ T *__MVector_const_attr end(void) const noexcept {
-    return data + len;
+  __type_ptr end(void) const {
+    return (_data + _len);
   }
 
-  __inline__ Uint index_of(const T *element) const noexcept {
+  __Uint index_of(const T *element) const {
     return (element >= begin() && element < end()) ? element - begin() : -1;
   }
 
   /* Constructors. */
-  MVector(void) noexcept
-      : len(0)
-      , cap(10) {
-    data = (T *)calloc(cap, sizeof(T));
+  MVector(void) noexcept : _len(0), _cap(10) {
+    _data = (T *)calloc(_cap, sizeof(T));
   }
 
-  MVector(initializer_list<T> list) noexcept(std::is_nothrow_default_constructible<T>::value)
-      : len(0)
-      , cap(list.size() * 2) {
-    data = (T *)calloc(cap, sizeof(T));
+  MVector(Uint n) noexcept : _len(0), _cap(n) {
+    _data = (T *)calloc(_cap, sizeof(T));
+    for (Uint i = 0; i < n; ++i) {
+      _data[i] = T{};
+    }
+  }
+
+  MVector(initializer_list<T> list) __nothrow_default_constructor : _len(0), _cap(list.size() * 2) {
+    _data = (T *)calloc(_cap, sizeof(T));
     for (const auto &it : list) {
       push_back(it);
     }
   }
 
   /* Copy Constructor. */
-  MVector(const MVector &other) noexcept(std::is_nothrow_copy_constructible<T>::value)
-      : len(other.len)
-      , cap(other.cap) {
-    data = (T *)calloc(cap, sizeof(T));
-    for (Uint i = 0; i < len; ++i) {
-      new (data + i) T(other.data[i]); // Use copy constructor of T
+  MVector(const MVector &other) __nothrow_copy_constructible
+      : _len(other._len)
+      , _cap(other._cap) {
+    _data = (T *)calloc(_cap, sizeof(T));
+    for (Uint i = 0; i < _len; ++i) {
+      new (_data + i) T(other._data[i]); // Use copy constructor of T
     }
   }
 
   /* Copy Assignment Operator. */
-  MVector &operator=(const MVector &other) noexcept(std::is_nothrow_copy_constructible<T>::value) {
+  __ref operator=(const MVector &other) __nothrow_copy_constructible {
     if (this != &other) {
-      // Clean up the current object
-      for (Uint i = 0; i < len; i++) {
-        data[i].~T();
+      /* Clean up the current object */
+      for (Uint i = 0; i < _len; i++) {
+        _data[i].~T();
       }
-      free(data);
-      // Allocate new memory and copy elements from 'other'
-      len  = other.len;
-      cap  = other.cap;
-      data = (T *)calloc(cap, sizeof(T));
-      for (Uint i = 0; i < len; ++i) {
-        new (data + i) T(other.data[i]);
+      free(_data);
+      /* Allocate new memory and copy elements from 'other' */
+      _len  = other._len;
+      _cap  = other._cap;
+      _data = (T *)calloc(_cap, sizeof(T));
+      for (Uint i = 0; i < _len; ++i) {
+        new (_data + i) T(other._data[i]);
       }
     }
     return *this;
   }
 
   /* Move Constructor. */
-  MVector(MVector &&other) noexcept(std::is_nothrow_default_constructible<T>::value)
-      : data(other.data)
-      , len(other.len)
-      , cap(other.cap) {
-    other.data = nullptr;
-    other.len  = 0;
-    other.cap  = 0;
+  MVector(MVector &&other) __nothrow_default_constructor
+      : _data(other._data)
+      , _len(other._len)
+      , _cap(other._cap) {
+    other._data = nullptr;
+    other._len  = 0;
+    other._cap  = 0;
   }
 
   /* Move Assignment Operator. */
-  MVector &operator=(MVector &&other) noexcept(std::is_nothrow_default_constructible<T>::value) {
+  __ref operator=(MVector &&other) __nothrow_move_constructible {
     if (this != &other) {
-      // Clean up the current vector
-      for (Uint i = 0; i < len; i++) {
-        data[i].~T();
+      /* Clean up the current vector */
+      for (Uint i = 0; i < _len; i++) {
+        _data[i].~T();
       }
-      free(data);
-      // Move data from other
-      data = other.data;
-      len  = other.len;
-      cap  = other.cap;
-      // Reset the other vector
-      other.data = nullptr;
-      other.len  = 0;
-      other.cap  = 0;
+      free(_data);
+      /* Move _data from other */
+      _data = other._data;
+      _len  = other._len;
+      _cap  = other._cap;
+      /* Reset the other vector */
+      other._data = nullptr;
+      other._len  = 0;
+      other._cap  = 0;
     }
     return *this;
   }
 
   /* Destructor. */
-  ~MVector(void) noexcept(is_nothrow_destructible<T>::value) {
-    for (Uint i = 0; i < len; i++) {
-      data[i].~T();
+  ~MVector(void) __nothrow_destruct {
+    for (Uint i = 0; i < _len; ++i) {
+      _data[i].~T();
     }
-    free(data);
+    free(_data);
   }
 
   /* Operator. */
-  __inline__ T &__MVector_attr operator[](const Uint index) noexcept {
-    return data[index];
-  }
-
-  __inline__ const T &__MVector_const_attr operator[](const Uint index) const noexcept {
-    return data[index];
+  __type_ref operator[](Uint index) const {
+    return _data[index];
   }
 };
 
-#undef MVECTOR_ATTR
-#undef MVECTOR_CONST_ATTR
+namespace /* Undef defines. */ {
+  #undef __nothrow_default_constructor
+  #undef __nothrow_destruct
+
+  #undef __ref
+  #undef __bool
+  #undef __Uint
+}
+
+#undef __MVector_attr
+#undef __MVector_const_attr

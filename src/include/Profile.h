@@ -10,7 +10,10 @@
 namespace Mlib::Profile {
   using std::map;
   using std::string;
+  using std::string_view;
   using std::vector;
+  using std::chrono::time_point;
+  using std::chrono::high_resolution_clock;
 
   /* This class is used to store the profiling statistics of a
    * particular function. It stores the values of the time taken
@@ -42,6 +45,7 @@ namespace Mlib::Profile {
   };
 
   class GlobalProfiler {
+   private:
     map<string, ProfilerStats> stats;
     string                     output_file;
     static GlobalProfiler     *instance;
@@ -51,7 +55,7 @@ namespace Mlib::Profile {
    public:
     void record(const string &name, double duration);
     void report(void);
-    void setOutputFile(STRING_VIEW file_path);
+    void setOutputFile(string_view file_path);
 
     map<string, ProfilerStats> getStatsCopy(void) const;
     vector<string>             retrveFormatedStrVecStats(void) const;
@@ -62,13 +66,13 @@ namespace Mlib::Profile {
   };
 
   class AutoTimer {
+   private:
+    string name;
+    time_point<high_resolution_clock> start;
+
    public:
     AutoTimer(const string &name);
-    ~AutoTimer();
-
-   private:
-    STRING name;
-    TIME_POINT<HIGH_RES_CLOCK> start;
+    ~AutoTimer(void);
   };
 
   /* Sets up the generation of the profiling.
@@ -77,7 +81,7 @@ namespace Mlib::Profile {
    * otherwise the report will not be generated.
    * @param file_path (std::string_view)
    * - The path to the file where the report will be generated. */
-  void setupReportGeneration(STRING_VIEW file_path);
+  void setupReportGeneration(string_view file_path);
 }
 
 #define GLOBALPROFILER                Mlib::Profile::GlobalProfiler::Instance()

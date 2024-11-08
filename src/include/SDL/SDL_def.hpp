@@ -46,51 +46,49 @@ using func = std::function<T>;
 #define CONSTRAIN_VEL_IF(condition, value)     (condition) ? (value = 0.00) : 0;
 /* This macro is used to confine an object within a reqtangle. */
 #define HIT_WALL(x, velx, min_x, max_x, y, vely, min_y, max_y) \
-    CLAMP(x, min_x, max_x);                                    \
-    (x == min_x) ? (velx < 0.00) ? (velx = 0.00) : 0 : 0;      \
-    (x == max_x) ? (velx > 0.00) ? (velx = 0.00) : 0 : 0;      \
-    CLAMP(y, min_y, max_y);                                    \
-    (y == min_y) ? (vely < 0.00) ? (vely = 0.00) : 0 : 0;      \
-    (y == max_y) ? (vely > 0.00) ? (vely = 0.00) : 0 : 0
+  CLAMP(x, min_x, max_x);                                      \
+  (x == min_x) ? (velx < 0.00) ? (velx = 0.00) : 0 : 0;        \
+  (x == max_x) ? (velx > 0.00) ? (velx = 0.00) : 0 : 0;        \
+  CLAMP(y, min_y, max_y);                                      \
+  (y == min_y) ? (vely < 0.00) ? (vely = 0.00) : 0 : 0;        \
+  (y == max_y) ? (vely > 0.00) ? (vely = 0.00) : 0 : 0
 
 #define FRAME_DELAY(framerate) ((float)1000 / framerate)
 
-#define ELEM_LEFT(e)  (e)->rect.x
-#define ELEM_RIGHT(e) (e)->rect.x + (e)->rect.w
-#define ELEM_TOP(e)   (e)->rect.y
-#define ELEM_BOT(e)   (e)->rect.y + (e)->rect.h
+#define ELEM_LEFT(e)           (e)->rect.x
+#define ELEM_RIGHT(e)          (e)->rect.x + (e)->rect.w
+#define ELEM_TOP(e)            (e)->rect.y
+#define ELEM_BOT(e)            (e)->rect.y + (e)->rect.h
 
-#define ELEMS_COLLIDING(object, static_object)          \
-    ELEM_RIGHT(object) >= ELEM_LEFT(static_object)  &&  \
-    ELEM_LEFT(object)  <= ELEM_RIGHT(static_object) &&  \
-    ELEM_BOT(object)   >= ELEM_TOP(static_object)   &&  \
-    ELEM_TOP(object)   <= ELEM_BOT(static_object)
+#define ELEMS_COLLIDING(object, static_object)                                                        \
+  ELEM_RIGHT(object) >= ELEM_LEFT(static_object) && ELEM_LEFT(object) <= ELEM_RIGHT(static_object) && \
+    ELEM_BOT(object) >= ELEM_TOP(static_object) && ELEM_TOP(object) <= ELEM_BOT(static_object)
 
 #define OBJ_OVERLAP_LEFT(object, static_object)  ELEM_RIGHT(object) - ELEM_LEFT(static_object)
 #define OBJ_OVERLAP_RIGHT(object, static_object) ELEM_RIGHT(static_object) - ELEM_LEFT(object)
 #define OBJ_OVERLAP_TOP(object, static_object)   ELEM_BOT(object) - ELEM_TOP(static_object)
 #define OBJ_OVERLAP_BOT(object, static_object)   ELEM_BOT(static_object) - ELEM_TOP(object)
 
-#define OBJ_OVERLAP_LEAST_LEFT(object, static_object)                                       \
-    OBJ_OVERLAP_LEFT(object, static_object) < OBJ_OVERLAP_RIGHT(object, static_object) &&   \
-        OBJ_OVERLAP_LEFT(object, static_object) < OBJ_OVERLAP_TOP(object, static_object) && \
-        OBJ_OVERLAP_LEFT(object, static_object) < OBJ_OVERLAP_BOT(object, static_object)
+#define OBJ_OVERLAP_LEAST_LEFT(object, static_object)                                   \
+  OBJ_OVERLAP_LEFT(object, static_object) < OBJ_OVERLAP_RIGHT(object, static_object) && \
+    OBJ_OVERLAP_LEFT(object, static_object) < OBJ_OVERLAP_TOP(object, static_object) && \
+    OBJ_OVERLAP_LEFT(object, static_object) < OBJ_OVERLAP_BOT(object, static_object)
 
-#define OBJ_OVERLAP_LEAST_RIGHT(object, static_object)                                       \
-    OBJ_OVERLAP_RIGHT(object, static_object) < OBJ_OVERLAP_LEFT(object, static_object) &&    \
-        OBJ_OVERLAP_RIGHT(object, static_object) < OBJ_OVERLAP_TOP(object, static_object) && \
-        OBJ_OVERLAP_RIGHT(object, static_object) < OBJ_OVERLAP_BOT(object, static_object)
+#define OBJ_OVERLAP_LEAST_RIGHT(object, static_object)                                   \
+  OBJ_OVERLAP_RIGHT(object, static_object) < OBJ_OVERLAP_LEFT(object, static_object) &&  \
+    OBJ_OVERLAP_RIGHT(object, static_object) < OBJ_OVERLAP_TOP(object, static_object) && \
+    OBJ_OVERLAP_RIGHT(object, static_object) < OBJ_OVERLAP_BOT(object, static_object)
 
-#define OBJ_OVERLAP_LEAST_TOP(object, static_object)                                        \
-    OBJ_OVERLAP_TOP(object, static_object) < OBJ_OVERLAP_BOT(object, static_object) &&      \
-        OBJ_OVERLAP_TOP(object, static_object) < OBJ_OVERLAP_LEFT(object, static_object) && \
-        OBJ_OVERLAP_TOP(object, static_object) < OBJ_OVERLAP_RIGHT(object, static_object)
+#define OBJ_OVERLAP_LEAST_TOP(object, static_object)                                    \
+  OBJ_OVERLAP_TOP(object, static_object) < OBJ_OVERLAP_BOT(object, static_object) &&    \
+    OBJ_OVERLAP_TOP(object, static_object) < OBJ_OVERLAP_LEFT(object, static_object) && \
+    OBJ_OVERLAP_TOP(object, static_object) < OBJ_OVERLAP_RIGHT(object, static_object)
 
-#define OBJ_OVERLAP_LEAST_BOT(object, static_object)                                        \
-    OBJ_OVERLAP_BOT(object, static_object) < OBJ_OVERLAP_TOP(object, static_object) &&      \
-        OBJ_OVERLAP_BOT(object, static_object) < OBJ_OVERLAP_LEFT(object, static_object) && \
-        OBJ_OVERLAP_BOT(object, static_object) < OBJ_OVERLAP_RIGHT(object, static_object)
+#define OBJ_OVERLAP_LEAST_BOT(object, static_object)                                    \
+  OBJ_OVERLAP_BOT(object, static_object) < OBJ_OVERLAP_TOP(object, static_object) &&    \
+    OBJ_OVERLAP_BOT(object, static_object) < OBJ_OVERLAP_LEFT(object, static_object) && \
+    OBJ_OVERLAP_BOT(object, static_object) < OBJ_OVERLAP_RIGHT(object, static_object)
 
-#define APP                    app::instance()
-#define EVENT_HANDLER          event_handler::instance()
-#define KEY_HANDLER            key_handler::Instance()
+#define APP           app::instance()
+#define EVENT_HANDLER event_handler::instance()
+#define KEY_HANDLER   key_handler::Instance()

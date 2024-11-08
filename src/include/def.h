@@ -27,10 +27,10 @@
 #include "Attributes.h"
 
 #ifndef FALSE
-#    define FALSE 0
+#  define FALSE 0
 #endif
 #ifndef TRUE
-#    define TRUE 1
+#  define TRUE 1
 #endif
 
 #define ESC_CODE_RED                     "\033[31m"
@@ -104,10 +104,11 @@
 #define ESC_CODE_CURSOR_COLUMN_ALT       "\033G"
 #define ESC_CODE_CURSOR_POSITION_ALT_ALT "\033H"
 
-
-#define RW_FOR_ALL (S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH)
+#define RW_FOR_ALL                       (S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH)
 
 using std::initializer_list;
+using std::is_nothrow_copy_constructible;
+using std::is_nothrow_default_constructible;
 using std::is_nothrow_destructible;
 
 constexpr auto ESC_CODE_TURN_ON_BRACKETED_PASTE  = "\x1B[?2004h";
@@ -122,17 +123,17 @@ constexpr auto ESC_CODE_TURN_OFF_BRACKETED_PASTE = "\x1B[?2004l";
 #define CONCATENATE(prefix, header)   STRINGIFY(prefix / header)
 #define PREFIX_HEADER(prefix, header) CONCATENATE(prefix, header)
 
-#define DELETE_MOVE_CONSTRUCTORS(class_name)       \
-    class_name(class_name &&)            = delete; \
-    class_name &operator=(class_name &&) = delete
+#define DELETE_MOVE_CONSTRUCTORS(class_name)     \
+  class_name(class_name &&)            = delete; \
+  class_name &operator=(class_name &&) = delete
 
-#define DELETE_COPY_CONSTRUCTORS(class_name)            \
-    class_name(const class_name &)            = delete; \
-    class_name &operator=(const class_name &) = delete
+#define DELETE_COPY_CONSTRUCTORS(class_name)          \
+  class_name(const class_name &)            = delete; \
+  class_name &operator=(const class_name &) = delete
 
 #define DELETE_COPY_AND_MOVE_CONSTRUCTORS(class_name) \
-    DELETE_COPY_CONSTRUCTORS(class_name);             \
-    DELETE_MOVE_CONSTRUCTORS(class_name)
+  DELETE_COPY_CONSTRUCTORS(class_name);               \
+  DELETE_MOVE_CONSTRUCTORS(class_name)
 
 #define DEL_CM_CONSTRUCTORS(class) DELETE_COPY_AND_MOVE_CONSTRUCTORS(class)
 
@@ -143,14 +144,13 @@ constexpr auto ESC_CODE_TURN_OFF_BRACKETED_PASTE = "\x1B[?2004l";
 #define RE_CAST(type, value)       reinterpret_cast<type>(value)
 
 // Macro to enforce that a parameter is a compile-time constant
-#define __ENFORCE_CONSTANT_PARAM(param)   \
-    do {                                  \
-        if (!__builtin_constant_p(param)) \
-        {                                 \
-            __builtin_trap();             \
-        }                                 \
-    }                                     \
-    while (0)
+#define __ENFORCE_CONSTANT_PARAM(param) \
+  do {                                  \
+    if (!__builtin_constant_p(param)) { \
+      __builtin_trap();                 \
+    }                                   \
+  }                                     \
+  while (0)
 
 #define __COMPILE_ERROR(msg) __attribute__((__error__(msg)))
 
@@ -219,31 +219,29 @@ constexpr u8  u8_MIN  = NUMERIC_LIMITS<u8>::min();
 constexpr auto FAILURE = 1;
 constexpr auto SUCCESS = 0;
 
-constexpr u64 operator"" _KB(unsigned long long value)
-{
-    return value * 1024;
+constexpr u64 operator"" _KB(unsigned long long value) {
+  return value * 1024;
 }
 
 #define __FILENAME__ (std::strrchr(__FILE__, '/') ? std::strrchr(__FILE__, '/') + 1 : __FILE__)
 
 #define MAKE_CONSTEXPR_WRAPPER(_name, _type)     \
-    struct _name                                 \
-    {                                            \
-        _type value;                             \
-        constexpr _name(_type val) : value(val)  \
-        {}                                       \
-    };                                           \
-    constexpr _name _name##_Wrapper(_type value) \
-    {                                            \
-        return _name {value};                    \
-    }
+  struct _name {                                 \
+    _type value;                                 \
+    constexpr _name(_type val)                   \
+        : value(val) {                           \
+    }                                            \
+  };                                             \
+  constexpr _name _name##_Wrapper(_type value) { \
+    return _name {value};                        \
+  }
 
-#define DIE(_Msg)           \
-    do {                    \
-        perror(_Msg);       \
-        exit(EXIT_FAILURE); \
-    }                       \
-    while (false)
+#define DIE(_Msg)       \
+  do {                  \
+    perror(_Msg);       \
+    exit(EXIT_FAILURE); \
+  }                     \
+  while (false)
 
 #define VISIBILITY(V) __attribute__((__visibility__(#V)))
 #define _EXPORT       VISIBILITY(default)
@@ -406,80 +404,75 @@ decltype(auto) operator"" _hash(const char *s, unsigned long);
 #define CLAMBDA_RET_RREF(T)  [](auto &&...args) _NO_THROW -> T &&
 #define CLAMBDA_RET_CRREF(T) [](auto &&...args) _NO_THROW -> T const &&
 
-#define TRI_PARAM_T_ENUM   \
-    enum type_t            \
-    {                      \
-        TYPE_1 = (1 << 0), \
-        TYPE_2 = (1 << 1), \
-        TYPE_3 = (1 << 2), \
-                           \
-    } type
+#define TRI_PARAM_T_ENUM \
+  enum type_t {          \
+    TYPE_1 = (1 << 0),   \
+    TYPE_2 = (1 << 1),   \
+    TYPE_3 = (1 << 2),   \
+                         \
+  } type
 
 #define TRI_PARAM_T_UNION(T1, T2, T3) \
-    union                             \
-    {                                 \
-        T1 union_1;                   \
-        T2 union_2;                   \
-        T3 union_3;                   \
-    }
+  union                               \
+  {                                   \
+    T1 union_1;                       \
+    T2 union_2;                       \
+    T3 union_3;                       \
+  }
 
-#define PARAM_T_CONSTRUCT(OBJ, T, N, NAME)        \
-    OBJ(T NAME) : type(TYPE_##N), union_##N(NAME) \
-    {}
+#define PARAM_T_CONSTRUCT(OBJ, T, N, NAME) \
+  OBJ(T NAME)                              \
+      : type(TYPE_##N)                     \
+      , union_##N(NAME) {                  \
+  }
 
 #define TRI_PARAM_T_MAKE_ALL_CONSTRUCTS(OBJ, NAME_1, NAME_2, NAME_3) \
-    PARAM_T_CONSTRUCT(OBJ, T1, 1, NAME_1)                            \
-    PARAM_T_CONSTRUCT(OBJ, T2, 2, NAME_2)                            \
-    PARAM_T_CONSTRUCT(OBJ, T3, 3, NAME_3)
+  PARAM_T_CONSTRUCT(OBJ, T1, 1, NAME_1)                              \
+  PARAM_T_CONSTRUCT(OBJ, T2, 2, NAME_2)                              \
+  PARAM_T_CONSTRUCT(OBJ, T3, 3, NAME_3)
 
 #define DOUBLE_PARAM_T_ENUM \
-    enum type_t             \
-    {                       \
-        TYPE_1 = (1 << 0),  \
-        TYPE_2 = (1 << 1),  \
+  enum type_t {             \
+    TYPE_1 = (1 << 0),      \
+    TYPE_2 = (1 << 1),      \
                             \
-    } type
+  } type
 
 #define DOUBLE_PARAM_T_UNION(T1, T2) \
-    union                            \
-    {                                \
-        T1 union_1;                  \
-        T2 union_2;                  \
-    }
+  union                              \
+  {                                  \
+    T1 union_1;                      \
+    T2 union_2;                      \
+  }
 
-#define DOUBLE_PARAM_T_MAKE_ALL_CONSTRUCTS           \
-    PARAM_T_CONSTRUCT(double_param_t, T1, 1, type_1) \
-    PARAM_T_CONSTRUCT(double_param_t, T2, 2, type_2)
+#define DOUBLE_PARAM_T_MAKE_ALL_CONSTRUCTS         \
+  PARAM_T_CONSTRUCT(double_param_t, T1, 1, type_1) \
+  PARAM_T_CONSTRUCT(double_param_t, T2, 2, type_2)
 
 #define OUTPUT_OBJ_3WAY(name, T1, T2, T3, n1, n2, n3) \
-    struct name                                       \
-    {                                                 \
-        TRI_PARAM_T_ENUM;                             \
-        TRI_PARAM_T_UNION(T1, T2, T3);                \
-        PARAM_T_CONSTRUCT(name, T1, 1, type_1)        \
-        PARAM_T_CONSTRUCT(name, T2, 2, type_2)        \
-        PARAM_T_CONSTRUCT(name, T3, 3, type_3)        \
-    }
+  struct name {                                       \
+    TRI_PARAM_T_ENUM;                                 \
+    TRI_PARAM_T_UNION(T1, T2, T3);                    \
+    PARAM_T_CONSTRUCT(name, T1, 1, type_1)            \
+    PARAM_T_CONSTRUCT(name, T2, 2, type_2)            \
+    PARAM_T_CONSTRUCT(name, T3, 3, type_3)            \
+  }
 
 #define BOOL_STR(statement) statement ? "TRUE" : "FALSE"
 #define SIZEOF_BIT(type)    (sizeof(type) * 8)
 
 template <typename T>
-__inline__ __warn_unused constexpr unsigned long
-    __attribute__((__always_inline__, __nodebug__, __const__))
-    __bit_sizeof(void) noexcept
-{
-    return (sizeof(T) * 8);
+__inline__ __warn_unused constexpr unsigned long __attribute__((__always_inline__, __nodebug__, __const__))
+__bit_sizeof(void) noexcept {
+  return (sizeof(T) * 8);
 }
 #define bit_sizeof(type)     __bit_sizeof<type>()
 
 #define SSE_SIMD_WIDTH(type) (128 / SIZEOF_BIT(type))
 template <typename T>
-__inline__ __warn_unused constexpr unsigned long
-    __attribute__((__always_inline__, __nodebug__, __const__))
-    sse_simd_width(void) noexcept
-{
-    return SSE_SIMD_WIDTH(T);
+__inline__ __warn_unused constexpr unsigned long __attribute__((__always_inline__, __nodebug__, __const__))
+sse_simd_width(void) noexcept {
+  return SSE_SIMD_WIDTH(T);
 }
 #define sizeof_sse_simd(type)     sse_simd_width<type>()
 
@@ -487,70 +480,65 @@ __inline__ __warn_unused constexpr unsigned long
 #define AMALLOC_ARRAY(obj, size)  (decltype(obj))malloc(sizeof(*obj) * size)
 #define AREALLOC_ARRAY(obj, size) (decltype(obj))realloc(obj, sizeof(*obj) * size)
 
-#define LOG_AMALLOC(obj)            \
-    do {                            \
-        obj = AMALLOC(obj);         \
-        if (obj == nullptr)         \
-        {                           \
-            logE("Malloc Failed."); \
-            exit(1);                \
-        }                           \
-    }                               \
-    while (0)
+#define LOG_AMALLOC(obj)      \
+  do {                        \
+    obj = AMALLOC(obj);       \
+    if (obj == nullptr) {     \
+      logE("Malloc Failed."); \
+      exit(1);                \
+    }                         \
+  }                           \
+  while (0)
 
 #define LOG_AMALLOC_HANDLE(obj, handler) \
-    do {                                 \
-        obj = AMALLOC(obj);              \
-        if (obj == nullptr)              \
-        {                                \
-            logE("Malloc Failed.");      \
-            handler();                   \
-        }                                \
+  do {                                   \
+    obj = AMALLOC(obj);                  \
+    if (obj == nullptr) {                \
+      logE("Malloc Failed.");            \
+      handler();                         \
     }                                    \
-    while (0)
+  }                                      \
+  while (0)
 
-#define LOG_AREALLOC_ARRAY(obj, size)   \
-    do {                                \
-        obj = AMALLOC_ARRAY(obj, size); \
-        if (obj == nullptr)             \
-        {                               \
-            logE("Malloc Failed.");     \
-            exit(1);                    \
-        }                               \
-    }                                   \
-    while (0)
+#define LOG_AREALLOC_ARRAY(obj, size) \
+  do {                                \
+    obj = AMALLOC_ARRAY(obj, size);   \
+    if (obj == nullptr) {             \
+      logE("Malloc Failed.");         \
+      exit(1);                        \
+    }                                 \
+  }                                   \
+  while (0)
 
 #define LOG_AREALLOC_ARRAY_HANDLE(obj, handler) \
-    do {                                        \
-        obj = AMALLOC(obj);                     \
-        if (obj == nullptr)                     \
-        {                                       \
-            logE("Malloc Failed.");             \
-            handler();                          \
-        }                                       \
+  do {                                          \
+    obj = AMALLOC(obj);                         \
+    if (obj == nullptr) {                       \
+      logE("Malloc Failed.");                   \
+      handler();                                \
     }                                           \
-    while (0)
+  }                                             \
+  while (0)
 
 #define __MLIB_BEGIN_NAMESPACE_(name, vis) \
-    namespace __type_##vis Mlib            \
-    {                                      \
-        inline namespace name
+  namespace __type_##vis Mlib {            \
+    inline namespace name
 
 #define __END_NAMESPACE(name) }
 
 #ifdef Ulong
-#undef Ulong
+#  undef Ulong
 #endif
 #define Ulong unsigned long
 #ifdef Uint
-#undef Uint
+#  undef Uint
 #endif
 #define Uint unsigned int
 #ifdef Ushort
-#undef Ushort
+#  undef Ushort
 #endif
 #define Ushort unsigned short
 #ifdef Uchar
-#undef Uchar
+#  undef Uchar
 #endif
 #define Uchar unsigned char

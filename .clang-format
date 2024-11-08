@@ -16,14 +16,14 @@ BreakConstructorInitializers: BeforeComma
 BreakBeforeBinaryOperators: None
 AlwaysBreakAfterDefinitionReturnType: false
 AlwaysBreakAfterReturnType: None
-AlwaysBreakTemplateDeclarations: Yes
+AlwaysBreakTemplateDeclarations: true
 BinPackArguments: true
 BinPackParameters: true
 BraceWrapping:
   # AfterCaseLabel: true
   # AfterClass: true
   # AfterControlStatement: true
-  AfterEnum: true
+  # AfterEnum: true
   AfterFunction: false
   # AfterNamespace: True
   # AfterStruct: true
@@ -111,3 +111,4 @@ AlignEscapedNewlines: Left
 BreakAfterAttributes: Always
 PenaltyBreakBeforeFirstCallParameter: 0
 FixNamespaceComments: false
+# ConstructorInitializerAllOnOneLineOrOnePerLine: MayBreak

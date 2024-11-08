@@ -100,6 +100,18 @@
     "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/cpp/Packy.cpp -o /home/mellw/Projects/Mlib/build/obj/Packy.o",
     "file": "/home/mellw/Projects/Mlib/src/cpp/Packy.cpp"
   }
+  ,
+  {
+    "directory": "/home/mellw/Projects/Mlib/src/cpp",
+    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/cpp/openGL/context.cpp -o /home/mellw/Projects/Mlib/build/obj/openGL/context.o",
+    "file": "/home/mellw/Projects/Mlib/src/cpp/openGL/context.cpp"
+  }
+,
+  {
+    "directory": "/home/mellw/Projects/Mlib/src/cpp",
+    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/cpp/openGL/shader.cpp -o /home/mellw/Projects/Mlib/build/obj/openGL/shader.o",
+    "file": "/home/mellw/Projects/Mlib/src/cpp/openGL/shader.cpp"
+  }
 ,
   {
     "directory": "/home/mellw/Projects/Mlib/src/cpp",
@@ -181,6 +193,12 @@
 ,
   {
     "directory": "/home/mellw/Projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/MVec2.h",
+    "file": "/home/mellw/Projects/Mlib/src/include/MVec2.h"
+  }
+,
+  {
+    "directory": "/home/mellw/Projects/Mlib/src/include",
     "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Array.h",
     "file": "/home/mellw/Projects/Mlib/src/include/Array.h"
   }
@@ -219,6 +237,12 @@
     "directory": "/home/mellw/Projects/Mlib/src/include",
     "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Socket.h",
     "file": "/home/mellw/Projects/Mlib/src/include/Socket.h"
+  }
+,
+  {
+    "directory": "/home/mellw/Projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Pair.h",
+    "file": "/home/mellw/Projects/Mlib/src/include/Pair.h"
   }
 ,
   {
@@ -333,5 +357,35 @@
     "directory": "/home/mellw/Projects/Mlib/src/include",
     "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Types.h",
     "file": "/home/mellw/Projects/Mlib/src/include/Types.h"
+  }
+  ,
+  {
+    "directory": "/home/mellw/Projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/float_calc.h",
+    "file": "/home/mellw/Projects/Mlib/src/include/float_calc.h"
+  }
+  ,
+  {
+    "directory": "/home/mellw/Projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/MVec3.h",
+    "file": "/home/mellw/Projects/Mlib/src/include/MVec3.h"
+  }
+  ,
+  {
+    "directory": "/home/mellw/Projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/simd.h",
+    "file": "/home/mellw/Projects/Mlib/src/include/simd.h"
+  }
+  ,
+  {
+    "directory": "/home/mellw/Projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/openGL/context.h",
+    "file": "/home/mellw/Projects/Mlib/src/include/openGL/context.h"
+  }
+  ,
+  {
+    "directory": "/home/mellw/Projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/openGL/shader.h",
+    "file": "/home/mellw/Projects/Mlib/src/include/openGL/shader.h"
   }
 ]

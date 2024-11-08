@@ -126,7 +126,7 @@ namespace Mlib::Term {
     return buf;
   }
 
-  void clear_screen() {
+  void clear_screen(void) {
     printf(ESC_CODE_CLEAR ESC_CODE_CURSOR_POSITION);
     fflush(stdout);
   }
@@ -415,5 +415,4 @@ namespace Mlib::Term {
     }
     return old_term;
   }
-
-} // namespace Mlib::Term
+}

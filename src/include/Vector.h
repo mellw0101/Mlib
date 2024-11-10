@@ -73,6 +73,15 @@ class MVector {
     return *this;
   }
 
+  __ref erase(const T *const &element) __nothrow_destruct {
+    Uint idx = index_of(element);
+    if (idx == (Uint)-1) {
+      return *this;
+    }
+    erase_at(idx);
+    return *this;
+  }
+
   /* Note that this does not free any elements in the array
    * it only free`s the current array and set`s '_len' to 0
    * then mallocs the '_data' ptr again. */
@@ -119,7 +128,7 @@ class MVector {
   }
 
   __Uint index_of(const T *element) const {
-    return (element >= begin() && element < end()) ? element - begin() : -1;
+    return (element >= begin() && element < end()) ? element - begin() : (Uint)-1;
   }
 
   /* Constructors. */
@@ -127,10 +136,17 @@ class MVector {
     _data = (T *)calloc(_cap, sizeof(T));
   }
 
-  MVector(Uint n) noexcept : _len(0), _cap(n) {
+  MVector(Uint n) noexcept : _len(n), _cap(n) {
     _data = (T *)calloc(_cap, sizeof(T));
     for (Uint i = 0; i < n; ++i) {
       _data[i] = T{};
+    }
+  }
+
+  MVector(Uint n, const T &value) : _len(n), _cap(n) {
+    _data = (T *)calloc(_cap, sizeof(T));
+    for (Uint i = 0; i < n; ++i) {
+      *(_data + i) = value;
     }
   }
 
@@ -141,13 +157,27 @@ class MVector {
     }
   }
 
+  MVector(const T *array, Uint size) __nothrow_default_constructor : _len(0), _cap(size + 1) {
+    _data = (T *)calloc(_cap, sizeof(T));
+    for (Uint i = 0; i < size; ++i) {
+      push_back(array[i]);
+    }
+  }
+
+  template<Uint N>
+  MVector(const T(&array)[N]) __nothrow_default_constructor : _len(0), _cap(N + 1) {
+    _data = (T *)calloc(_cap, sizeof(T));
+    for (Uint i = 0; i < N; ++i) {
+      push_back(array[i]);
+    }
+  }
+
   /* Copy Constructor. */
-  MVector(const MVector &other) __nothrow_copy_constructible
-      : _len(other._len)
-      , _cap(other._cap) {
+  MVector(const MVector &other) __nothrow_copy_constructible : _len(other._len), _cap(other._cap) {
     _data = (T *)calloc(_cap, sizeof(T));
     for (Uint i = 0; i < _len; ++i) {
-      new (_data + i) T(other._data[i]); // Use copy constructor of T
+      // Use copy constructor of T
+      new (_data + i) T(*(other._data + i));
     }
   }
 
@@ -171,10 +201,7 @@ class MVector {
   }
 
   /* Move Constructor. */
-  MVector(MVector &&other) __nothrow_default_constructor
-      : _data(other._data)
-      , _len(other._len)
-      , _cap(other._cap) {
+  MVector(MVector &&other) __nothrow_default_constructor : _data(other._data), _len(other._len), _cap(other._cap) {
     other._data = nullptr;
     other._len  = 0;
     other._cap  = 0;

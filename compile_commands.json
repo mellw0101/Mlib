@@ -163,6 +163,18 @@
 ,
   {
     "directory": "/home/mellw/Projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/CL/compute.h",
+    "file": "/home/mellw/Projects/Mlib/src/include/CL/compute.h"
+  }
+,
+  {
+    "directory": "/home/mellw/Projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/CL/tools.h",
+    "file": "/home/mellw/Projects/Mlib/src/include/CL/tools.h"
+  }
+,
+  {
+    "directory": "/home/mellw/Projects/Mlib/src/include",
     "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Error.h",
     "file": "/home/mellw/Projects/Mlib/src/include/Error.h"
   }
@@ -171,6 +183,12 @@
     "directory": "/home/mellw/Projects/Mlib/src/include",
     "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Assert.h",
     "file": "/home/mellw/Projects/Mlib/src/include/Assert.h"
+  }
+,
+  {
+    "directory": "/home/mellw/Projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/openGL/init.h",
+    "file": "/home/mellw/Projects/Mlib/src/include/openGL/init.h"
   }
 ,
   {
@@ -195,6 +213,12 @@
     "directory": "/home/mellw/Projects/Mlib/src/include",
     "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/MVec2.h",
     "file": "/home/mellw/Projects/Mlib/src/include/MVec2.h"
+  }
+,
+  {
+    "directory": "/home/mellw/Projects/Mlib/src/include",
+   "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Vulkan/init.h",
+    "file": "/home/mellw/Projects/Mlib/src/include/Vulkan/init.h"
   }
 ,
   {

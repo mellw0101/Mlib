@@ -1,6 +1,7 @@
 #pragma once
 /* clang-format off */
 
+#include "def.h"
 #include "float_calc.h"
 
 #include <glm/vec3.hpp>
@@ -35,7 +36,10 @@ __operator_decl(+);
 __operator_decl(-);
 
 typedef struct MVec3 {
-  float x, y, z;
+  union /* Data */ {
+    float arr[3];
+    struct { float x, y, z; };
+  };
 
   __OPERATOR(glm::vec3(void) const) {
     return {x, y, z};
@@ -61,7 +65,7 @@ typedef struct MVec3 {
 
   __INLINE(MVec3) normalize(void) const {
     float mag = magnitude();
-    return (mag) ? (*this / mag) : MVec3(0.0f, 0.0f, 0.0f);
+    return (mag) ? (*this / mag) : MVec3{0.0f, 0.0f, 0.0f};
   }
 
   __INLINE(MVec3) direction_to(const MVec3 &other) const {

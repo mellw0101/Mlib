@@ -88,3 +88,5 @@ namespace Mlib::Profile {
 #define PROFILE_CURRENT_SCOPE(__Name) Mlib::Profile::AutoTimer PROFILE_CURRENT_SCOPE__(__Name)
 #define PROFILE_FUNCTION              PROFILE_CURRENT_SCOPE(__FUNCTION__)
 #define PROFILE_SCOPE                 PROFILE_CURRENT_SCOPE(__PRETTY_FUNCTION__)
+
+PROFILE_CURRENT_SCOPE();

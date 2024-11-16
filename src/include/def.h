@@ -108,8 +108,17 @@
 
 using std::initializer_list;
 using std::is_nothrow_copy_constructible;
+using std::is_nothrow_copy_constructible_v;
 using std::is_nothrow_default_constructible;
+using std::is_nothrow_default_constructible_v;
 using std::is_nothrow_destructible;
+using std::is_nothrow_destructible_v;
+using std::is_nothrow_move_constructible;
+using std::is_nothrow_move_constructible_v;
+using std::is_trivially_destructible;
+using std::is_trivially_destructible_v;
+using std::is_trivially_constructible;
+using std::is_trivially_constructible_v;
 
 constexpr auto ESC_CODE_TURN_ON_BRACKETED_PASTE  = "\x1B[?2004h";
 constexpr auto ESC_CODE_TURN_OFF_BRACKETED_PASTE = "\x1B[?2004l";

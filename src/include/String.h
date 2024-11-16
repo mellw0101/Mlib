@@ -179,7 +179,11 @@ class MString {
     return *(_data + index);
   }
 
-  __char_ptr c_str(void) const {
+  __char_ptr c_str(void) {
+    return _data;
+  }
+
+  const __char_ptr c_str(void) const {
     return _data;
   }
 

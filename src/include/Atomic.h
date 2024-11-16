@@ -6,6 +6,7 @@
 #include <mutex>
 #include <type_traits>
 #include <vector>
+#include <atomic>
 
 #include "../include/def.h"
 

@@ -233,6 +233,7 @@ namespace /* Undef. */ {
 }
 
 inline Ulong SSE2_strlen(const char *str) {
+
   const __m128i zero = _mm_setzero_si128();
   const char *ptr = str;
   while (true) {

@@ -1,4 +1,4 @@
-/// @file Sys.h
+/** @file Sys.h */
 #pragma once
 
 #include <cstring>
@@ -18,7 +18,7 @@
 #include "def.h"
 
 namespace Mlib::Sys {
-  char run_binary(C_STRING &binary_path, C_VECTOR<STRING> &args, C_VECTOR<STRING> &env_vars = {});
+  Uchar run_binary(C_STRING &binary_path, C_VECTOR<STRING> &args, C_VECTOR<STRING> &env_vars = {});
 
   class Prompt {
    public:
@@ -96,3 +96,7 @@ namespace Mlib::Sys {
   void        get_dev_info(const char *path, Ulong *b_size);
   void        posix_run_bin(const char *bin, char **argv, char **envv);
 }
+
+Ulong get_current_time_ms(void);
+
+void format_time(Ulong ms, char *buffer, Ulong buffer_size);

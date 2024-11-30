@@ -26,10 +26,10 @@ namespace Mlib ::FileSys {
   }
 
   vector<string> fileContentToStrVec(const string &filename, const Uchar mode) {
-    // Check if the file exists.
+    /* Check if the file exists. */
     if (!fs::exists(filename)) {
       if ((mode & NO_THROW) == false) {
-        // If NO_THROW is set, dont throw an error.
+        /* If NO_THROW is set, dont throw an error. */
         throw runtime_error("File does not exist: " + filename);
       }
       return {};
@@ -60,7 +60,7 @@ namespace Mlib ::FileSys {
       throw runtime_error("Source file is a directory: " + sourcePath);
     }
     ifstream sourceFile(sourcePath, ios::binary);
-    /** If the source file cannot be opened, throw an error. */
+    /** If the source file cannot be opened, @throw an error. */
     if (!sourceFile.is_open()) {
       throw runtime_error("Failed to open source file: " + sourcePath);
     }
@@ -392,5 +392,4 @@ namespace Mlib ::FileSys {
     *size = ftell(f);
     fseek(f, 0, SEEK_SET);
   }
-
-} // namespace Mlib::FileSys
+}

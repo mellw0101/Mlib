@@ -25,7 +25,7 @@ namespace /* Defines. */ {
   #define SMOKELESS_GUNPOWDER_ENERGY_PER_GRAM 4000.0f
 
   #define PIXELS_PER_METER  (100.00f)
-  #define PIXEL_TO_M(pixel) (pixel / PIXELS_PER_METER)
+  #define PIXEL_TO_M(pixel) ((pixel) / PIXELS_PER_METER)
   #define M_TO_PIXEL(m)     ((m) * PIXELS_PER_METER)
   #define GRAVITY           (9.806650000000001)
 }

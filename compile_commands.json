@@ -343,6 +343,12 @@
 ,
   {
     "directory": "/home/mellw/Projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/File.h",
+    "file": "/home/mellw/Projects/Mlib/src/include/File.h"
+  }
+,
+  {
+    "directory": "/home/mellw/Projects/Mlib/src/include",
     "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Threads.h",
     "file": "/home/mellw/Projects/Mlib/src/include/Threads.h"
   }
@@ -411,5 +417,17 @@
     "directory": "/home/mellw/Projects/Mlib/src/include",
     "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/openGL/shader.h",
     "file": "/home/mellw/Projects/Mlib/src/include/openGL/shader.h"
+  }
+  ,
+  {
+    "directory": "/home/mellw/Projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/MGL/MGL.h",
+    "file": "/home/mellw/Projects/Mlib/src/include/MGL/MGL.h"
+  }
+  ,
+  {
+    "directory": "/home/mellw/Projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/GridMap.h",
+    "file": "/home/mellw/Projects/Mlib/src/include/GridMap.h"
   }
 ]

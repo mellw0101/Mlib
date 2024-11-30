@@ -385,6 +385,9 @@ using TIME_POINT = CHRONO::time_point<T>;
 //
 using HIGH_RES_CLOCK = CHRONO::high_resolution_clock;
 using EXCEPTION      = class std::exception;
+template <typename T, typename Period>
+using Duration       = CHRONO::duration<T, Period>;
+using Milli = std::milli;
 using CEXCEPTION     = const EXCEPTION;
 using RUNTIME_ERROR  = class std::runtime_error;
 using CRUNTIME_ERROR = const RUNTIME_ERROR;
@@ -486,6 +489,7 @@ sse_simd_width(void) noexcept {
 #define sizeof_sse_simd(type)     sse_simd_width<type>()
 
 #define AMALLOC(obj)              (decltype(obj))malloc(sizeof(*obj))
+#define ACALLOC_ARRAY(obj, size)  (decltype(obj))calloc(size, sizeof(*obj)) 
 #define AMALLOC_ARRAY(obj, size)  (decltype(obj))malloc(sizeof(*obj) * size)
 #define AREALLOC_ARRAY(obj, size) (decltype(obj))realloc(obj, sizeof(*obj) * size)
 

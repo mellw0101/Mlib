@@ -28,26 +28,27 @@ namespace Mlib::Debug {
    public:
     /* Methods 	   */
     bool append(const std::string &text) {
-      std::ofstream file(m_filename, std::ios::app); // Open in append mode
+      /* Open in append mode */
+      std::ofstream file(m_filename, std::ios::app);
       if (!file.is_open()) {
-        return false;                                // Return false if file couldn't be opened
+        /* Return false if file couldn't be opened. */
+        return false;
       }
-      file << text;                                  // Append text
+      file << text; /* Append text */
       file.close();
       return true;
     }
 
-    bool open() {
-      std::ofstream file(m_filename, std::ios::app); // Open in append mode
+    bool open(void) {
+      /* Open in append mode. */
+      std::ofstream file(m_filename, std::ios::app);
       bool          isOpen = file.is_open();
       file.close();
       return isOpen;
     }
 
     /* Constructor */
-    explicit FileHandler(std::string filename)
-        : m_filename(std::move(filename)) {
-    }
+    explicit FileHandler(std::string filename) : m_filename(std::move(filename)) {}
   };
 
   class TIME {
@@ -56,15 +57,15 @@ namespace Mlib::Debug {
       using namespace std;
       using namespace chrono;
 
-      // Get the current time
+      /* Get the current time */
       const auto &now       = system_clock::now();
       const auto &in_time_t = system_clock::to_time_t(now);
 
-      // Convert time_t to tm as local time
+      /* Convert time_t to tm as local time */
       tm buf {};
       localtime_r(&in_time_t, &buf);
 
-      // Use stringstream to format the time
+      /* Use stringstream to format the time */
       std::ostringstream ss;
       ss << "[" << std::put_time(&buf, "%Y-%m-%d %H:%M:%S") << "]";
       return ss.str();
@@ -106,8 +107,7 @@ namespace Mlib::Debug {
     std::string function;
     int         line;
     std::string message;
-    // Include a timestamp if you prefer logging it to be handled by the
-    // logger rather than each log call
+    /* Include a timestamp if you prefer logging it to be handled by the logger rather than each log call */
   } LogMessage;
 
   typedef struct {
@@ -159,25 +159,20 @@ namespace Mlib::Debug {
     auto                  str_len    = str.size();
     const char           *prefix     = ": error message (errno: 0)";
     auto                  prefix_len = std::char_traits<char>::length(prefix);
-
     if (str_len + prefix_len >= buffer.size()) {
-      // handle overflow error if needed
-      // for now, we truncate the message to fit the buffer
+      /* Handle overflow error if needed for now, we truncate the message to fit the buffer */
       str_len = buffer.size() - prefix_len - 1;
     }
-
     for (size_t i = 0; i < str_len; ++i) {
       buffer[i] = str[i];
     }
-
     for (size_t i = 0; i < prefix_len; ++i) {
       buffer[str_len + i] = prefix[i];
     }
-
     return buffer;
   }
 
-  constexpr_map<std::string_view, unsigned char, 5> logLevelMap = {
+  constexpr_map<std::string_view, Uchar, 5> logLevelMap = {
     {{ESC_CODE_GREEN "[INFO]" ESC_CODE_RESET, INFO},
      {ESC_CODE_CYAN "[INFO_PRIORITY]" ESC_CODE_RESET, INFO_PRIORITY},
      {ESC_CODE_YELLOW "[WARNING]" ESC_CODE_RESET, WARNING},
@@ -322,8 +317,7 @@ namespace Mlib::Debug {
 
     static NetworkLogger &Instance(void) noexcept;
   };
-
-} /* namespace Mlib::Debug */
+}
 
 /* Macros for logging */
 #define FUNC             Mlib::Debug::FuncName_Wrapper(__func__)

@@ -118,10 +118,8 @@ void ssl_https_request(SSL *ssl, const char *hostname, const char *subdomain) {
   int          error;
   static char  buf[4096];
   const int    subdomain_len = (subdomain) ? strlen(subdomain) : 1;
-  const size_t req_len =
-    strlen("GET / HTTP/1.1\r\nHost: \r\nConnection: close\r\n\r\n") + strlen(hostname) + subdomain_len;
-  snprintf(buf, req_len + 1, "GET %s HTTP/1.1\r\nHost: %s\r\nConnection: close\r\n\r\n", (subdomain) ? subdomain : "/",
-           hostname);
+  const Ulong  req_len = strlen("GET / HTTP/1.1\r\nHost: \r\nConnection: close\r\n\r\n") + strlen(hostname) + subdomain_len;
+  snprintf(buf, req_len + 1, "GET %s HTTP/1.1\r\nHost: %s\r\nConnection: close\r\n\r\n", (subdomain) ? subdomain : "/", hostname);
   ret = SSL_write(ssl, buf, req_len);
   if (ret > 0) {
     return;
@@ -163,7 +161,7 @@ void ssl_https_request(SSL *ssl, const char *hostname, const char *subdomain) {
 
 const char *ssl_retrieve_response(SSL *ssl, Ulong *size) {
   int         bytes, error, total_bytes_read = 0;
-  static char buf[4096];
+	static char buf[4096];
   char       *storage_buf;
   if ((storage_buf = (char *)malloc(1)) == nullptr) {
     ferr("malloc");
@@ -175,11 +173,11 @@ const char *ssl_retrieve_response(SSL *ssl, Ulong *size) {
     memcpy(storage_buf + total_bytes_read, buf, bytes);
     total_bytes_read += bytes;
   }
-  if (total_bytes_read == 0) {
+  if (!total_bytes_read) {
     nerr("SSL_read", "'0' bytes were read.");
     return nullptr;
   }
-  if (bytes == 0) {
+  if (!bytes) {
     (size) ? *size = total_bytes_read : 0;
     return storage_buf;
   }

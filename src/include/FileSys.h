@@ -19,23 +19,18 @@
 #include "def.h"
 
 namespace Mlib::FileSys {
-  enum Mode : u8
-  {
+  enum Mode : u8 {
     NONE            = (0),
     MKDIR_RECURSIVE = (1 << 0),
     NO_THROW        = (1 << 1),
   };
 
-  enum opt
-  {
-    RETRIEVE_SIZE = 0
-  };
+  enum opt { RETRIEVE_SIZE = 0 };
 
   auto           fileContentToStr(const STRING &filename) -> STRING;
   VECTOR<STRING> fileContentToStrVec(const STRING &filename, const u8 mode = NONE);
   auto           fileContentToFile(const STRING &sourcePath, const STRING &destinationPath) -> void;
 
-  //
   /// @name dirContentToStrVec
   /// @brief
   /// - Retrieve the content of a directory as a vector of strings.
@@ -49,7 +44,6 @@ namespace Mlib::FileSys {
 
   void cd(const STRING &path);
 
-  //
   /// @name mkdir
   /// @brief
   ///  - Create a directory.
@@ -79,7 +73,6 @@ namespace Mlib::FileSys {
   STRING fileLastWriteTimeStr(const STRING &path, const STRING &format);
   size_t fileSize(const STRING &path);
 
-  //
   /// @name strVecToFile
   /// @brief
   ///  - Write a vector of strings to a file.

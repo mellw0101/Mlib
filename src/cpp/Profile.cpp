@@ -192,5 +192,4 @@ namespace Mlib::Profile {
       GLOBALPROFILER->report();
     });
   }
-
-} // namespace Mlib::Profile
+}

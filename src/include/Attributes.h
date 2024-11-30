@@ -8,6 +8,7 @@
 #define __pure                        __attr(__pure__)
 #define __align_size(size)            __attr(__aligned__(size))
 #define __no_null(...)                __attr(__nonnull__(__VA_ARGS__))
+#define __pnotnull                    __attribute((nonnull))
 
 #define __visibility(V)               __attr((__visibility__(#V)))
 #define __export                      __visibility(default)

@@ -1,9 +1,10 @@
 #include "../../include/Vulkan/init.h"
+#include "../../include/Error.h"
 
 MVector<char> vk_read_file(const char *path) {
   std::ifstream file(path, std::ios::ate | std::ios::binary);
   if (!file.is_open()) {
-    fprintf(stderr, "Failed to open file: %s\n", path);
+    printde("Failed to open file: %s\n", path);
     return {};
   }
   Ulong         size = file.tellg();
@@ -24,7 +25,7 @@ VkShaderModule vk_create_shader_module(VkDevice device, const MVector<char> &cod
   info.pCode    = (const Uint *)code.data();
   VkShaderModule module;
   if (vkCreateShaderModule(device, &info, NULL, &module) != VK_SUCCESS) {
-    fprintf(stderr, "Failed to create VkShaderModule.\n");
+    printde("Failed to create VkShaderModule.\n");
     return NULL;
   }
   return module;
@@ -43,7 +44,7 @@ VkInstance vk_create_instance(const char *name, const char *engine_name) {
   create_info.pApplicationInfo = &app_info;
   VkInstance instance;
   if (vkCreateInstance(&create_info, NULL, &instance) != VK_SUCCESS) {
-    fprintf(stderr, "Failed to create VkInstance.\n");
+    printde("Failed to create VkInstance.\n");
     return NULL;
   }
   return instance;

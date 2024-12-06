@@ -1,6 +1,7 @@
 /** @file Profile.cpp
  * Contains the implementation of the profiling classes and functions. */
 #include "../include/Profile.h"
+#include "../include/def.h"
 
 #include <algorithm>
 #include <chrono>
@@ -17,7 +18,6 @@
 #include <string>
 #include <string_view>
 #include <vector>
-#include "def.h"
 
 using namespace std;
 using namespace chrono;

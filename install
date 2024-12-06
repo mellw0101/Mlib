@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# AmakeCpp --build
+# Amake --buildStdC++
+# Amake --build --lib --install-lib -y
 AmakeCpp --test
 Amake --lib --install-lib -y
-# Amake --build --lib --install-lib -y

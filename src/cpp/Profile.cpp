@@ -175,10 +175,7 @@ namespace Mlib::Profile {
 
   /** @class @c AutoTimer */
 
-  AutoTimer::AutoTimer(const string &name)
-      : name(name)
-      , start(high_resolution_clock::now()) {
-  }
+  AutoTimer::AutoTimer(const string &name) : name(name), start(high_resolution_clock::now()) {}
 
   AutoTimer::~AutoTimer(void) {
     auto                    end      = high_resolution_clock::now();

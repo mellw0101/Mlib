@@ -1,11 +1,11 @@
+#include "../include/Attributes.h"
+#include "../include/String.h"
+#include "../include/def.h"
+
 #include <cstddef>
 #include <cstdlib>
 #include <cstring>
 #include <string>
-
-#include "Attributes.h"
-#include "String.h"
-#include "def.h"
 
 using std::pair;
 using std::string;

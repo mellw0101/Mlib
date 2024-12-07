@@ -2,6 +2,7 @@
 /.amake/cppSizes
 /build/
 /build/bin/
+/build/lib/
 /build/lib/*.a
 /build/obj/*.o
 *.o

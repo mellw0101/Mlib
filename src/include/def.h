@@ -26,11 +26,25 @@
 
 #include "Attributes.h"
 
-#ifndef FALSE
-#  define FALSE 0
+/* Null def. */
+#ifdef NULL
+  #undef NULL
 #endif
-#ifndef TRUE
-#  define TRUE 1
+/* Bool def. */
+#ifdef TRUE
+  #undef TRUE
+#endif
+#ifdef FALSE
+  #undef FALSE
+#endif
+#ifdef __cplusplus
+  #define NULL nullptr
+  #define TRUE true
+  #define FALSE false
+#else
+  #define NULL __null
+  #define TRUE 1
+  #define FALSE 0
 #endif
 
 #define ESC_CODE_RED                     "\033[31m"

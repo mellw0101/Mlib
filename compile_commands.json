@@ -1,433 +1,427 @@
 [
   {
-    "directory": "/home/mellw/Projects/Mlib/src/cpp",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/cpp/Args.cpp -o /home/mellw/Projects/Mlib/build/obj/Args.o",
-    "file": "/home/mellw/Projects/Mlib/src/cpp/Args.cpp"
+    "directory": "/home/mellw/projects/Mlib/src/cpp",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/cpp/Args.cpp -o /home/mellw/projects/Mlib/build/obj/Args.o",
+    "file": "/home/mellw/projects/Mlib/src/cpp/Args.cpp"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/cpp",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/cpp/Chars.cpp -o /home/mellw/Projects/Mlib/build/obj/Chars.o",
-    "file": "/home/mellw/Projects/Mlib/src/cpp/Chars.cpp"
+    "directory": "/home/mellw/projects/Mlib/src/cpp",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/cpp/Chars.cpp -o /home/mellw/projects/Mlib/build/obj/Chars.o",
+    "file": "/home/mellw/projects/Mlib/src/cpp/Chars.cpp"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/cpp",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/cpp/Profile.cpp -o /home/mellw/Projects/Mlib/build/obj/Profile.o",
-    "file": "/home/mellw/Projects/Mlib/src/cpp/Profile.cpp"
+    "directory": "/home/mellw/projects/Mlib/src/cpp",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/cpp/Profile.cpp -o /home/mellw/projects/Mlib/build/obj/Profile.o",
+    "file": "/home/mellw/projects/Mlib/src/cpp/Profile.cpp"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/cpp",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/cpp/FileSys.cpp -o /home/mellw/Projects/Mlib/build/obj/FileSys.o",
-    "file": "/home/mellw/Projects/Mlib/src/cpp/FileSys.cpp"
+    "directory": "/home/mellw/projects/Mlib/src/cpp",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/cpp/FileSys.cpp -o /home/mellw/projects/Mlib/build/obj/FileSys.o",
+    "file": "/home/mellw/projects/Mlib/src/cpp/FileSys.cpp"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/cpp",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/cpp/Threads.cpp -o /home/mellw/Projects/Mlib/build/obj/Threads.o",
-    "file": "/home/mellw/Projects/Mlib/src/cpp/Threads.cpp"
+    "directory": "/home/mellw/projects/Mlib/src/cpp",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/cpp/Threads.cpp -o /home/mellw/projects/Mlib/build/obj/Threads.o",
+    "file": "/home/mellw/projects/Mlib/src/cpp/Threads.cpp"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/cpp",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/cpp/Http.cpp -o /home/mellw/Projects/Mlib/build/obj/Http.o",
-    "file": "/home/mellw/Projects/Mlib/src/cpp/Http.cpp"
+    "directory": "/home/mellw/projects/Mlib/src/cpp",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/cpp/Http.cpp -o /home/mellw/projects/Mlib/build/obj/Http.o",
+    "file": "/home/mellw/projects/Mlib/src/cpp/Http.cpp"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/cpp",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/cpp/Assert.cpp -o /home/mellw/Projects/Mlib/build/obj/Assert.o",
-    "file": "/home/mellw/Projects/Mlib/src/cpp/Assert.cpp"
+    "directory": "/home/mellw/projects/Mlib/src/cpp",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/cpp/Assert.cpp -o /home/mellw/projects/Mlib/build/obj/Assert.o",
+    "file": "/home/mellw/projects/Mlib/src/cpp/Assert.cpp"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/cpp",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/cpp/Socket.cpp -o /home/mellw/Projects/Mlib/build/obj/Socket.o",
-    "file": "/home/mellw/Projects/Mlib/src/cpp/Socket.cpp"
+    "directory": "/home/mellw/projects/Mlib/src/cpp",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/cpp/Socket.cpp -o /home/mellw/projects/Mlib/build/obj/Socket.o",
+    "file": "/home/mellw/projects/Mlib/src/cpp/Socket.cpp"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/cpp",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/cpp/Io.cpp -o /home/mellw/Projects/Mlib/build/obj/Io.o",
-    "file": "/home/mellw/Projects/Mlib/src/cpp/Io.cpp"
+    "directory": "/home/mellw/projects/Mlib/src/cpp",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/cpp/Io.cpp -o /home/mellw/projects/Mlib/build/obj/Io.o",
+    "file": "/home/mellw/projects/Mlib/src/cpp/Io.cpp"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/cpp",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/cpp/Arm.cpp -o /home/mellw/Projects/Mlib/build/obj/Arm.o",
-    "file": "/home/mellw/Projects/Mlib/src/cpp/Arm.cpp"
+    "directory": "/home/mellw/projects/Mlib/src/cpp",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/cpp/Arm.cpp -o /home/mellw/projects/Mlib/build/obj/Arm.o",
+    "file": "/home/mellw/projects/Mlib/src/cpp/Arm.cpp"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/cpp",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/cpp/Sdl2.cpp -o /home/mellw/Projects/Mlib/build/obj/Sdl2.o",
-    "file": "/home/mellw/Projects/Mlib/src/cpp/Sdl2.cpp"
+    "directory": "/home/mellw/projects/Mlib/src/cpp",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/cpp/Sdl2.cpp -o /home/mellw/projects/Mlib/build/obj/Sdl2.o",
+    "file": "/home/mellw/projects/Mlib/src/cpp/Sdl2.cpp"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/cpp",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/cpp/Math.cpp -o /home/mellw/Projects/Mlib/build/obj/Math.o",
-    "file": "/home/mellw/Projects/Mlib/src/cpp/Math.cpp"
+    "directory": "/home/mellw/projects/Mlib/src/cpp",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/cpp/Math.cpp -o /home/mellw/projects/Mlib/build/obj/Math.o",
+    "file": "/home/mellw/projects/Mlib/src/cpp/Math.cpp"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/cpp",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/cpp/RK3399.cpp -o /home/mellw/Projects/Mlib/build/obj/RK3399.o",
-    "file": "/home/mellw/Projects/Mlib/src/cpp/RK3399.cpp"
+    "directory": "/home/mellw/projects/Mlib/src/cpp",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/cpp/RK3399.cpp -o /home/mellw/projects/Mlib/build/obj/RK3399.o",
+    "file": "/home/mellw/projects/Mlib/src/cpp/RK3399.cpp"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/cpp",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/cpp/Sys.cpp -o /home/mellw/Projects/Mlib/build/obj/Sys.o",
-    "file": "/home/mellw/Projects/Mlib/src/cpp/Sys.cpp"
+    "directory": "/home/mellw/projects/Mlib/src/cpp",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/cpp/Sys.cpp -o /home/mellw/projects/Mlib/build/obj/Sys.o",
+    "file": "/home/mellw/projects/Mlib/src/cpp/Sys.cpp"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/cpp",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/cpp/Mutex.cpp -o /home/mellw/Projects/Mlib/build/obj/Mutex.o",
-    "file": "/home/mellw/Projects/Mlib/src/cpp/Mutex.cpp"
+    "directory": "/home/mellw/projects/Mlib/src/cpp",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/cpp/Mutex.cpp -o /home/mellw/projects/Mlib/build/obj/Mutex.o",
+    "file": "/home/mellw/projects/Mlib/src/cpp/Mutex.cpp"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/cpp",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/cpp/Debug.cpp -o /home/mellw/Projects/Mlib/build/obj/Debug.o",
-    "file": "/home/mellw/Projects/Mlib/src/cpp/Debug.cpp"
+    "directory": "/home/mellw/projects/Mlib/src/cpp",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/cpp/Debug.cpp -o /home/mellw/projects/Mlib/build/obj/Debug.o",
+    "file": "/home/mellw/projects/Mlib/src/cpp/Debug.cpp"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/cpp",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/cpp/Packy.cpp -o /home/mellw/Projects/Mlib/build/obj/Packy.o",
-    "file": "/home/mellw/Projects/Mlib/src/cpp/Packy.cpp"
+    "directory": "/home/mellw/projects/Mlib/src/cpp",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/cpp/Packy.cpp -o /home/mellw/projects/Mlib/build/obj/Packy.o",
+    "file": "/home/mellw/projects/Mlib/src/cpp/Packy.cpp"
   }
   ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/cpp",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/cpp/openGL/context.cpp -o /home/mellw/Projects/Mlib/build/obj/openGL/context.o",
-    "file": "/home/mellw/Projects/Mlib/src/cpp/openGL/context.cpp"
+    "directory": "/home/mellw/projects/Mlib/src/cpp",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/cpp/openGL/context.cpp -o /home/mellw/projects/Mlib/build/obj/openGL/context.o",
+    "file": "/home/mellw/projects/Mlib/src/cpp/openGL/context.cpp"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/cpp",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/cpp/openGL/shader.cpp -o /home/mellw/Projects/Mlib/build/obj/openGL/shader.o",
-    "file": "/home/mellw/Projects/Mlib/src/cpp/openGL/shader.cpp"
+    "directory": "/home/mellw/projects/Mlib/src/cpp",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/cpp/openGL/shader.cpp -o /home/mellw/projects/Mlib/build/obj/openGL/shader.o",
+    "file": "/home/mellw/projects/Mlib/src/cpp/openGL/shader.cpp"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/cpp",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/cpp/Term.cpp -o /home/mellw/Projects/Mlib/build/obj/Term.o",
-    "file": "/home/mellw/Projects/Mlib/src/cpp/Term.cpp"
+    "directory": "/home/mellw/projects/Mlib/src/cpp",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/cpp/Term.cpp -o /home/mellw/projects/Mlib/build/obj/Term.o",
+    "file": "/home/mellw/projects/Mlib/src/cpp/Term.cpp"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/cpp",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/cpp/Error.cpp -o /home/mellw/Projects/Mlib/build/obj/Error.o",
-    "file": "/home/mellw/Projects/Mlib/src/cpp/Error.cpp"
+    "directory": "/home/mellw/projects/Mlib/src/cpp",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/cpp/Error.cpp -o /home/mellw/projects/Mlib/build/obj/Error.o",
+    "file": "/home/mellw/projects/Mlib/src/cpp/Error.cpp"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/cpp",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/cpp/String.cpp -o /home/mellw/Projects/Mlib/build/obj/String.o",
-    "file": "/home/mellw/Projects/Mlib/src/cpp/String.cpp"
+    "directory": "/home/mellw/projects/Mlib/src/cpp",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/cpp/String.cpp -o /home/mellw/projects/Mlib/build/obj/String.o",
+    "file": "/home/mellw/projects/Mlib/src/cpp/String.cpp"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/cpp",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/cpp/Loops.cpp -o /home/mellw/Projects/Mlib/build/obj/Loops.o",
-    "file": "/home/mellw/Projects/Mlib/src/cpp/Loops.cpp"
+    "directory": "/home/mellw/projects/Mlib/src/cpp",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/cpp/Loops.cpp -o /home/mellw/projects/Mlib/build/obj/Loops.o",
+    "file": "/home/mellw/projects/Mlib/src/cpp/Loops.cpp"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/cpp",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/cpp/Compress.cpp -o /home/mellw/Projects/Mlib/build/obj/Compress.o",
-    "file": "/home/mellw/Projects/Mlib/src/cpp/Compress.cpp"
+    "directory": "/home/mellw/projects/Mlib/src/cpp",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/cpp/Compress.cpp -o /home/mellw/projects/Mlib/build/obj/Compress.o",
+    "file": "/home/mellw/projects/Mlib/src/cpp/Compress.cpp"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Io.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/Io.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/Io.h",
+    "file": "/home/mellw/projects/Mlib/src/include/Io.h"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Debug.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/Debug.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/Debug.h",
+    "file": "/home/mellw/projects/Mlib/src/include/Debug.h"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/String.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/String.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/String.h",
+    "file": "/home/mellw/projects/Mlib/src/include/String.h"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/CL/compute.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/CL/compute.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/CL/compute.h",
+    "file": "/home/mellw/projects/Mlib/src/include/CL/compute.h"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/CL/tools.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/CL/tools.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/CL/tools.h",
+    "file": "/home/mellw/projects/Mlib/src/include/CL/tools.h"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Error.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/Error.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/Error.h",
+    "file": "/home/mellw/projects/Mlib/src/include/Error.h"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Assert.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/Assert.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/Assert.h",
+    "file": "/home/mellw/projects/Mlib/src/include/Assert.h"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/openGL/init.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/openGL/init.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/openGL/init.h",
+    "file": "/home/mellw/projects/Mlib/src/include/openGL/init.h"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Http.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/Http.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/Http.h",
+    "file": "/home/mellw/projects/Mlib/src/include/Http.h"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Compress.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/Compress.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/Compress.h",
+    "file": "/home/mellw/projects/Mlib/src/include/Compress.h"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Vector.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/Vector.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/Vector.h",
+    "file": "/home/mellw/projects/Mlib/src/include/Vector.h"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/MVec2.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/MVec2.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/MVec2.h",
+    "file": "/home/mellw/projects/Mlib/src/include/MVec2.h"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-   "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Vulkan/init.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/Vulkan/init.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+   "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/Vulkan/init.h",
+    "file": "/home/mellw/projects/Mlib/src/include/Vulkan/init.h"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Array.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/Array.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/Array.h",
+    "file": "/home/mellw/projects/Mlib/src/include/Array.h"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Term.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/Term.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/Term.h",
+    "file": "/home/mellw/projects/Mlib/src/include/Term.h"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Arm.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/Arm.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/Arm.h",
+    "file": "/home/mellw/projects/Mlib/src/include/Arm.h"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Packy.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/Packy.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/Packy.h",
+    "file": "/home/mellw/projects/Mlib/src/include/Packy.h"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Sys.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/Sys.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/Sys.h",
+    "file": "/home/mellw/projects/Mlib/src/include/Sys.h"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/def.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/def.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/def.h",
+    "file": "/home/mellw/projects/Mlib/src/include/def.h"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Socket.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/Socket.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/Socket.h",
+    "file": "/home/mellw/projects/Mlib/src/include/Socket.h"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Pair.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/Pair.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/Pair.h",
+    "file": "/home/mellw/projects/Mlib/src/include/Pair.h"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Atomic.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/Atomic.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/Atomic.h",
+    "file": "/home/mellw/projects/Mlib/src/include/Atomic.h"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Limits.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/Limits.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/Limits.h",
+    "file": "/home/mellw/projects/Mlib/src/include/Limits.h"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Args.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/Args.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/Args.h",
+    "file": "/home/mellw/projects/Mlib/src/include/Args.h"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Loops.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/Loops.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/Loops.h",
+    "file": "/home/mellw/projects/Mlib/src/include/Loops.h"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Attributes.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/Attributes.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/Attributes.h",
+    "file": "/home/mellw/projects/Mlib/src/include/Attributes.h"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Chars.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/Chars.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/Chars.h",
+    "file": "/home/mellw/projects/Mlib/src/include/Chars.h"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Profile.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/Profile.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/Profile.h",
+    "file": "/home/mellw/projects/Mlib/src/include/Profile.h"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/FileSys.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/FileSys.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/FileSys.h",
+    "file": "/home/mellw/projects/Mlib/src/include/FileSys.h"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Sdl2.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/Sdl2.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/Sdl2.h",
+    "file": "/home/mellw/projects/Mlib/src/include/Sdl2.h"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/http_parser.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/http_parser.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/http_parser.h",
+    "file": "/home/mellw/projects/Mlib/src/include/http_parser.h"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Flag.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/Flag.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/Flag.h",
+    "file": "/home/mellw/projects/Mlib/src/include/Flag.h"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Init_list.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/Init_list.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/Init_list.h",
+    "file": "/home/mellw/projects/Mlib/src/include/Init_list.h"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/File.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/File.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/File.h",
+    "file": "/home/mellw/projects/Mlib/src/include/File.h"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Threads.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/Threads.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/Threads.h",
+    "file": "/home/mellw/projects/Mlib/src/include/Threads.h"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Math.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/Math.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/Math.h",
+    "file": "/home/mellw/projects/Mlib/src/include/Math.h"
   }
 ,
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Param.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/Param.h"
-  }
-,
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/Param.h",
+    "file": "/home/mellw/projects/Mlib/src/include/Param.h"
+  },
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/RK3399.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/RK3399.h"
-  }
-,
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/RK3399.h",
+    "file": "/home/mellw/projects/Mlib/src/include/RK3399.h"
+  },
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Mem_pool.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/Mem_pool.h"
-  }
-,
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/Mem_pool.h",
+    "file": "/home/mellw/projects/Mlib/src/include/Mem_pool.h"
+  },
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Mutex.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/Mutex.h"
-  }
-,
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/Mutex.h",
+    "file": "/home/mellw/projects/Mlib/src/include/Mutex.h"
+  },
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/Types.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/Types.h"
-  }
-  ,
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/Types.h",
+    "file": "/home/mellw/projects/Mlib/src/include/Types.h"
+  },
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/float_calc.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/float_calc.h"
-  }
-  ,
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/float_calc.h",
+    "file": "/home/mellw/projects/Mlib/src/include/float_calc.h"
+  },
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/MVec3.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/MVec3.h"
-  }
-  ,
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/MVec3.h",
+    "file": "/home/mellw/projects/Mlib/src/include/MVec3.h"
+  },
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/simd.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/simd.h"
-  }
-  ,
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/simd.h",
+    "file": "/home/mellw/projects/Mlib/src/include/simd.h"
+  },
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/openGL/context.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/openGL/context.h"
-  }
-  ,
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/openGL/context.h",
+    "file": "/home/mellw/projects/Mlib/src/include/openGL/context.h"
+  },
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/openGL/shader.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/openGL/shader.h"
-  }
-  ,
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/openGL/shader.h",
+    "file": "/home/mellw/projects/Mlib/src/include/openGL/shader.h"
+  },
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/MGL/MGL.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/MGL/MGL.h"
-  }
-  ,
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/MGL/MGL.h",
+    "file": "/home/mellw/projects/Mlib/src/include/MGL/MGL.h"
+  },
   {
-    "directory": "/home/mellw/Projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/Projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/Projects/Mlib/src/include/GridMap.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/GridMap.h"
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/GridMap.h",
+    "file": "/home/mellw/projects/Mlib/src/include/GridMap.h"
+  },
+  {
+    "directory": "/home/mellw/projects/Mlib/src/include",
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/def.h",
+    "file": "/home/mellw/projects/Mlib/src/include/def.h"
   }
 ]

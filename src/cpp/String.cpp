@@ -12,12 +12,12 @@ using std::string;
 using std::vector;
 
 namespace Mlib::String {
-  unsigned long findN(const string &str, const string &search, unsigned long n) {
-    unsigned long pos = 0;
-    for (unsigned long i = 0; i < n; ++i) {
+  Ulong findN(const string &str, const string &search, Ulong n) {
+    Ulong pos = 0;
+    for (Ulong i = 0; i < n; ++i) {
       pos = str.find(search, pos);
-      if (pos == (unsigned long)-1) {
-        return (unsigned long)-1;
+      if (pos == (Ulong)-1) {
+        return (Ulong)-1;
       }
       pos += search.length();
     }

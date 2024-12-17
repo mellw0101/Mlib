@@ -26,27 +26,6 @@
 
 #include "Attributes.h"
 
-/* Null def. */
-#ifdef NULL
-  #undef NULL
-#endif
-/* Bool def. */
-#ifdef TRUE
-  #undef TRUE
-#endif
-#ifdef FALSE
-  #undef FALSE
-#endif
-#ifdef __cplusplus
-  #define NULL nullptr
-  #define TRUE true
-  #define FALSE false
-#else
-  #define NULL __null
-  #define TRUE 1
-  #define FALSE 0
-#endif
-
 #define ESC_CODE_RED                     "\033[31m"
 #define ESC_CODE_GREEN                   "\033[32m"
 #define ESC_CODE_YELLOW                  "\033[33m"
@@ -503,6 +482,7 @@ sse_simd_width(void) noexcept {
 #define sizeof_sse_simd(type)     sse_simd_width<type>()
 
 #define AMALLOC(obj)              (decltype(obj))malloc(sizeof(*obj))
+#define AUTO_OBJ_MALLOC(obj)      obj = AMALLOC(obj)
 #define ACALLOC_ARRAY(obj, size)  (decltype(obj))calloc(size, sizeof(*obj)) 
 #define AMALLOC_ARRAY(obj, size)  (decltype(obj))malloc(sizeof(*obj) * size)
 #define AREALLOC_ARRAY(obj, size) (decltype(obj))realloc(obj, sizeof(*obj) * size)
@@ -510,7 +490,7 @@ sse_simd_width(void) noexcept {
 #define LOG_AMALLOC(obj)      \
   do {                        \
     obj = AMALLOC(obj);       \
-    if (obj == nullptr) {     \
+    if (!obj) {               \
       logE("Malloc Failed."); \
       exit(1);                \
     }                         \
@@ -520,31 +500,51 @@ sse_simd_width(void) noexcept {
 #define LOG_AMALLOC_HANDLE(obj, handler) \
   do {                                   \
     obj = AMALLOC(obj);                  \
-    if (obj == nullptr) {                \
+    if (!obj) {                          \
       logE("Malloc Failed.");            \
       handler();                         \
     }                                    \
   }                                      \
   while (0)
 
+#define LOG_AMALLOC_ARRAY(obj, size) \
+  do {                               \
+    obj = AMALLOC_ARRAY(obj, size);  \
+    if (!obj) {                      \
+      logE("Malloc Failed.");        \
+      exit(1);                       \
+    }                                \
+  }                                  \
+  while (0)
+
+#define LOG_AMALLOC_ARRAY_HANDLE(obj, size, handler) \
+  do {                                               \
+    obj = AMALLOC_ARRAY(obj, size);                  \
+    if (!obj) {                                      \
+      logE("Malloc Failed.");                        \
+      handler();                                     \
+    }                                                \
+  }                                                  \
+  while (0)
+
 #define LOG_AREALLOC_ARRAY(obj, size) \
   do {                                \
-    obj = AMALLOC_ARRAY(obj, size);   \
-    if (obj == nullptr) {             \
-      logE("Malloc Failed.");         \
+    obj = AREALLOC_ARRAY(obj, size);  \
+    if (!obj) {                       \
+      logE("Realloc Failed.");        \
       exit(1);                        \
     }                                 \
   }                                   \
   while (0)
 
-#define LOG_AREALLOC_ARRAY_HANDLE(obj, handler) \
-  do {                                          \
-    obj = AMALLOC(obj);                         \
-    if (obj == nullptr) {                       \
-      logE("Malloc Failed.");                   \
-      handler();                                \
-    }                                           \
-  }                                             \
+#define LOG_AREALLOC_ARRAY_HANDLE(obj, size, handler) \
+  do {                                                \
+    obj = AREALLOC_ARRAY(obj, size);                  \
+    if (!obj) {                                       \
+      logE("Realloc Failed.");                        \
+      handler();                                      \
+    }                                                 \
+  }                                                   \
   while (0)
 
 #define __MLIB_BEGIN_NAMESPACE_(name, vis) \
@@ -600,3 +600,24 @@ sse_simd_width(void) noexcept {
   #define UlongMAX (18446744073709551615ULL)
 #endif
 #define PTR_SIZE __WORDSIZE
+
+/* Null def. */
+// #ifdef NULL
+//   #undef NULL
+// #endif
+/* Bool def. */
+#ifdef TRUE
+  #undef TRUE
+#endif
+#ifdef FALSE
+  #undef FALSE
+#endif
+#ifdef __cplusplus
+  // #define NULL nullptr
+  #define TRUE true
+  #define FALSE false
+#else
+  // #define NULL __null
+  #define TRUE 1
+  #define FALSE 0
+#endif

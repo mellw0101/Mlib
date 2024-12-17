@@ -6,7 +6,9 @@
 extern "C" {
 #endif
 
+#ifndef Ulong
 #define Ulong unsigned long
+#endif
 #define null __null
 
 char *read_fd_with_lock(int fd, Ulong *size);

@@ -1,5 +1,4 @@
-/** @file Profile.cpp
- * Contains the implementation of the profiling classes and functions. */
+/** @file Profile.cpp.  Contains the implementation of the profiling classes and functions. */
 #include "../include/Profile.h"
 #include "../include/def.h"
 
@@ -76,7 +75,7 @@ namespace Mlib::Profile {
   void GlobalProfiler::setOutputFile(string_view file_path) {
     output_file = file_path;
   }
-
+ 
   map<string, ProfilerStats> GlobalProfiler::getStatsCopy() const {
     return stats;
   }

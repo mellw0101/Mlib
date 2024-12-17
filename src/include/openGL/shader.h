@@ -7,6 +7,7 @@
 #include "../Types.h"
 #include "../simd.h"
 #include "../Flag.h"
+#include "../Debug.h"
 
 #include <string>
 #include <fstream>
@@ -18,6 +19,35 @@ Uint openGL_load_shader_file(const char *path, Uint type);
 Uint openGL_load_shader_file_raw(const char *str, Uint type);
 Uint openGL_create_shader_program(const MVector<Pair<const char *, Uint>> &parts);
 Uint openGL_create_shader_program_raw(const MVector<Pair<const char *, Uint>> &parts);
+
+struct ShaderProgram {
+ private:
+  GLuint _id;
+
+ public:
+  ShaderProgram(const char *vertex_shader_path, const char *fragment_shader_path) {
+    _id = openGL_create_shader_program({
+      {vertex_shader_path,   GL_VERTEX_SHADER},
+      {fragment_shader_path, GL_FRAGMENT_SHADER}
+    });
+  }
+
+  ~ShaderProgram(void) {
+    glDeleteProgram(_id);
+  }
+
+  int get_uniform_location(const char *const &name) {
+    int ret = glGetUniformLocation(_id, name);
+    if (ret == -1) {
+      logE("Failed to get uniform location: '%s'\n");
+    }
+    return ret;
+  }
+
+  GLuint id(void) {
+    return _id;
+  }
+};
 
 inline namespace Vec {
   namespace /* Defines */ {

@@ -421,7 +421,7 @@
   },
   {
     "directory": "/home/mellw/projects/Mlib/src/include",
-    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/def.h",
-    "file": "/home/mellw/projects/Mlib/src/include/def.h"
+    "command": "/usr/bin/clang++ -I/home/mellw/projects/Mlib/src/include -I/usr/include -I/usr/include/c++/v1 -I/usr/include/Mlib -O3 -DNDEBUG -flto -std=c++23 -stdlib=libc++ -c /home/mellw/projects/Mlib/src/include/Notify.h",
+    "file": "/home/mellw/projects/Mlib/src/include/Notify.h"
   }
 ]

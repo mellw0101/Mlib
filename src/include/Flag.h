@@ -32,6 +32,16 @@ struct bit_flag_t {
     return ((_flags(flag) & _flag_mask(flag)) != 0);
   }
 
+  // Return`s TRUE if all elements in the underling data array are equal to zero, else return`s FALSE.
+  __bool is_clear(void) const {
+    for (Uint i = 0; i < (Size / 8); ++i) {
+      if (_flag_array[i] != (Uchar)0) {
+        return FALSE;
+      }
+    }
+    return TRUE;
+  }
+
   __void toggle(Uint flag) {
     _flags(flag) ^= _flag_mask(flag);
   }

@@ -329,8 +329,10 @@ namespace Mlib::Debug {
 #define LoutErrno(__msg) LoutE << Mlib::Debug::Lout_errno_msg(__msg) << '\n'
 #define LOUT_logI(...)   LOUT.log(Mlib::Debug::INFO, __func__, __LINE__, __VA_ARGS__)
 #define LOUT_logE(...)   LOUT.log(Mlib::Debug::ERROR, __func__, __LINE__, __VA_ARGS__)
+#define LOUT_logW(...)   LOUT.log(Mlib::Debug::WARNING, __func__, __LINE__, __VA_ARGS__)
 #define logE(...)        LOUT_logE(__VA_ARGS__)
 #define logI(...)        LOUT_logI(__VA_ARGS__)
+#define logW(...)        LOUT_logW(__VA_ARGS__)
 
 /* Macro to get the NetworkLogger instance */
 #define NETLOGGER        Mlib::Debug::NetworkLogger::Instance()

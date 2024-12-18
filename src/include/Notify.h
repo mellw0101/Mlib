@@ -11,11 +11,12 @@
 #include "Vector.h"
 
 namespace /* Tools */ {
-#define EVENT_SIZE    (sizeof(struct inotify_event))
-#define EVENT_BUF_LEN (1024 * (EVENT_SIZE + 16))
+#define EVENT_SIZE    			(sizeof(struct inotify_event))
+#define EVENT_BUF_LEN 			(1024 * (EVENT_SIZE + 16))
 constexpr Uint DEFAULT_MASK = (IN_ACCESS | IN_MODIFY | IN_ATTRIB | IN_CLOSE | IN_OPEN | IN_MOVE | IN_CREATE | IN_DELETE | IN_DELETE_SELF | IN_MOVE_SELF);
-#define DEFAULT_MASK DEFAULT_MASK
-#define CALLBACK      void (*callback)(const char *file_path, inotify_event *event)
+#define DEFAULT_MASK 				DEFAULT_MASK
+#define CALLBACK      			void (*callback)(const char *file_path, inotify_event *event)
+#define FL_ACTION(action)		[](void *arg) { action }
 }
 
 struct FileEvent {

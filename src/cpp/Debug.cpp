@@ -6,10 +6,10 @@ namespace Mlib::Debug {
 
   Lout &Lout::Instance(void) noexcept {
     using namespace std;
-    if (_LoutInstance == nullptr) {
+    if (!_LoutInstance) {
       lock_guard<mutex> lock(mutex);
       _LoutInstance = new (nothrow) Lout();
-      if (_LoutInstance == nullptr) {
+      if (!_LoutInstance) {
         exit(1);
       }
       atexit(destroy);

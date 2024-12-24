@@ -94,25 +94,25 @@ namespace Mlib::Term {
     const char *tmp_file = "/tmp/termcolor.tmp";
     if ((temp_fd = open(tmp_file, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR)) == -1) {
       nerre("open");
-      return nullptr;
+      return NULL;
     }
     if ((stdout_fd = dup(STDOUT_FILENO)) == -1) {
       close(temp_fd);
       nerre("dup");
-      return nullptr;
+      return NULL;
     }
     if (dup2(temp_fd, STDOUT_FILENO) == -1) {
       close(temp_fd);
       close(stdout_fd);
       nerre("dup2");
-      return nullptr;
+      return NULL;
     }
     write(STDOUT_FILENO, (!bg) ? "\033]10;?\007" : "\033]11;?\007", 7);
     if (dup2(stdout_fd, STDOUT_FILENO) == -1) {
       close(temp_fd);
       close(stdout_fd);
       nerre("dup2");
-      return nullptr;
+      return NULL;
     }
     close(stdout_fd);
     lseek(temp_fd, 0, SEEK_SET);
@@ -120,7 +120,7 @@ namespace Mlib::Term {
     close(temp_fd);
     if (r_len < 1) {
       nerre("read");
-      return nullptr;
+      return NULL;
     }
     buf[r_len] = '\0';
     return buf;
@@ -135,13 +135,13 @@ namespace Mlib::Term {
     winsize w;
     if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) < 0) {
       fprintf(stderr, "ioctl: ERROR: [%s].\n", strerror(errno));
-      return false;
+      return FALSE;
     }
-    (colums != nullptr) ? *colums = w.ws_col : 0;
-    (rows != nullptr) ? *rows = w.ws_row : 0;
-    (x_pixel != nullptr) ? (*x_pixel = w.ws_xpixel) : 0;
-    (y_pixel != nullptr) ? (*y_pixel = w.ws_ypixel) : 0;
-    return true;
+    colums  ? (*colums  = w.ws_col) : 0;
+    rows    ? (*rows    = w.ws_row) : 0;
+    x_pixel ? (*x_pixel = w.ws_xpixel) : 0;
+    y_pixel ? (*y_pixel = w.ws_ypixel) : 0;
+    return TRUE;
   }
 
   void move_cursor(const Ushort row, const Ushort colum) {
@@ -256,7 +256,7 @@ namespace Mlib::Term {
     fflush(stdout);
   }
 
-  void set_color_rgb(bool bg, const Ushort r, const Ushort g, const Ushort b) {
+  void set_color_rgb(bool bg, Ushort r, Ushort g, Ushort b) {
     if (bg) {
       writef("\033[48;2;%u;%u;%um", r, g, b);
       return;
@@ -266,10 +266,10 @@ namespace Mlib::Term {
 
   void make_entire_line_color(const Ushort r, const Ushort g, const Ushort b) {
     Ulong colums;
-    if (!term_size(&colums, nullptr)) {
+    if (!term_size(&colums, NULL)) {
       nerr("term_size");
     }
-    set_color_rgb(true, r, g, b);
+    set_color_rgb(TRUE, r, g, b);
     writef("\r%*s", colums, " ");
     reset_color();
   }
@@ -289,7 +289,7 @@ namespace Mlib::Term {
   }
 
   int read_char_from_fd(int fd) {
-    int     c;
+    int c;
     ssize_t len = read(fd, &c, 1);
     if (len != 1 && len == -1) {
       fatal_err("read", "%zi (len) != 1");
@@ -304,7 +304,7 @@ namespace Mlib::Term {
     va_start(ap, format);
     vsnprintf(prompt_str, sizeof(prompt_str), format, ap);
     va_end(ap);
-    while (true) {
+    while (TRUE) {
       printf("%s [Yy/Nn]: ", prompt_str);
       fflush(stdout);
       c = read_char_from_fd(STDIN_FILENO);
@@ -314,14 +314,14 @@ namespace Mlib::Term {
           for (; c != '\n'; c = read_char_from_fd(STDIN_FILENO)) {
             fflush(stdin);
           }
-          return false;
+          return FALSE;
         }
         case 'Y' :
         case 'y' : {
           for (; c != '\n'; c = read_char_from_fd(STDIN_FILENO)) {
             fflush(stdin);
           }
-          return true;
+          return TRUE;
         }
         default : {
           printf("Only [Yy/Nn] is allowed.\n");
@@ -334,31 +334,34 @@ namespace Mlib::Term {
     }
   }
 
-  const char *prompt_raw(int fd, const char **wanted_answers, const rgb_code_t *fg, const rgb_code_t *bg,
-                         const Ushort row, const Ushort colum, const char *format, ...) {
-    char    prompt_str[1024], read_buf[1024];
-    int     c, i, prompt_len;
+  const char *prompt_raw(int fd, const char **wanted_answers, const rgb_code_t *fg, const rgb_code_t *bg, Ushort row, Ushort colum, const char *format, ...) {
+    char prompt_str[1024], read_buf[1024];
+    int c, i, prompt_len;
+    Ushort actual_row = (!row   ? 1 : row);
+    Ushort actual_col = (!colum ? 1 : colum);
     va_list ap;
     va_start(ap, format);
     vsnprintf(prompt_str, sizeof(prompt_str), format, ap);
     va_end(ap);
     const char *const prompt = prompt_str;
-    prompt_len               = strlen(prompt) + 2;
-    while (true) {
-      move_cursor(row, colum);
-      set_color_rgb(false, fg->r, fg->g, fg->b);
-      set_color_rgb(true, bg->r, bg->g, bg->b);
-      fwritef(fd, "%s: ", prompt);
+    prompt_len = strlen(prompt);
+    while (TRUE) {
+      move_cursor(actual_row, actual_col);
+      fg ? set_color_rgb(FALSE, fg->r, fg->g, fg->b) : (void)0;
+      bg ? set_color_rgb(TRUE, bg->r, bg->g, bg->b) : (void)0;
+      fwritef(fd, "%s", prompt);
       i = 0;
       while ((char)(c = read_char_from_fd(fd)) != '\r') {
         if ((char)c == 127) {
-          if (i == 0) {
+          if (!i) {
             continue;
           }
-          i--;
-          move_cursor(row, colum + prompt_len + i);
+          move_cursor(actual_row, (actual_col + prompt_len + --i));
           write(fd, " ", 1);
-          move_cursor(row, colum + prompt_len + i);
+          move_cursor(actual_row, (actual_col + prompt_len + i));
+          continue;
+        }
+        else if (c == 263) {
           continue;
         }
         write(fd, &c, 1);
@@ -366,7 +369,7 @@ namespace Mlib::Term {
       }
       read_buf[i]        = '\0';
       const char *answer = read_buf;
-      if (wanted_answers == nullptr) {
+      if (wanted_answers == NULL) {
         return answer;
       }
       for (const char **wa = wanted_answers; *wa; ++wa) {
@@ -375,8 +378,8 @@ namespace Mlib::Term {
           return answer;
         }
       }
-      move_cursor(row, colum + prompt_len);
-      for (int j = 0; answer[j]; j++) {
+      move_cursor(actual_row, (actual_col + prompt_len));
+      for (int j = 0; answer[j]; ++j) {
         cwrite(' ');
       }
     }
@@ -414,5 +417,13 @@ namespace Mlib::Term {
       ferr("tcsetattr", "Failed to set raw mode");
     }
     return old_term;
+  }
+
+  int read_kbinput(int fd) {
+    int ch;
+    while ((char)(ch = read_char_from_fd(fd)) != '\r') {
+      writef("%c", ch);
+    }
+    return 0;
   }
 }

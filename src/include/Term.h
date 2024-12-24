@@ -18,10 +18,10 @@ namespace Mlib::Term {
   };
 
   struct rgb_code_t {
-    unsigned short r;
-    unsigned short g;
-    unsigned short b;
-    rgb_code_t(const unsigned short r, const unsigned short g, const unsigned short b)
+    Ushort r;
+    Ushort g;
+    Ushort b;
+    rgb_code_t(const Ushort r, const Ushort g, const Ushort b)
         : r(r)
         , g(g)
         , b(b) {
@@ -47,33 +47,32 @@ namespace Mlib::Term {
     }
     return len;
   }
-  void retrieve_current_row_colum_position(int fd, unsigned short *row, unsigned short *colum, bool in_raw_mode = true);
+  void retrieve_current_row_colum_position(int fd, Ushort *row, Ushort *colum, bool in_raw_mode = true);
   const char *retrieve_current_rgb_colors(bool bg = true);
   void        clear_screen();
-  bool        term_size(size_t *colums, size_t *rows, size_t *x_pixel = nullptr, size_t *y_pixel = nullptr);
-  void        move_cursor(const unsigned short row, const unsigned short colum);
-  void        printf_xy(const unsigned short x, const unsigned short y, const char *fmt, ...);
+  bool        term_size(size_t *colums, size_t *rows, size_t *x_pixel = NULL, size_t *y_pixel = NULL);
+  void        move_cursor(const Ushort row, const Ushort colum);
+  void        printf_xy(const Ushort x, const Ushort y, const char *fmt, ...);
   void        printf_center(const char *fmt, ...);
   int         open_tty_as_fd(const char *tty = "/dev/tty" /* <- Default`s to calling tty. */);
   void        hide_cursor(bool hide);
   void        set_color(Color fg, Color bg, bool light);
-  void        set_color_rgb(bool bg, unsigned short r, unsigned short g, unsigned short b);
-  void        make_entire_line_color(const unsigned short r, const unsigned short g, const unsigned short b);
+  void        set_color_rgb(bool bg, Ushort r, Ushort g, Ushort b);
+  void        make_entire_line_color(const Ushort r, const Ushort g, const Ushort b);
   void        clear_line(bool from_start);
   void        reset_color();
   int         read_char_from_fd(int fd);
   bool        prompt(const char *format, ...);
-  const char *prompt_raw(int fd, const char **wanted_answers, const rgb_code_t *fg, const rgb_code_t *bg,
-                         const unsigned short row, const unsigned short colum, const char *format, ...);
+  const char *prompt_raw(int fd, const char **wanted_answers, const rgb_code_t *fg, const rgb_code_t *bg, Ushort row, Ushort colum, const char *format, ...);
   int         fork_function(pid_t *pid, function_t *function);
   /**
-      Returns the old terminal settings
-      @param fd
-      @return termios
+    Returns the old terminal settings
+    @param fd
+    @return termios
    */
   termios setup_raw_term(int fd);
-
-} // namespace Mlib::Term
+  int read_kbinput(int fd);
+}
 
 #define PIPE_READ  0
 #define PIPE_WRITE 1

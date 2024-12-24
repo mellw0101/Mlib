@@ -115,6 +115,10 @@ namespace Mlib::Debug {
   } ErrnoMsg;
 
   class LogQueue {
+   private:
+    std::mutex             mutex_;
+    std::queue<LogMessage> queue_;
+
    public:
     void push(const LogMessage &message) {
       using namespace std;
@@ -144,10 +148,6 @@ namespace Mlib::Debug {
       queue_.pop();
       return message;
     }
-
-   private:
-    std::mutex             mutex_;
-    std::queue<LogMessage> queue_;
   };
 
   MAKE_CONSTEXPR_WRAPPER(FuncName, std::string_view);
@@ -172,13 +172,13 @@ namespace Mlib::Debug {
     return buffer;
   }
 
-  constexpr_map<std::string_view, Uchar, 5> logLevelMap = {
-    {{ESC_CODE_GREEN "[INFO]" ESC_CODE_RESET, INFO},
-     {ESC_CODE_CYAN "[INFO_PRIORITY]" ESC_CODE_RESET, INFO_PRIORITY},
-     {ESC_CODE_YELLOW "[WARNING]" ESC_CODE_RESET, WARNING},
-     {ESC_CODE_RED "[ERROR]" ESC_CODE_RESET, ERROR},
-     {ESC_CODE_MAGENTA "[FUNC]" ESC_CODE_RESET, FUNC}}
-  };
+  constexpr_map<std::string_view, Uchar, 5> logLevelMap = {{
+    {   ESC_CODE_GREEN          "[INFO]" ESC_CODE_RESET,          INFO },
+    {    ESC_CODE_CYAN "[INFO_PRIORITY]" ESC_CODE_RESET, INFO_PRIORITY },
+    {  ESC_CODE_YELLOW       "[WARNING]" ESC_CODE_RESET,       WARNING },
+    {     ESC_CODE_RED         "[ERROR]" ESC_CODE_RESET,         ERROR },
+    { ESC_CODE_MAGENTA          "[FUNC]" ESC_CODE_RESET,          FUNC }
+  }};
 
   class Lout {
    private:
@@ -207,8 +207,7 @@ namespace Mlib::Debug {
 
     static void destroy(void) noexcept;
 
-    Lout(void) {
-    }
+    Lout(void) noexcept {}
 
    public:
     Lout &operator<<(const LogLevel logLevel) {
@@ -270,11 +269,25 @@ namespace Mlib::Debug {
 
     static Lout &Instance(void) noexcept;
 
+    static __inline__ Lout *const &instanceptr(void) noexcept {
+      if (!_LoutInstance) {
+        LOCK_GUARD<MUTEX> lock(MUTEX);
+        if (!_LoutInstance) {
+          _LoutInstance = new (std::nothrow) Lout();
+          if (!_LoutInstance) {
+            exit(1);
+          }
+          atexit(destroy);
+        }
+      }
+      return _LoutInstance;
+    }
+
     constexpr void setOutputFile(std::string_view path) {
       _output_file = path;
     }
 
-    void log(const LogLevel log_level, const char *from_func, const unsigned long lineno, const char *format, ...);
+    void log(const LogLevel log_level, const char *from_func, const Ulong lineno, const char *format, ...);
   };
 
   inline ErrnoMsg Lout_errno_msg(std::string_view str) {
@@ -316,6 +329,19 @@ namespace Mlib::Debug {
     }
 
     static NetworkLogger &Instance(void) noexcept;
+    static __inline__ NetworkLogger *const &instanceptr(void) noexcept {
+      if (!_NetworkLoggerInstance) {
+        LOCK_GUARD<MUTEX> lock(MUTEX);
+        if (!_NetworkLoggerInstance) {
+          _NetworkLoggerInstance = new (std::nothrow) NetworkLogger();
+          if (!_NetworkLoggerInstance) {
+            exit(1);
+          }
+          atexit(destroy);
+        }
+      }
+      return _NetworkLoggerInstance;
+    }
   };
 }
 
@@ -324,18 +350,24 @@ namespace Mlib::Debug {
 #define LINE             Mlib::Debug::Line_Wrapper(__LINE__)
 #define FILE_NAME        Mlib::Debug::FileName_Wrapper(__FILENAME__)
 #define LOUT             Mlib::Debug::Lout::Instance()
+#define LOUTPTR          Mlib::Debug::Lout::instanceptr()
 #define LoutI            LOUT << Mlib::Debug::INFO << FUNC << LINE
 #define LoutE            LOUT << Mlib::Debug::ERROR << FUNC << LINE
 #define LoutErrno(__msg) LoutE << Mlib::Debug::Lout_errno_msg(__msg) << '\n'
 #define LOUT_logI(...)   LOUT.log(Mlib::Debug::INFO, __func__, __LINE__, __VA_ARGS__)
 #define LOUT_logE(...)   LOUT.log(Mlib::Debug::ERROR, __func__, __LINE__, __VA_ARGS__)
 #define LOUT_logW(...)   LOUT.log(Mlib::Debug::WARNING, __func__, __LINE__, __VA_ARGS__)
-#define logE(...)        LOUT_logE(__VA_ARGS__)
-#define logI(...)        LOUT_logI(__VA_ARGS__)
-#define logW(...)        LOUT_logW(__VA_ARGS__)
+#define LOUTPTR_logI(...)   LOUTPTR->log(Mlib::Debug::INFO, __func__, __LINE__, __VA_ARGS__)
+#define LOUTPTR_logE(...)   LOUTPTR->log(Mlib::Debug::ERROR, __func__, __LINE__, __VA_ARGS__)
+#define LOUTPTR_logW(...)   LOUTPTR->log(Mlib::Debug::WARNING, __func__, __LINE__, __VA_ARGS__)
+#define logE(...)        LOUTPTR_logE(__VA_ARGS__)
+#define logI(...)        LOUTPTR_logI(__VA_ARGS__)
+#define logW(...)        LOUTPTR_logW(__VA_ARGS__)
 
 /* Macro to get the NetworkLogger instance */
 #define NETLOGGER        Mlib::Debug::NetworkLogger::Instance()
+#define NETLOGGERPTR     Mlib::Debug::NetworkLogger::instanceptr()
 #define NLOG(...)        NETLOGGER.log(__VA_ARGS__)
+#define NETLOG(...)      NETLOGGERPTR->log(__VA_ARGS__)
 #define nlog(...)        NLOG(__VA_ARGS__)
 #define NETLOG_ENDL      Mlib::Debug::NetworkLoggerEndl_Wrapper('\n')

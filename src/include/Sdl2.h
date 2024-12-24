@@ -17,6 +17,7 @@
 #        include <vector>
 #        include "Vector.h"
 
+#        include "Debug.h"
 #        include "Flag.h"
 #        include "Attributes.h"
 #        include "def.h"

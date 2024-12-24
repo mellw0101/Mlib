@@ -1,3 +1,6 @@
+#pragma once
+
+#include <cstdio>
 #include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -11,12 +14,12 @@
 #include "Vector.h"
 
 namespace /* Tools */ {
-#define EVENT_SIZE    			(sizeof(struct inotify_event))
-#define EVENT_BUF_LEN 			(1024 * (EVENT_SIZE + 16))
-constexpr Uint DEFAULT_MASK = (IN_ACCESS | IN_MODIFY | IN_ATTRIB | IN_CLOSE | IN_OPEN | IN_MOVE | IN_CREATE | IN_DELETE | IN_DELETE_SELF | IN_MOVE_SELF);
-#define DEFAULT_MASK 				DEFAULT_MASK
-#define CALLBACK      			void (*callback)(const char *file_path, inotify_event *event)
-#define FL_ACTION(action)		[](void *arg) { action }
+  #define EVENT_SIZE    			(sizeof(struct inotify_event))
+  #define EVENT_BUF_LEN 			(1024 * (EVENT_SIZE + 16))
+  constexpr Uint DEFAULT_MASK = (IN_ACCESS | IN_MODIFY | IN_ATTRIB | IN_CLOSE | IN_OPEN | IN_MOVE | IN_CREATE | IN_DELETE | IN_DELETE_SELF | IN_MOVE_SELF);
+  #define DEFAULT_MASK 				DEFAULT_MASK
+  #define CALLBACK      			void (*callback)(const char *file_path, inotify_event *event)
+  #define FL_ACTION(action)		[](void *arg) { action }
 }
 
 struct FileEvent {
@@ -173,7 +176,7 @@ class FileListenerHandler {
     _listeners[file_path] = data;
     pthread_create(&data->thread, NULL, _handler, data);
   }
-  
+
   void stop_listener(const char *path) {
     if (_listeners.count(path)) {
       _listeners[path]->listener.stop();
@@ -237,7 +240,7 @@ typedef struct file_listener_t {
   void *_delete_callback_data;
   void *_delete_self_callback_data;
   void *_move_self_callback_data;
-  
+
   static void *_callback_loop(void *arg) {
     file_listener_t *self = (file_listener_t *)arg;
     while (self->_flag.is_set<FILE_LISTENER_RUNNING>()) {
@@ -473,6 +476,10 @@ typedef struct file_listener_t {
 
 static file_listener_t *make_file_listener(const char *file_path) {
   file_listener_t *listener = (file_listener_t *)malloc(sizeof(*listener));
+  if (!listener) {
+    logE("Failed to malloc file_listener_t.");
+    exit(errno);
+  }
   new (listener) file_listener_t(file_path);
   return listener;
 }
@@ -503,6 +510,10 @@ typedef struct file_listener_handler_t {
   /* If listener has been added but not started, this will leak memory. */
   void stop_listener(const char *file_path) {
     file_listener_t *listener = get_listener(file_path);
+    if (!listener) {
+      logE("File listener for file: '%s' does not exist.", file_path);
+      return;
+    }
     free_file_listener(listener);
     _data.erase(listener);
   }
@@ -525,7 +536,7 @@ typedef struct file_listener_handler_t {
 } file_listener_handler_t;
 
 namespace /* Undefs */ {
-#undef EVENT_SIZE
-#undef EVENT_BUF_LEN
-#undef DEFAULT_MASK
+  #undef EVENT_SIZE
+  #undef EVENT_BUF_LEN
+  #undef DEFAULT_MASK
 }

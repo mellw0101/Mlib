@@ -1,4 +1,6 @@
 #include "../../include/MGL/MGL.h"
+#include "def.h"
+#include "openGL/shader.h"
 
 __glewApp *__glewApp::_instance = nullptr;
 
@@ -29,8 +31,7 @@ void __glewApp::_cleanup(void) {
 
 void __glewApp::_shader_init(void) {
   shader = openGL_create_shader_program_raw({
-    {
-      STRLITERAL(\
+    { STRLITERAL(\
         #version 450 core \n
         struct ElementData {
           vec2 pos;
@@ -58,10 +59,9 @@ void __glewApp::_shader_init(void) {
           gl_Position      = worldPos;
           vertexColor      = elem.color;
         }
-      ), GL_VERTEX_SHADER
-    },
-    {
-      STRLITERAL(\
+      ),
+      GL_VERTEX_SHADER },
+    { STRLITERAL(\
         #version 450 core \n
         /* Output. */
         out vec4 FragColor;
@@ -72,10 +72,49 @@ void __glewApp::_shader_init(void) {
         void main() {
           FragColor = vertexColor;
         }
-      ), GL_FRAGMENT_SHADER
-    }
+      ),
+      GL_FRAGMENT_SHADER }
   });
-  glUseProgram(shader);
+  _fontshader = openGL_create_shader_program_raw({
+    { STRLITERAL( \
+        #version 330 core\n
+        layout (location = 0) in vec4 vertex; // <vec2 pos, vec2 tex>
+        out vec2 TexCoords;
+
+        uniform mat4 projection;
+
+        void main()
+        {
+          gl_Position = projection * vec4(vertex.xy, 0.0, 1.0);
+          TexCoords = vertex.zw;
+        }
+      ),
+      GL_VERTEX_SHADER },
+    { STRLITERAL(\
+        #version 330 core\n
+        in vec2 TexCoords;
+        out vec4 color;
+
+        uniform sampler2D text;
+        uniform vec3 textColor;
+
+        void main()
+        {    
+          vec4 sampled = vec4(1.0, 1.0, 1.0, texture(text, TexCoords).r);
+          color = vec4(textColor, 1.0) * sampled;
+        }   
+      ),
+      GL_FRAGMENT_SHADER }
+  });
+  glGenVertexArrays(1, &_fontVAO);
+	glGenBuffers(1, &_fontVBO);
+	glBindVertexArray(_fontVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, _fontVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
 }
 
 int __glewApp::_init(const char *title) {
@@ -99,12 +138,18 @@ int __glewApp::_init(const char *title) {
   _shader_init();
   glViewport(0, 0, size.w, size.h);
   _proj = ortho_projection(0.0f, size.w, 0.0f, size.h);
+  glUseProgram(shader);
   glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, GL_FALSE, &_proj[0][0]);
+  glUseProgram(_fontshader);
+  glUniformMatrix4fv(glGetUniformLocation(_fontshader, "projection"), 1, GL_FALSE, &_proj[0][0]);
   glfwSetWindowSizeCallback(win, [](GLFWwindow *win, int w, int h) {
     glApp->size = vec2(w, h);
     glViewport(0, 0, glApp->size.w, glApp->size.h);
     glApp->_proj = ortho_projection(0.0f, glApp->size.w, 0.0f, glApp->size.h);
+    glUseProgram(glApp->shader);
     glUniformMatrix4fv(glGetUniformLocation(glApp->shader, "projection"), 1, GL_FALSE, &glApp->_proj[0][0]);
+    glUseProgram(glApp->_fontshader);
+    glUniformMatrix4fv(glGetUniformLocation(glApp->_fontshader, "projection"), 1, GL_FALSE, &glApp->_proj[0][0]);
     glApp->_root()->data.size = vec2(glApp->size.w, glApp->size.h);
     for (const auto &[name, e] : glApp->elements) {
       if (e->flag.is_set<ALIGN_SIZE_HEIGHT>()) {
@@ -228,6 +273,12 @@ void __glewApp::setup(const char *title, const vec4 &root_color, const vec2 &win
   _frame_timer->fps = fps;
 }
 
+void __glewApp::set_font(const char *path, Uint size) {
+  glUseProgram(_fontshader);
+  _font.load_font(path, size);
+  flag.set<GLAPP_HAS_ACTIVE_FONT>();
+}
+
 Element *__glewApp::new_element(const std::string &parent, const std::string &name, const vec2 &pos, const vec2 &size, const vec4 &color, const vec4 &hi_color) {
   Element *p_elem = get_element(parent);
   if (name != "root" && !p_elem) {
@@ -330,32 +381,47 @@ void __glewApp::animate_element(Element *e, const vec2 &end_pos, const vec2 &end
   }
 }
 
-void __glewApp::render_font_slow(const Font *font, const std::string &text, vec2 pos, float scale) {
-  glBindTexture(GL_TEXTURE_2D, font->texture);
-  glBegin(GL_QUADS);
-  for (char c : text) {
-    const auto &it = font->glyphs.find(c);
-    if (it == font->glyphs.end()) {
-      printe("Cannot find glyph.\n");
-      continue;
+void __glewApp::render_text(std::string text, vec2 pos, float scale, vec3 color) {
+  if (flag.is_set<GLAPP_HAS_ACTIVE_FONT>()) {
+    /* Activate the font shader. */
+    glUseProgram(_fontshader);
+    glUniform3f(glGetUniformLocation(_fontshader, "textColor"), color.x, color.y, color.z);
+    glActiveTexture(GL_TEXTURE0);
+    glBindVertexArray(_fontVAO);
+    /* Iterate through all characters. */
+    std::string::const_iterator c;
+    for (c = text.begin(); c != text.end(); ++c) {
+      Character ch = _font.characters[*c];
+      /* Define parameters for glyph. */
+      float xpos = (pos.x + ch.Bearing.x * scale);
+      float ypos = (pos.y + (ch.Size.y - ch.Bearing.y) * scale);
+      float w = (ch.Size.x * scale);
+      float h = (ch.Size.y * scale);
+      /* Update VBO for each character. */
+      float vertices[6][4] = {
+        /* Vertices data. */
+        {  xpos,      (ypos - h),  0.0f, 0.0f },
+        {  xpos,       ypos,       0.0f, 1.0f },
+        { (xpos + w),  ypos,       1.0f, 1.0f },
+        /* Texture data. */
+        {  xpos,      (ypos - h),  0.0f, 0.0f },
+        { (xpos + w),  ypos,       1.0f, 1.0f },
+        { (xpos + w), (ypos - h),  1.0f, 0.0f }  
+      };
+      /* render glyph texture over quad */
+      glBindTexture(GL_TEXTURE_2D, ch.textureID);
+      /* Update content of VBO memory. */
+      glBindBuffer(GL_ARRAY_BUFFER, _fontVBO);
+      glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); 
+      glBindBuffer(GL_ARRAY_BUFFER, 0);
+      /* Render quad. */
+      glDrawArrays(GL_TRIANGLES, 0, 6);
+      /* Now advance cursors for next glyph (note that advance is number of 1/64 pixels). */
+      pos.x += ((ch.Advance >> 6) * scale); /* Bitshift by 6 to get value in pixels (2^6 = 64) */
     }
-    const Glyph glyph = it->second;
-    float x0 = pos.x + glyph.offset.x * scale;
-    float y0 = pos.y - glyph.offset.y * scale;
-    float x1 = x0 + glyph.size.x * scale;
-    float y1 = y0 + glyph.size.y * scale;
-    float s0 = glyph.pos.x;
-    float t0 = glyph.pos.y;
-    float s1 = glyph.pos.x + glyph.size.x;
-    float t1 = glyph.pos.y + glyph.size.y;
-    printf("s0: %.2f, s1: %.2f, t0: %.2f, t1: %.2f.\n", s0, s1, t0, t1);
-    glTexCoord2f(s0, t0); glVertex2f(x0, y0);
-    glTexCoord2f(s1, t0); glVertex2f(x1, y0);
-    glTexCoord2f(s1, t1); glVertex2f(x1, y1);
-    glTexCoord2f(s0, t1); glVertex2f(x0, y1);
-    pos.x += (glyph.advance * scale);
+    glBindVertexArray(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
   }
-  glEnd();
 }
 
 void __glewApp::set_main_loop_lambda(const std::function<void()> &lambda) {
@@ -368,6 +434,7 @@ void __glewApp::set_main_loop_lambda(const std::function<void()> &lambda) {
 }
 
 void __glewApp::draw(void) {
+  glUseProgram(shader);
   if (_element_data_ssbo.size() <= element_vec.size()) {
     _element_data_ssbo.resize(element_vec.size() * 2);
   }
@@ -415,11 +482,11 @@ void __glewApp::draw(void) {
           element_vec[i]->enter_action();
         }
         element_vec[i]->data.color = element_vec[i]->hi_color;
+        element_vec[i]->flag.set<ELEMENT_MOUSE_INSIDE>();
       }
       else {
         if (element_vec[i]->leave_action) {
-          /* If 'DO_NOT_PREDUSE_LEAVE_EVENT_ON_CHILDREN_ENTER' flag is set.
-            * Only run 'leave_action' when mouse is not on a child. */
+          /* If 'DO_NOT_PREDUSE_LEAVE_EVENT_ON_CHILDREN_ENTER' flag is set.  Only run 'leave_action' when mouse is not on a child. */
           if (element_vec[i]->flag.is_set<DO_NOT_PREDUSE_LEAVE_EVENT_ON_CHILDREN_ENTER>()) {
             if (!is_ancestor(mouse_element, element_vec[i])) {
               element_vec[i]->leave_action();
@@ -430,11 +497,23 @@ void __glewApp::draw(void) {
           }
         }
         element_vec[i]->data.color = element_vec[i]->color;
+        element_vec[i]->flag.unset<ELEMENT_MOUSE_INSIDE>();
       }
       data[i] = element_vec[i]->data;
     }
   });
   glDrawArraysInstanced(GL_TRIANGLES, 0, INDICES_SIZE, element_vec.size());
+  /* Draw element text. */
+  for (Uint i = 0; i < element_vec.size(); ++i) {
+    if (!element_vec[i]->text.empty()) {
+      if (element_vec[i]->flag.is_set<ELEMENT_MOUSE_INSIDE>()) {
+        render_text(element_vec[i]->text, (element_vec[i]->data.pos + _font.size), 1.0f, element_vec[i]->texthicolor);
+      }
+      else {
+        render_text(element_vec[i]->text, (element_vec[i]->data.pos + _font.size), 1.0f, element_vec[i]->textcolor);
+      }
+    }
+  }
 }
 
 void __glewApp::run(void) {

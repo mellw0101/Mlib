@@ -22,7 +22,7 @@ Uint openGL_create_shader_program_raw(const MVector<Pair<const char *, Uint>> &p
 
 struct ShaderProgram {
  private:
-  GLuint _id;
+  Uint _id;
 
  public:
   ShaderProgram(const char *vertex_shader_path, const char *fragment_shader_path) {

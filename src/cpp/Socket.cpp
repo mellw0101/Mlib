@@ -61,7 +61,7 @@ void ssl_cleanup(SSL *ssl, int fd, SSL_CTX *ctx) {
   EVP_cleanup();
 }
 
-SSL_CTX *ssl_create_ctx() {
+SSL_CTX *ssl_create_ctx(void) {
   const SSL_METHOD *method;
   SSL_CTX          *ssl_ctx;
   method = SSLv23_client_method();

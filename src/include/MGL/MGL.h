@@ -15,7 +15,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include <stb/stb_truetype.h>
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 #define GRAY_VEC4(gray_scale)  vec4(vec3(gray_scale), 1.0f)
 
@@ -24,6 +25,10 @@
 #define RED_VEC4   vec4(1.0f, 0.0f, 0.0f, 1.0f)
 #define GREEN_VEC4 vec4(0.0f, 1.0f, 0.0f, 1.0f)
 #define BLUE_VEC4  vec4(0.0f, 0.0f, 1.0f, 1.0f)
+
+#define WHITE_VEC3 vec3(1.0f)
+#define BLACK_VEC3 vec3(0.0f)
+#define GREY_VEC3(scale) vec3(scale)
 
 #define glApp __glewApp::instance()
 #define ELEMENT_FLAG_SIZE 16
@@ -59,85 +64,77 @@ enum /* 'Element' Flag`s. */ {
   DROPDOWN_MENU_RIGHT_SIDE,
   DROPDOWN_MENU_TOP_SIDE,
   DROPDOWN_MENU_DOWN_SIDE,
+  ELEMENT_MOUSE_INSIDE,
+  #define ELEMENT_MOUSE_INSIDE ELEMENT_MOUSE_INSIDE
 };
 enum /* '__glewApp' Flag`s. */ {
   GL_APP_RUNNING,
-  GL_HAS_MAIN_LOOP_LAMBDA
+  GL_HAS_MAIN_LOOP_LAMBDA,
+  GLAPP_HAS_ACTIVE_FONT,
+  #define GLAPP_HAS_ACTIVE_FONT GLAPP_HAS_ACTIVE_FONT
 };
 
-struct Glyph {
-  vec2 pos;       /* Position of the glyph atlas. */
-  vec2 size;      /* Size of the glyph. */
-  vec2 offset;    /* Offset for baseline alignment. */
-  float advance;  /* Horizontal advance. */
+struct Character {
+	Uint textureID; /* ID handle for the glyph texture. */
+	ivec2 Size;			/* Size of glyph. */
+	ivec2 Bearing;	/* Offset from baseline to left/top of glyph. */
+	Uint Advance;		/* Offset to advance to next glyph. */
 };
 
 struct Font {
-  Uint texture;
-  std::unordered_map<char, Glyph> glyphs;
-  ivec2 atlas_size;
+  std::map<char, Character> characters;
+  vec2 size;
 
-  Font(const char *path, int font_size) {
-    /* Read file in a thread safe manner. */
-    Uchar *font_data = (Uchar *)read_file_with_lock(path);
-    if (!font_data) {
-      printe("Failed to open file: '%s'.\n", path);
-      exit(1);
+  /* Load a font from a path.  Setting fontw to zero means freetype dynamicly handles width based on height. */
+  int load_font(const char *path, Uint fonth, Uint fontw = 0) {
+    FT_Library ft;
+    if (FT_Init_FreeType(&ft)) {
+      printe("%s: ERROR: Failed to init freetype.\n", __func__);
+      return -1;
     }
-    stbtt_fontinfo font_info;
-    if (!stbtt_InitFont(&font_info, font_data, 0)) {
-      printe("Failed to init font.  File: '%s'.\n", path);
-      free(font_data);
-      exit(1);
+    FT_Face face;
+    if (FT_New_Face(ft, path, 0, &face)) {
+      printe("%s: ERROR: Failed to load font: '%s'.\n", __func__, path);
+      return -1;
     }
-    /* Scale factor for the font. */
-    float scale = stbtt_ScaleForPixelHeight(&font_info, font_size);
-    /* Generate glyphs and atlas. */
-    atlas_size = ivec2(512);
-    Uchar *atlas_data = (Uchar *)calloc(atlas_size.w * atlas_size.h, 1);
-    ivec2 offset(0);
-    int row_height = 0;
-    for (char c = 32; c < 127; ++c) /* Basic ASCI range. */ {
-      int width, height, xoff, yoff;
-      Uchar *bitmap = stbtt_GetCodepointBitmap(&font_info, 0, scale, c, &width, &height, &xoff, &yoff);
-      if (offset.x + width >= atlas_size.w) {
-        offset.x = 0;
-        offset.y += row_height;
-        row_height = 0;
+    FT_Set_Pixel_Sizes(face, fontw, fonth);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    for (Uchar c = 0; c < 128; ++c) {
+      if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
+        printe("%s: ERROR: Failed to load Glyph.\n", __func__);
+        continue;
       }
-      row_height = std::max(row_height, height);
-      if (offset.y + height > atlas_size.y) {
-        printe("Atlas size to small.");
-        free(font_data);
-        free(atlas_data);
-        exit(1);
-      }
-      /* Copy glyph bitmap into atlas. */
-      for (int y = 0; y < height; ++y) {
-        memcpy((atlas_data + (offset.y + y) * atlas_size.w + offset.x), (bitmap + y * width), width);
-      }
-      /* Save Glyph metadata. */
-      int advance_width, left_bearing;
-      stbtt_GetCodepointHMetrics(&font_info, c, &advance_width, &left_bearing);
-      glyphs[c] = {
-        vec2(((float)offset.x / atlas_size.w), ((float)offset.y / atlas_size.h)),
-        vec2(((float)width / atlas_size.w), ((float)height / atlas_size.h)),
-        vec2((float)xoff, (float)yoff),
-        (float)(scale * advance_width)
+      Uint texture;
+      glGenTextures(1, &texture);
+      glBindTexture(GL_TEXTURE_2D, texture);
+      glTexImage2D(
+        GL_TEXTURE_2D,
+        0,
+        GL_RED,
+        face->glyph->bitmap.width,
+        face->glyph->bitmap.rows,
+        0,
+        GL_RED,
+        GL_UNSIGNED_BYTE,
+        face->glyph->bitmap.buffer
+      );
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      Character character = {
+        texture,
+        ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
+        ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
+        (Uint)face->glyph->advance.x
       };
-      offset.x += width;
-      stbtt_FreeBitmap(bitmap, NULL);
+      characters.insert(std::pair<char, Character>(c, character));
     }
-    /* Generate OpenGL texture. */
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, atlas_size.w, atlas_size.h, 0, GL_R8, GL_UNSIGNED_BYTE, atlas_data);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glGenerateMipmap(GL_TEXTURE_2D);
-    free(font_data);
-    free(atlas_data);
-    glActiveTexture(GL_TEXTURE0);
+    FT_Done_Face(face);
+    FT_Done_FreeType(ft);
+    size.w = fontw;
+    size.h = fonth;
+    return 0;
   }
 };
 
@@ -161,6 +158,9 @@ class __glewApp {
   FrameTimer *_frame_timer;
   std::function<void()> _main_loop_lambda;
   mat4 _proj;
+  /* Font data. */
+  Uint _fontVAO, _fontVBO, _fontshader;
+  Font _font;
 
   static void _destroy(void);
 
@@ -187,6 +187,7 @@ class __glewApp {
   static __glewApp *instance(void);
 
   void setup(const char *title, const vec4 &root_color, const vec2 &win_size = vec2(800.0f, 600.0f), Uint fps = 240);
+  void set_font(const char *path, Uint size);
   Element *new_element(const std::string &parent, const std::string &name, const vec2 &pos, const vec2 &size, const vec4 &color, const vec4 &hi_color);
   Element *get_element(const std::string &name);
   Element *get_element_from_mouse(void);
@@ -198,7 +199,7 @@ class __glewApp {
   void resize_element(Element *e, const vec2 &size);
   void move_resize_element(Element *e, const vec2 &pos, const vec2 &size);
   void animate_element(Element *e, const vec2 &end_pos, const vec2 &end_size, Uint duration_ms);
-  void render_font_slow(const Font *font, const std::string &text, vec2 pos, float scale);
+  void render_text(std::string text, vec2 pos, float scale, vec3 color);
   void set_main_loop_lambda(const std::function<void()> &lambda);
   void draw(void);
   void run(void);
@@ -234,6 +235,9 @@ struct Element {
   vec4 hi_color;
   std::function<void()> enter_action;
   std::function<void()> leave_action;
+  std::string text;
+  vec3 textcolor;
+  vec3 texthicolor;
   
   /* Constructor. */
   Element(const std::string &name, const vec2 &pos, const vec2 &size, const vec4 &color, const vec4 &hi_color)
@@ -247,6 +251,12 @@ struct Element {
   template <typename Callback>
   void set_leave_action(Callback &&callback) {
     leave_action = std::forward<Callback>(callback);
+  }
+
+  void set_text_data(const std::string &text, const vec3 &textcolor, const vec3 &texthicolor) {
+    this->text = text;
+    this->textcolor = textcolor;
+    this->texthicolor = texthicolor; 
   }
 };
 

@@ -1,9 +1,9 @@
 #pragma once
 /* clang-format off */
 
-#include "Attributes.h"
 #include "Init_list.h"
-#include "def.h"
+#include "Mint.h"
+#include "Mbool.h"
 
 namespace /* Defines. */ {
   #define __constructor(...)    __inline__ constexpr __attribute__((__always_inline__, __nodebug__, __nothrow__)) bit_flag_t(__VA_ARGS__)
@@ -32,7 +32,7 @@ struct bit_flag_t {
     return ((_flags(flag) & _flag_mask(flag)) != 0);
   }
 
-  // Return`s TRUE if all elements in the underling data array are equal to zero, else return`s FALSE.
+  /* Return`s TRUE if all elements in the underling data array are equal to zero, else return`s FALSE. */
   __bool is_clear(void) const {
     for (Uint i = 0; i < (Size / 8); ++i) {
       if (_flag_array[i] != (Uchar)0) {

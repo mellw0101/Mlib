@@ -1,11 +1,10 @@
 /**
-    @file Term.cpp
-    @author Melwin Svensson [https://github.com/mellw0101]
-    @version 0.1
-    @date 2024-07-14 18:18:29
+  @file Term.cpp
+  @author Melwin Svensson [https://github.com/mellw0101]
+  @version 0.1
+  @date 2024-07-14 18:18:29
 
-    @copyright Copyright (c) 2024
-
+  @copyright Copyright (c) 2024
  */
 #include "../include/Term.h"
 #include "../include/Error.h"

@@ -32,12 +32,12 @@ namespace Mlib::Debug {
     std::lock_guard<std::mutex> guard(_log_mutex);
     if (_output_file.empty()) {
       fprintf((log_level > 2) ? stderr : stdout, "%s:%s:%s[Line:%lu]%s:%s[%s]%s: %s\n", TIME::mili().c_str(),
-              &logLevelMap[log_level].key[0], ESC_CODE_YELLOW, lineno, ESC_CODE_RESET, ESC_CODE_MAGENTA, from_func,
+              logLevelMap[log_level], ESC_CODE_YELLOW, lineno, ESC_CODE_RESET, ESC_CODE_MAGENTA, from_func,
               ESC_CODE_RESET, fbuf);
     }
     else {
       snprintf(buf, sizeof(buf), "%s:%s:%s[Line:%lu]%s:%s[%s]%s: %s\n", TIME::mili().c_str(),
-               &logLevelMap[log_level].key[0], ESC_CODE_YELLOW, lineno, ESC_CODE_RESET, ESC_CODE_MAGENTA, from_func,
+               logLevelMap[log_level], ESC_CODE_YELLOW, lineno, ESC_CODE_RESET, ESC_CODE_MAGENTA, from_func,
                ESC_CODE_RESET, fbuf);
       std::ofstream file(&_output_file[0], std::ios::app);
       if (file) {

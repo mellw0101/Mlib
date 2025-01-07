@@ -33,7 +33,6 @@ namespace Mlib::Constexpr {
   // {
   //     constexpr size_t fnv_prime    = 16777619u;
   //     constexpr size_t offset_basis = 2166136261u;
-
   //     size_t hash = offset_basis;
   //     for (const auto &byte : data)
   //     {
@@ -42,7 +41,6 @@ namespace Mlib::Constexpr {
   //     }
   //     return hash;
   // }
-
   // constexpr size_t
   // hash_string(const std::string_view &s)
   // {
@@ -125,30 +123,27 @@ namespace Mlib::Constexpr {
     return i;
   }
 
-  // template <size_t N>
-  // class String
-  // {
-  // public:
-  //     constexpr String(const char (&str)[N + 1])
-  //     {
-  //         std::copy_n(str, N + 1, data);
-  //     }
-
-  //     constexpr C_PTR<char>
-  //     c_str() const
-  //     {
-  //         return data;
-  //     }
-
-  //     constexpr size_t
-  //     get_size() const
-  //     {
-  //         return N;
-  //     }
-
-  // private:
-  //     char data[N + 1] {};
-  // };
+  /* template <size_t N>
+  class String
+  {
+  public:
+      constexpr String(const char (&str)[N + 1])
+      {
+          std::copy_n(str, N + 1, data);
+      }
+      constexpr C_PTR<char>
+      c_str() const
+      {
+          return data;
+      }
+      constexpr size_t
+      get_size() const
+      {
+          return N;
+      }
+  private:
+      char data[N + 1] {};
+  }; */
 
   template <size_t N>
   struct String {
@@ -194,19 +189,18 @@ namespace Mlib::Constexpr {
 
   constexpr int strcasecmp(const char *s1, const char *s2) _NO_THROW {
     while (*s1 && *s2) {
-      const int c1 = tolower((unsigned char)*s1);
-      const int c2 = tolower((unsigned char)*s2);
+      const int c1 = tolower((Uchar)*s1);
+      const int c2 = tolower((Uchar)*s2);
       if (c1 != c2) {
         return c1 - c2;
       }
       ++s1;
       ++s2;
     }
-    return tolower(static_cast<unsigned char>(*s1)) - tolower(static_cast<unsigned char>(*s2));
+    return tolower(static_cast<Uchar>(*s1)) - tolower(static_cast<Uchar>(*s2));
   }
 
-  /* Returns 0 if the strings are equal, a positive number if s1 is
-   *greater than s2, and a negative number if s1 is less than s2. */
+  /* Returns 0 if the strings are equal, a positive number if s1 is greater than s2, and a negative number if s1 is less than s2. */
   constexpr int strncasecmp(const char *s1, const char *s2, size_t n) _NO_THROW {
     size_t i = 0;
     while (i < n && *s1 && *s2) {
@@ -252,7 +246,7 @@ namespace Mlib::Constexpr {
     return nullptr;
   }
 
-  constexpr const char *strstr(const char *haystack, const char *needle) noexcept {
+  constexpr const char *strstr(const char *haystack, const char *needle) _NO_THROW {
     if (!*needle) {
       return haystack;
     }

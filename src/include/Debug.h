@@ -154,31 +154,31 @@ namespace Mlib::Debug {
   MAKE_CONSTEXPR_WRAPPER(FileName, std::string_view);
   MAKE_CONSTEXPR_WRAPPER(Line, unsigned int);
 
-  constexpr ARRAY<char, 256> make_message(std::string_view str) {
-    std::array<char, 256> buffer     = {};
-    auto                  str_len    = str.size();
-    const char           *prefix     = ": error message (errno: 0)";
-    auto                  prefix_len = std::char_traits<char>::length(prefix);
-    if (str_len + prefix_len >= buffer.size()) {
-      /* Handle overflow error if needed for now, we truncate the message to fit the buffer */
-      str_len = buffer.size() - prefix_len - 1;
-    }
-    for (size_t i = 0; i < str_len; ++i) {
-      buffer[i] = str[i];
-    }
-    for (size_t i = 0; i < prefix_len; ++i) {
-      buffer[str_len + i] = prefix[i];
-    }
-    return buffer;
-  }
+  // constexpr ARRAY<char, 256> make_message(std::string_view str) {
+  //   std::array<char, 256> buffer     = {};
+  //   auto                  str_len    = str.size();
+  //   const char           *prefix     = ": error message (errno: 0)";
+  //   auto                  prefix_len = std::char_traits<char>::length(prefix);
+  //   if (str_len + prefix_len >= buffer.size()) {
+  //     /* Handle overflow error if needed for now, we truncate the message to fit the buffer */
+  //     str_len = buffer.size() - prefix_len - 1;
+  //   }
+  //   for (size_t i = 0; i < str_len; ++i) {
+  //     buffer[i] = str[i];
+  //   }
+  //   for (size_t i = 0; i < prefix_len; ++i) {
+  //     buffer[str_len + i] = prefix[i];
+  //   }
+  //   return buffer;
+  // }
 
-  constexpr_map<std::string_view, Uchar, 5> logLevelMap = {{
-    {   ESC_CODE_GREEN          "[INFO]" ESC_CODE_RESET,          INFO },
-    {    ESC_CODE_CYAN "[INFO_PRIORITY]" ESC_CODE_RESET, INFO_PRIORITY },
-    {  ESC_CODE_YELLOW       "[WARNING]" ESC_CODE_RESET,       WARNING },
-    {     ESC_CODE_RED         "[ERROR]" ESC_CODE_RESET,         ERROR },
-    { ESC_CODE_MAGENTA          "[FUNC]" ESC_CODE_RESET,          FUNC }
-  }};
+  const char *const logLevelMap[5] = {
+    ESC_CODE_GREEN           "[INFO]" ESC_CODE_RESET,
+    ESC_CODE_CYAN   "[INFO_PRIORITY]" ESC_CODE_RESET,
+    ESC_CODE_YELLOW       "[WARNING]" ESC_CODE_RESET,
+    ESC_CODE_RED            "[ERROR]" ESC_CODE_RESET,
+    ESC_CODE_MAGENTA         "[FUNC]" ESC_CODE_RESET 
+  };
 
   class Lout {
    private:
@@ -199,7 +199,7 @@ namespace Mlib::Debug {
       /* Open the outputfile in append mode. */
       ofstream file(_output_file.data(), ios::app);
       if (file) {
-        file << TIME::mili() << ":" << logLevelMap[_level].key << ":" << ESC_CODE_YELLOW << "[Line:" << _line << "]"
+        file << TIME::mili() << ":" << logLevelMap[_level] << ":" << ESC_CODE_YELLOW << "[Line:" << _line << "]"
              << ESC_CODE_RESET << ":" << ESC_CODE_MAGENTA << "[" << _function << "]" << ESC_CODE_RESET << ": "
              << _buffer.str() << "\n";
       }

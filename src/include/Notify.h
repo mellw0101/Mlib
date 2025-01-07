@@ -319,7 +319,7 @@ typedef struct file_listener_t {
 
  public:
   /* If 'start_listening()' is not called we will leak memory. */
-  file_listener_t(const char *file) {
+  file_listener_t(const char *file) _NO_THROW {
     _fd = -1;
     _wd = -1;
     _callback_thread = 0;
@@ -357,11 +357,11 @@ typedef struct file_listener_t {
     _move_self_callback_data     = NULL;
   }
 
-  ~file_listener_t(void) {
+  ~file_listener_t(void) _NO_THROW {
     stop();
   }
 
-  void stop(void) {
+  void stop(void) _NO_THROW {
     if (!_flag.is_set<FILE_LISTENER_RUNNING>()) {
       return;
     }
@@ -388,7 +388,7 @@ typedef struct file_listener_t {
     _file_path = NULL;
   }
 
-  int start_listening(Uint mask = DEFAULT_MASK) {
+  int start_listening(Uint mask = DEFAULT_MASK) _NO_THROW {
     _flag.set<FILE_LISTENER_RUNNING>();
     _fd = inotify_init();
     if (_fd < 0) {
@@ -414,7 +414,7 @@ typedef struct file_listener_t {
     return 0;
   }
 
-  void set_event_callback(Uint mask, void *arg, void (*callback)(void *)) {
+  void set_event_callback(Uint mask, void *arg, void (*callback)(void *)) _NO_THROW {
     if (_flag.is_set<FILE_LISTENER_RUNNING>()) {
       logE("Event callbacks must be set before listener is started.");
       return;
@@ -469,12 +469,12 @@ typedef struct file_listener_t {
     }
   }
 
-  const char *const &get_file_path(void) const {
+  const char *const &get_file_path(void) const _NO_THROW {
     return _file_path;
   }
 } file_listener_t;
 
-static file_listener_t *make_file_listener(const char *file_path) {
+static file_listener_t *make_file_listener(const char *file_path) _NO_THROW {
   file_listener_t *listener = (file_listener_t *)malloc(sizeof(*listener));
   if (!listener) {
     logE("Failed to malloc file_listener_t.");
@@ -484,7 +484,7 @@ static file_listener_t *make_file_listener(const char *file_path) {
   return listener;
 }
 
-static void free_file_listener(file_listener_t *listener) {
+static void free_file_listener(file_listener_t *listener) _NO_THROW {
   listener->~file_listener_t();
   free(listener);
 }
@@ -496,19 +496,19 @@ typedef struct file_listener_handler_t {
   MVector<file_listener_t *> _data;
 
  public:
-  file_listener_handler_t(void) {}
+  file_listener_handler_t(void) _NO_THROW {}
 
-  ~file_listener_handler_t(void) {
+  ~file_listener_handler_t(void) _NO_THROW {
     stop_all();
   }
 
   /* Do not add a listener without staring it after callbacks have been set.  Otherwise memory will leak */
-  file_listener_t *const &add_listener(const char *file_path) {
+  file_listener_t *const &add_listener(const char *file_path) _NO_THROW {
     return _data.push_back(make_file_listener(file_path)).back();
   }
 
   /* If listener has been added but not started, this will leak memory. */
-  void stop_listener(const char *file_path) {
+  void stop_listener(const char *file_path) _NO_THROW {
     file_listener_t *listener = get_listener(file_path);
     if (!listener) {
       logE("File listener for file: '%s' does not exist.", file_path);
@@ -518,14 +518,14 @@ typedef struct file_listener_handler_t {
     _data.erase(listener);
   }
 
-  void stop_all(void) {
+  void stop_all(void) _NO_THROW {
     for (Uint i = 0; i < _data.size(); ++i) {
       free_file_listener(_data[i]);
     }
     _data.resize(0);
   }
 
-  file_listener_t *get_listener(const char *file_path) {
+  file_listener_t *get_listener(const char *file_path) _NO_THROW {
     for (const auto &listener : _data) {
       if (strcmp(listener->get_file_path(), file_path) == 0) {
         return listener;

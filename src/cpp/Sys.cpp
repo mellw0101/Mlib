@@ -1,4 +1,4 @@
-/// @file Sys.cpp
+/** @file Sys.cpp */
 #include "../include/Sys.h"
 #include "../include/Io.h"
 
@@ -8,8 +8,7 @@
 namespace Mlib::Sys {
   using namespace Io;
 
-  Uchar run_binary(const std::string &binary_path, const std::vector<std::string> &args,
-                   const std::vector<std::string> &env_vars) {
+  Uchar run_binary(const std::string &binary_path, const std::vector<std::string> &args, const std::vector<std::string> &env_vars) {
     Uchar result = 0;
     /* Convert vector of arguments to array of C-strings */
     std::vector<char *> argv;

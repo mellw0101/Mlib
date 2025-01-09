@@ -32,38 +32,13 @@ struct bit_flag_t {
     return ((_flags(flag) & _flag_mask(flag)) != 0);
   }
 
-  /* Return`s TRUE if all elements in the underling data array are equal to zero, else return`s FALSE. */
-  __bool is_clear(void) const {
-    for (Uint i = 0; i < (Size / 8); ++i) {
-      if (_flag_array[i] != (Uchar)0) {
-        return FALSE;
-      }
-    }
-    return TRUE;
-  }
-
   __void toggle(Uint flag) {
     _flags(flag) ^= _flag_mask(flag);
   }
 
-  __Uint size(void) const {
-    return Size;
-  }
-
-  __void clear(void) {
-    for (Uint i = 0; i < (Size / 8); ++i) {
-      _flag_array[i] = (Uchar)0;
-    }
-  }
-
-  __Uint num_of_set_flags(void) const {
-    Uint n = 0;
-    for (Uint i = 0; i < Size; ++i) {
-      if (is_set(i)) {
-        ++n;
-      }
-    }
-    return n;
+  __void clear_and_set(Uint flag) {
+    clear();
+    set(flag);
   }
 
   template <Uint Flag>
@@ -104,6 +79,36 @@ struct bit_flag_t {
     while (++idx < Size) {
       unset(idx);
     }
+  }
+  
+  /* Return`s TRUE if all elements in the underling data array are equal to zero, else return`s FALSE. */
+  __bool is_clear(void) const {
+    for (Uint i = 0; i < (Size / 8); ++i) {
+      if (_flag_array[i] != (Uchar)0) {
+        return FALSE;
+      }
+    }
+    return TRUE;
+  }
+
+  __Uint size(void) const {
+    return Size;
+  }
+
+  __void clear(void) {
+    for (Uint i = 0; i < (Size / 8); ++i) {
+      _flag_array[i] = (Uchar)0;
+    }
+  }
+
+  __Uint num_of_set_flags(void) const {
+    Uint n = 0;
+    for (Uint i = 0; i < Size; ++i) {
+      if (is_set(i)) {
+        ++n;
+      }
+    }
+    return n;
   }
 
   /* Constructors. */

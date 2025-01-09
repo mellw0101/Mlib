@@ -106,37 +106,9 @@ namespace Mlib::Threads {
   };  
 }
 
-typedef struct {
-  void *(*function)(void *);
-  void *arg;
-  void **result;
-  void (*callback)(void *);
-} threadpool_task_t;
+/* Struct that reprecents a future. */
+typedef struct MFuture MFuture;
 
-template <Uint QueueSize>
-struct threadpool_queue_t {
-  threadpool_task_t tasks[QueueSize];
-  int front;
-  int rear;
-  int count;
-  pthread_mutex_t mutex;
-  pthread_cond_t  cond;
-};
-
-template <Uint QueueSize>
-class threadpool_t {
- private:
-  threadpool_queue_t<QueueSize> _queue;
-  MVector<pthread_t *> _threads;
-
- public:
-  threadpool_t(void) {
-    _queue.front = 0;
-    _queue.rear  = 0;
-    _queue.count = 0;
-    pthread_mutex_init(&_queue.mutex, NULL);
-    pthread_cond_init(&_queue.cond, NULL);
-  }
-};
-
-#define enqueueT(__Name, __Pool, ...) std::future<void> __Name = __Pool.enqueue(__VA_ARGS__)
+void MFuture_destroy(MFuture *future);
+void *MFuture_get(MFuture *future);
+MFuture *MFuture_submit(void *(*task)(void *), void *arg);

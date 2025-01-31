@@ -22,7 +22,7 @@ namespace Mlib::String {
 
 size_t __warn_unused __pure __no_debug __no_throw __no_null(1) mstrlen(const char *str) noexcept;
 size_t __warn_unused __pure __no_debug __no_throw __no_null(1) mstrnlen(const char *str, size_t maxlen) noexcept;
-char *__warn_unused __pure __no_debug __no_throw __no_null(1) mstrndup(const char *str, size_t maxlen) noexcept;
+char * __warn_unused __pure __no_debug __no_throw __no_null(1) mstrndup(const char *str, size_t maxlen) noexcept;
 
 namespace /* Defines */ {
   #define __constructor(...) __inline__ constexpr MString(__VA_ARGS__) __attribute((__always_inline__, __nothrow__, __nodebug__))

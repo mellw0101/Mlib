@@ -24,7 +24,7 @@ namespace Mlib::Debug {
     }
   }
 
-  void Lout::log(const LogLevel log_level, const char *from_func, const Ulong lineno, const char *format, ...) {
+  void Lout::log(const LogLevel log_level, const char *from_func, const Ulong lineno, const char *format, ...) _NO_THROW {
     char    fbuf[4096], buf[8192];
     va_list ap;
     va_start(ap, format);
@@ -181,7 +181,7 @@ namespace Mlib::Debug {
     }
   }
 
-  void NetworkLogger ::log(const char *format, ...) {
+  void NetworkLogger ::log(const char *format, ...) _NO_THROW {
     if (!_NET_DEBUG || !_CONNECTED) {
       return;
     }
@@ -200,7 +200,7 @@ namespace Mlib::Debug {
     }
   }
 
-  void NetworkLogger ::destroy(void) noexcept {
+  void NetworkLogger ::destroy(void) _NO_THROW {
     if (_NetworkLoggerInstance != nullptr) {
 
       delete _NetworkLoggerInstance;
@@ -213,5 +213,4 @@ namespace Mlib::Debug {
     _buffer.str("");
     return Instance();
   }
-
-} // namespace Mlib::Debug
+}

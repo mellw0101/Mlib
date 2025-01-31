@@ -109,6 +109,17 @@ namespace Mlib::Threads {
 /* Struct that reprecents a future. */
 typedef struct MFuture MFuture;
 
+/* The error callback to be called apon errors. */
+extern void (*MFuture_error_callback)(const char *format, ...);
+
+/* Deallocate a MFuture struct after retrieveing the result.  This must be done to not leak memory. */
 void MFuture_destroy(MFuture *future);
+
+/* Get the result of the submited future, note that this is blocking. */
 void *MFuture_get(MFuture *future);
+
+/* Submit a task with an arg, to be returned as a future. */
 MFuture *MFuture_submit(void *(*task)(void *), void *arg);
+
+
+void MFuture_set_error_callback(void (*callback)(const char *format, ...));

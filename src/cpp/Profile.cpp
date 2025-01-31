@@ -144,22 +144,19 @@ namespace Mlib::Profile {
   vector<string> GlobalProfiler::retrveFormatedStrVecStats(void) const {
     std::vector<std::string> formated_stats;
     formated_stats.push_back("\n\nProfiling report: " + mili() + '\n');
+    char buffer[4096];
     for (const auto &[name, stats] : stats) {
-      std::stringstream ss;
-      ss << name << makeNamePadding(name) <<        /*  */
-        ": Mean = " << stats.mean() << " ms, " <<   /* makeDoublePadding(pair.second.mean())   << */
-        "Stddev = " << stats.stddev() << " ms, " << /* makeDoublePadding(pair.second.stddev()) << */
-        "   Min = " << stats.min() << " ms, " <<    /* makeDoublePadding(pair.second.min())    << */
-        "   Max = " << stats.max() << " ms, " <<    /* makeDoublePadding(pair.second.max())    << */
-        " Count = " << stats.count() <<             /* makeDoublePadding(pair.second.count())  << */
-        "\n";
-      formated_stats.push_back(ss.str());
+      snprintf(
+        buffer, sizeof(buffer),
+        "%s%s: Mean = %.6f ms, Stddev = %.6f ms, Min = %.6f ms, Max = %.6f, Count = %lu\n",
+        name.c_str(), makeNamePadding(name).c_str(), stats.mean(), stats.stddev(), stats.min(), stats.max(), stats.count()
+      );
+      formated_stats.push_back(buffer);
     }
     return formated_stats;
   }
 
-  GlobalProfiler::GlobalProfiler(void) noexcept {
-  }
+  GlobalProfiler::GlobalProfiler(void) noexcept {}
 
   GlobalProfiler *GlobalProfiler::Instance(void) noexcept {
     if (!instance) {

@@ -6,7 +6,7 @@
 namespace /* Defines */ {
   #define __constructor(...) __inline__ constexpr __attribute__((__always_inline__, __nodebug__, __nothrow__)) vec(__VA_ARGS__)
   #define __ref              __inline__ constexpr vec & __attribute((__always_inline__, __nothrow__, __nodebug__))
-  #define __copy             __inline__ constexpr vec __attribute((__always_inline__, __nothrow__, __nodebug__, __const__))
+  #define __copy             __inline__ constexpr vec __attribute((__always_inline__, __nothrow__, __nodebug__))
   #define __bool             __inline__ constexpr bool __attribute((__always_inline__, __nothrow__, __nodebug__, __const__))
   #define __copy_(s, t)   __inline__ constexpr vec<s, t> __attribute((__always_inline__, __nothrow__, __nodebug__, __const__))
   #define __type_ref         __inline__ constexpr T &__warn_unused __attribute((__always_inline__, __nothrow__, __nodebug__))

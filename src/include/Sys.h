@@ -98,5 +98,4 @@ namespace Mlib::Sys {
 }
 
 Ulong get_current_time_ms(void);
-
 void format_time(Ulong ms, char *buffer, Ulong buffer_size);

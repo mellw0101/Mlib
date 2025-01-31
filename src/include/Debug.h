@@ -152,25 +152,7 @@ namespace Mlib::Debug {
 
   MAKE_CONSTEXPR_WRAPPER(FuncName, std::string_view);
   MAKE_CONSTEXPR_WRAPPER(FileName, std::string_view);
-  MAKE_CONSTEXPR_WRAPPER(Line, unsigned int);
-
-  // constexpr ARRAY<char, 256> make_message(std::string_view str) {
-  //   std::array<char, 256> buffer     = {};
-  //   auto                  str_len    = str.size();
-  //   const char           *prefix     = ": error message (errno: 0)";
-  //   auto                  prefix_len = std::char_traits<char>::length(prefix);
-  //   if (str_len + prefix_len >= buffer.size()) {
-  //     /* Handle overflow error if needed for now, we truncate the message to fit the buffer */
-  //     str_len = buffer.size() - prefix_len - 1;
-  //   }
-  //   for (size_t i = 0; i < str_len; ++i) {
-  //     buffer[i] = str[i];
-  //   }
-  //   for (size_t i = 0; i < prefix_len; ++i) {
-  //     buffer[str_len + i] = prefix[i];
-  //   }
-  //   return buffer;
-  // }
+  MAKE_CONSTEXPR_WRAPPER(Line, Uint);
 
   const char *const logLevelMap[5] = {
     ESC_CODE_GREEN           "[INFO]" ESC_CODE_RESET,
@@ -287,7 +269,7 @@ namespace Mlib::Debug {
       _output_file = path;
     }
 
-    void log(const LogLevel log_level, const char *from_func, const Ulong lineno, const char *format, ...);
+    void log(const LogLevel log_level, const char *from_func, const Ulong lineno, const char *format, ...) _NO_THROW;
   };
 
   inline ErrnoMsg Lout_errno_msg(std::string_view str) {
@@ -308,17 +290,17 @@ namespace Mlib::Debug {
     std::mutex   _mutex;
 
     static NetworkLogger *_NetworkLoggerInstance;
-    unsigned short        checksum(void *b, int len);
-    bool                  ping(std::string_view ip);
+    Ushort checksum(void *b, int len);
+    bool   ping(std::string_view ip);
 
-    NetworkLogger(void) noexcept;
-    static void destroy(void) noexcept;
+    NetworkLogger(void) _NO_THROW;
+    static void destroy(void) _NO_THROW;
 
    public:
     void init(std::string_view address, int port);
     void enable();
     void send_to_server(std::string_view input);
-    void log(const char *format, ...);
+    void log(const char *format, ...) _NO_THROW;
 
     NetworkLogger &operator<<(const NetworkLoggerEndl &endl);
 
@@ -341,6 +323,15 @@ namespace Mlib::Debug {
         }
       }
       return _NetworkLoggerInstance;
+    }
+
+    static void static_log(const char *format, ...) {
+      char buffer[4096];
+      va_list ap;
+      va_start(ap, format);
+      vsnprintf(buffer, sizeof(buffer), format, ap);
+      va_end(ap);
+      instanceptr()->log("%s", buffer);
     }
   };
 }

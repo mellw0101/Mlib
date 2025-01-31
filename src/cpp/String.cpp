@@ -140,19 +140,19 @@ MString MString_getenv(const char *str) {
   return var;
 }
 
-Ulong __warn_unused __pure __no_debug __no_throw __no_null(1) mstrlen(const char *str) noexcept {
+Ulong mstrlen(const char *str) noexcept {
   const char *cp = str;
   for (; *cp; ++cp);
   return (cp - str);
 }
 
-Ulong __warn_unused __pure __no_debug __no_throw __no_null(1) mstrnlen(const char *str, Ulong maxlen) noexcept {
+Ulong mstrnlen(const char *str, Ulong maxlen) noexcept {
   const char *cp = str;
   for (; maxlen != 0 && *cp; ++cp, --maxlen);
   return (Ulong)(cp - str);
 }
 
-char *__warn_unused __pure __no_debug __no_throw __no_null(1) mstrndup(const char *str, Ulong maxlen) noexcept {
+char *mstrndup(const char *str, Ulong maxlen) noexcept {
   Ulong _len  = mstrnlen(str, maxlen);
   char *copy = (char *)malloc(_len + 1);
   if (copy) {
@@ -163,11 +163,7 @@ char *__warn_unused __pure __no_debug __no_throw __no_null(1) mstrndup(const cha
 }
 
 /* clang-format off */
-void __no_debug __no_throw __no_null(1, 2)
-stack_str_ncpy(char *__restrict __dst,
-               char *__restrict __src,
-               Uint __n) noexcept
-{
+void stack_str_ncpy(char *__restrict __dst, char *__restrict __src, Uint __n) noexcept {
   for (Uint i = 0; i < __n; ++i) __dst[i] = __src[i];
 }
 /* clang-format on */

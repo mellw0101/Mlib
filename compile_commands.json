@@ -186,11 +186,6 @@
   }
 ,  {
     "directory": "/home/mellw/Projects/Mlib",
-    "command": "/usr/bin/clang++ -m64 -stdlib=libc++ -funroll-loops -O3 -std=c++23 -static -Werror -Wall -march=native -Rpass=loop-vectorize -flto -Wno-vla -mavx -I/home/mellw/Projects/Mlib/src/include/ -c /home/mellw/Projects/Mlib/src/include/openGL/vertbuf.h",
-    "file": "/home/mellw/Projects/Mlib/src/include/openGL/vertbuf.h"
-  }
-,  {
-    "directory": "/home/mellw/Projects/Mlib",
     "command": "/usr/bin/clang++ -m64 -stdlib=libc++ -funroll-loops -O3 -std=c++23 -static -Werror -Wall -march=native -Rpass=loop-vectorize -flto -Wno-vla -mavx -I/home/mellw/Projects/Mlib/src/include/ -c /home/mellw/Projects/Mlib/src/include/Http.h",
     "file": "/home/mellw/Projects/Mlib/src/include/Http.h"
   }

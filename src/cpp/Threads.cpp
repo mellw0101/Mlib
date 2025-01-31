@@ -50,10 +50,17 @@ typedef struct {
   void *arg;
 } MFutureTask;
 
+void (*MFuture_error_callback)(const char *format, ...) = NULL;
+
+/* Internal function that return`s a malloc`ed MFuture. */
 static MFuture *MFuture_create(void) {
   MFuture *future = (MFuture *)malloc(sizeof(*future));
   if (!future) {
-    exit(1);
+    /* If there is a error callback then call it. */
+    if (MFuture_error_callback) {
+      MFuture_error_callback("%s: Failed to malloc MFuture.\n", __func__);
+    }
+    return NULL;
   }
   pthread_mutex_init(&future->mutex, NULL);
   pthread_cond_init(&future->cond, NULL);
@@ -92,6 +99,13 @@ static void *MFuture_thread_func(void *arg) {
 
 MFuture *MFuture_submit(void *(*task)(void *), void *arg) {
   MFutureTask *data = (MFutureTask *)malloc(sizeof(*data));
+  if (!data) {
+    /* If there is a error callback set then call it. */
+    if (MFuture_error_callback) {
+      MFuture_error_callback("%s: Failed to malloc MFutureTask.\n", __func__);
+    }
+    return NULL;
+  }
   data->future = MFuture_create();
   data->task   = task;
   data->arg    = arg;
@@ -99,4 +113,8 @@ MFuture *MFuture_submit(void *(*task)(void *), void *arg) {
   pthread_create(&thread, NULL, MFuture_thread_func, data);
   pthread_detach(thread);
   return data->future;
+}
+
+void MFuture_set_error_callback(void (*callback)(const char *format, ...)) {
+  MFuture_error_callback = callback;
 }

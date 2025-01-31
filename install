@@ -1,6 +1,8 @@
 #!/bin/bash
 
-# Amake --buildStdC++
-# Amake --build --lib --install-lib -y
-AmakeCpp --test
+if [ ! -f /usr/bin/AmakeCpp ]; then
+	Amake --buildStdC++ -y
+else
+	AmakeCpp --test
+fi
 Amake --lib --install-lib -y

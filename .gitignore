@@ -1,10 +1,4 @@
-/.amake/
-/.amake/cppSizes
-/build/
-/build/bin/
-/build/lib/
-/build/lib/*.a
-/build/obj/*.o
-*.o
-/.cache/
-/module-cache/
+/.amake
+/build
+/.cache
+/compile_commands.json

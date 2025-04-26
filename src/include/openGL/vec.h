@@ -171,21 +171,21 @@ namespace /* Defines */ {
     #define VEC_SWIZZLING(size) VEC_SWIZZLING_##size
   }
   namespace /* Types */ {
-    #define bvec2 vec<2, bool, 2>
-    #define bvec3 vec<3, bool, 4>
-    #define bvec4 vec<4, bool, 4>
-    #define ivec2 vec<2, int, 8>
-    #define ivec3 vec<3, int, 16>
-    #define ivec4 vec<4, int, 16>
-    #define uvec2 vec<2, Uint, 8>
-    #define uvec3 vec<3, Uint, 16>
-    #define uvec4 vec<4, Uint, 16>
-    #define vec2 vec<2, float, 8>
-    #define vec3 vec<3, float, 16>
-    #define vec4 vec<4, float, 16>
-    #define dvec2 vec<2, double, 16>
-    #define dvec3 vec<3, double, 32>
-    #define dvec4 vec<4, double, 32>
+    #define bvec2  vec<2, bool, 2>
+    #define bvec3  vec<3, bool, 4>
+    #define bvec4  vec<4, bool, 4>
+    #define ivec2  vec<2, int, 8>
+    #define ivec3  vec<3, int, 16>
+    #define ivec4  vec<4, int, 16>
+    #define uvec2  vec<2, Uint, 8>
+    #define uvec3  vec<3, Uint, 16>
+    #define uvec4  vec<4, Uint, 16>
+    #define vec2   vec<2, float, 8>
+    #define vec3   vec<3, float, 16>
+    #define vec4   vec<4, float, 16>
+    #define dvec2  vec<2, double, 16>
+    #define dvec3  vec<3, double, 32>
+    #define dvec4  vec<4, double, 32>
   }
 }
 
@@ -206,6 +206,9 @@ struct vec<2, T, Alignment> {
   }
   __bool operator==(const vec &other) const {
     return ((x == other.x) && (y == other.y));
+  }
+  __bool operator!=(const vec &other) const {
+    return !(this == other);
   }
   __bool operator<(const vec &other) const {
     return ((x < other.x) && (y < other.y));
@@ -257,6 +260,9 @@ struct vec<3, T, Alignment> {
   __bool operator==(const vec &other) const {
     return ((x == other.x) && (y == other.y) && (z == other.z));
   }
+  __bool operator!=(const vec &other) const {
+    return !(this == other);
+  }
   VEC_SWIZZLING(3)
   VEC_IDX_OPERATOR
   VEC_OPERATOR(3, +)
@@ -295,6 +301,9 @@ struct vec<4, T, Alignment> {
   __bool operator==(const vec &other) const {
     return ((x == other.x) && (y == other.y) && (z == other.z) && (w == other.w));
   }
+  __bool operator!=(const vec &other) const {
+    return !(this == other);
+  }
   VEC_SWIZZLING(4)
   VEC_IDX_OPERATOR
   VEC4_H_OPERATOR(add);
@@ -310,6 +319,7 @@ namespace /* Undef */ {
   #undef __bool
   #undef __copy_
   #undef __type_ref
+  #undef __type_T
 
   #undef VEC_STRUCT_2
   #undef VEC_STRUCT_3
@@ -332,8 +342,8 @@ namespace /* Undef */ {
   #undef OP_eq_mul
   #undef OP_eq_div
 
-  #undef OP_
   #undef OP
+  #undef OP_
   #undef OP_eq
 
   #undef VEC4_H_OPERATOR
@@ -341,5 +351,6 @@ namespace /* Undef */ {
 
   #undef VEC_SWIZZLING_2
   #undef VEC_SWIZZLING_3
+  #undef VEC_SWIZZLING_4
   #undef VEC_SWIZZLING
 }

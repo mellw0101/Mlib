@@ -261,7 +261,7 @@ struct vec<3, T, Alignment> {
     return ((x == other.x) && (y == other.y) && (z == other.z));
   }
   __bool operator!=(const vec &other) const {
-    return !(this == other);
+    return !(*this == other);
   }
   VEC_SWIZZLING(3)
   VEC_IDX_OPERATOR
@@ -302,7 +302,7 @@ struct vec<4, T, Alignment> {
     return ((x == other.x) && (y == other.y) && (z == other.z) && (w == other.w));
   }
   __bool operator!=(const vec &other) const {
-    return !(this == other);
+    return !(*this == other);
   }
   VEC_SWIZZLING(4)
   VEC_IDX_OPERATOR

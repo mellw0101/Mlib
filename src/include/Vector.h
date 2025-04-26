@@ -89,14 +89,14 @@ class MVector {
   }
 
   template <typename Callback, typename ...Args>
-  const __void foreach(Callback &&callback, Args &&...args) const {
+  __void foreach(Callback &&callback, Args &&...args) const {
     for (const T *it = begin(); it != end(); ++it) {
       callback(it, std::forward<Args>(args)...);
     }
   }
 
   template <typename Callback, typename ...Args>
-  const __void rforeach(Callback &&callback, Args &&...args) const {
+  __void rforeach(Callback &&callback, Args &&...args) const {
     for (const T *it = rbegin(); it != rend(); --it) {
       callback(it, std::forward<Args>(args)...);
     }

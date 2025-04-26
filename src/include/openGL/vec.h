@@ -208,7 +208,7 @@ struct vec<2, T, Alignment> {
     return ((x == other.x) && (y == other.y));
   }
   __bool operator!=(const vec &other) const {
-    return !(this == other);
+    return !(*this == other);
   }
   __bool operator<(const vec &other) const {
     return ((x < other.x) && (y < other.y));

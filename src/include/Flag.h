@@ -146,6 +146,17 @@ struct bit_flag_t {
     return *this;
   }
 
+  __ref operator+=(const init_list<Uint> &list) {
+    int idx = 0;
+    for (const auto &it : list) {
+      set(it);
+      if (++idx == Size) {
+        break;
+      }
+    }
+    return *this;
+  }
+
  private:
   Uchar _flag_array[Size / 8];
 

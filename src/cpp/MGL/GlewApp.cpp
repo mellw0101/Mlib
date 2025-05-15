@@ -1,6 +1,6 @@
 #include "../../include/MGL/MGL.h"
-#include "def.h"
-#include "openGL/shader.h"
+// #include "def.h"
+#include "../../include/openGL/shader.h"
 
 __glewApp *__glewApp::_instance = nullptr;
 

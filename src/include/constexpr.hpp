@@ -63,7 +63,7 @@ namespace Mlib::Constexpr {
     return fnv1a_32(s, std::char_traits<char>::length(s));
   }
 
-  constexpr std::size_t operator"" _hash(const char *s, std::size_t) {
+  constexpr std::size_t operator""_hash(const char *s, std::size_t) {
     return hash_string(s);
   }
 
@@ -632,7 +632,7 @@ namespace Mlib::Constexpr {
 #define constexpr_wcwidth(_Ucs)                     Mlib::Constexpr::Chars::wcwidth(_Ucs)
 
 /* Compile-time hash function */
-constexpr size_t operator"" _constexpr_hash(const char *s, size_t) {
+constexpr size_t operator""_constexpr_hash(const char *s, size_t) {
   return Mlib::Constexpr::hash_string(s);
 }
 
@@ -653,6 +653,6 @@ unsigned long sllen(const char (&str)[N]) {
   return N - 1;
 }
 
-constexpr unsigned long operator"" _sllen(const char *str, unsigned long) {
+constexpr unsigned long operator""_sllen(const char *str, unsigned long) {
   return constexpr_strlen(str);
 }

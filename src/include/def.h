@@ -221,7 +221,7 @@ constexpr u8  u8_MIN  = NUMERIC_LIMITS<u8>::min();
 constexpr auto FAILURE = 1;
 constexpr auto SUCCESS = 0;
 
-constexpr u64 operator"" _KB(unsigned long long value) {
+constexpr u64 operator""_KB(unsigned long long value) {
   return value * 1024;
 }
 
@@ -395,7 +395,7 @@ using THREAD             = class std::thread;
 template <typename _Tp, typename _Sequence = std::deque<_Tp>>
 using QUEUE = class std::queue<_Tp, _Sequence>;
 
-decltype(auto) operator"" _hash(const char *s, unsigned long);
+decltype(auto) operator""_hash(const char *s, unsigned long);
 
 #define CLAMBDA              [](auto &&...args) _NO_THROW -> decltype(auto)
 #define CLAMBDA_REF          [](auto &&...args) _NO_THROW -> decltype(auto) &

@@ -43,7 +43,7 @@ namespace Mlib::Threads {
 
    private:
     VECTOR<THREAD>               workers;
-    QUEUE<std::function<void()>> tasks;
+    std::queue<std::function<void()>> tasks;
     MUTEX                        queueMutex;
     CONDITION_VARIABLE           condition;
     bool                         stop;

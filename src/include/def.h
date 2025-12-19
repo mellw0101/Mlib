@@ -392,8 +392,8 @@ using CONDITION_VARIABLE = class std::condition_variable;
 using MUTEX              = class std::mutex;
 using THREAD             = class std::thread;
 
-template <typename _Tp, typename _Sequence = std::deque<_Tp>>
-using QUEUE = class std::queue<_Tp, _Sequence>;
+// template <typename _Tp, typename _Sequence = std::deque<_Tp>>
+// using QUEUE = class std::queue<_Tp, _Sequence>;
 
 decltype(auto) operator""_hash(const char *s, unsigned long);
 
